@@ -1,22 +1,8 @@
-import { Meta } from '@/layouts/Meta'
-import { Main } from '@/templates/Main'
-
-import Login from './auth/login'
-
 const Index = () => {
   return (
-    <Main
-      meta={
-        <Meta
-          title="Next.js Boilerplate Presentation"
-          description="Next js Boilerplate is the perfect starter code for your project. Build your React application with the Next.js framework."
-        />
-      }
-    >
-      <>
-        <Login />
-      </>
-    </Main>
+    <div className="h-screen">
+      <div className="h-full w-100pxr bg-black text-white"></div>
+    </div>
   )
 }
 

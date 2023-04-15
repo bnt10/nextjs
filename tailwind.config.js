@@ -1,7 +1,17 @@
 /** @type {import('tailwindcss').Config} */
+const pxToRem = (px, base = 16) => `${px / base}rem`;
+const range = (start, end) => {
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+};
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    spacing: {
+      ...range(1, 2000).reduce((acc, px) => {
+        acc[`${px}pxr`] = pxToRem(px);
+        return acc;
+      }, {}),
+    },
     fontSize: {
       xs: '0.75rem',
       sm: '0.875rem',
