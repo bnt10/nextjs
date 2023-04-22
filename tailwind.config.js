@@ -12,6 +12,15 @@ module.exports = {
         return acc;
       }, {}),
     },
+    screens: {
+      mobile: '360px',
+      foldable: '523px',
+      tablet: '768px',
+      'under-foldable': { max: '522px' },
+      'under-tablet': { max: '767px' },
+      'under-mobile': { max: '359px' },
+      dssktop: '1200px',
+    },
     fontSize: {
       xs: '0.75rem',
       sm: '0.875rem',
