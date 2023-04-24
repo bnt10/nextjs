@@ -2,9 +2,9 @@ import Button from '@/component/common/Button'
 
 const GoogleLoginButton = () => {
   return (
-    <div>
+    <li>
       <Button title={'Google Login'} handler={() => {}} />
-    </div>
+    </li>
   )
 }
 

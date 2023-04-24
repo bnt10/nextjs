@@ -2,9 +2,9 @@ import Button from '../common/Button'
 
 const GitHubLoginButton = () => {
   return (
-    <div>
+    <li>
       <Button title={'Github Login'} handler={() => {}} />
-    </div>
+    </li>
   )
 }
 

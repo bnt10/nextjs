@@ -1,13 +1,13 @@
 import { LoginOAuth } from '@/constants/loginOAuth'
 
-const Index = () => {
+const AuthLogin = () => {
   return (
-    <ul>
+    <div>
       {Object.values(LoginOAuth).map(({ id, component: OAuthLoginButton }) => (
         <OAuthLoginButton key={id} />
       ))}
-    </ul>
+    </div>
   )
 }
 
-export default Index
+export default AuthLogin
