@@ -1,24 +1,18 @@
-type ButtonPropsWithChildren = ButtonProps & { children?: React.ReactNode }
-
 type ButtonProps = {
   title: string
   handler: () => void
-  wrapper?: (props: ButtonPropsWithChildren) => React.ReactElement
+  className?: string
 }
 
-const DefaultButton = ({ title, handler }: ButtonProps) => {
+const Button = ({ title, handler, className }: ButtonProps) => {
   return (
-    <button onClick={handler}>
+    <button
+      className={className || `flex  h-48pxr w-314pxr bg-gray-900 `}
+      onClick={handler}
+    >
       <span>{title || 'Button'}</span>
     </button>
   )
-}
-
-const Button = ({ title, wrapper, handler }: ButtonProps) => {
-  const buttonElement = <DefaultButton title={title} handler={handler} />
-  return wrapper
-    ? wrapper({ title, handler, children: buttonElement })
-    : buttonElement
 }
 
 export default Button

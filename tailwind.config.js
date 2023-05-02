@@ -7,11 +7,12 @@ module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     spacing: {
-      ...range(1, 2000).reduce((acc, px) => {
+      ...range(0, 1000).reduce((acc, px) => {
         acc[`${px}pxr`] = pxToRem(px);
         return acc;
       }, {}),
     },
+
     screens: {
       mobile: '360px',
       foldable: '523px',

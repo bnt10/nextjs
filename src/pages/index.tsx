@@ -1,12 +1,10 @@
-import { LoginOAuth } from '@/constants/loginOAuth'
+import OAuthLogin from '@/component/OAuthLogin'
 
 const Index = () => {
   return (
-    <ul>
-      {Object.values(LoginOAuth).map(({ id, component: OAuthLoginButton }) => (
-        <OAuthLoginButton key={id} />
-      ))}
-    </ul>
+    <div>
+      <OAuthLogin />
+    </div>
   )
 }
 
