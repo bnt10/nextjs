@@ -1,16 +1,44 @@
-type ButtonProps = {
-  title: string
-  handler: () => void
-  className?: string
+import tw from '@/utils/twMergeObjects'
+
+import Icon from './Icon'
+
+type Style = {
+  button?: string
+  icon?: string
+  span?: string
 }
 
-const Button = ({ title, handler, className }: ButtonProps) => {
+type ButtonProps = {
+  title: string
+  icon?: string
+  handler: () => void
+  style?: Style
+  disabled?: boolean
+}
+
+const Button = ({
+  title,
+  handler,
+  style,
+  icon,
+  disabled = false,
+}: ButtonProps) => {
+  const twButtonStyles = {
+    button: 'flex h-48pxr w-314pxr bg-gray-900 justify-center item-center',
+    icon: '',
+    span: '',
+  }
+
+  const st = tw<Style>(twButtonStyles, style)
   return (
     <button
-      className={className || `flex  h-48pxr w-314pxr bg-gray-900 `}
+      type="button"
+      disabled={disabled}
+      className={st.button}
       onClick={handler}
     >
-      <span>{title || 'Button'}</span>
+      {icon && <Icon iconSrc={icon} style={st.icon} />}
+      <span className={st.span}>{title}</span>
     </button>
   )
 }

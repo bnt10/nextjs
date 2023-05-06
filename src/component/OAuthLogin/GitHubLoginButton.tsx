@@ -1,20 +1,32 @@
-import Button from '../common/Button'
+import { twMerge } from 'tailwind-merge'
 
-const GitHubLoginButton = () => {
-  const handler = async () => {
-    window.open(
-      'https://github.com/login/oauth/authorize?client_id=0326995a3b4e83d18660?redirect_uri=""'
-    )
+import Button from '@/component/common/Button'
+
+interface Props {
+  st?: string
+}
+
+const buttonStyles = {
+  button:
+    'flex relative overflow-hidden rounded-2xl bg-[#dddede] text-neutral-900 items-center justify-center',
+}
+
+const GithubLoginButton = ({ st }: Props) => {
+  const handler = () => {
+    alert('as')
   }
+  const containerStyles = twMerge('my-3pxr flex list-none justify-center', st)
+
   return (
-    <li className="flex list-none justify-center">
+    <li className={containerStyles}>
       <Button
-        className={'text-center'}
-        title={'GitHub Login'}
+        icon={'/assets/icons/github-login-icon.svg'}
+        style={buttonStyles}
+        title={'Github Login'}
         handler={handler}
       />
     </li>
   )
 }
 
-export default GitHubLoginButton
+export default GithubLoginButton

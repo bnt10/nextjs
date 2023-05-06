@@ -1,14 +1,22 @@
 import Image from 'next/image'
 
 import logoBg from '@/public/assets/images/app-login-bg.png'
+import type { ProviderConfig } from '@/types/oauthProvider'
+
+import GithubLoginButton from './GitHubLoginButton'
+import GoogleLoginButton from './GoogleLoginButton'
 
 const AuthLogin = () => {
-  // const LoginOAuth: Record<string, ProviderConfig> = {
-  //   google: {
-  //     id: 'googleLogin',
-  //     component: GoogleLoginButton,
-  //   },
-  // }
+  const LoginOAuth: Record<string, ProviderConfig> = {
+    google: {
+      id: 'googleLogin',
+      component: GoogleLoginButton,
+    },
+    github: {
+      id: 'githubLogin',
+      component: GithubLoginButton,
+    },
+  }
 
   return (
     <>
@@ -16,7 +24,7 @@ const AuthLogin = () => {
         <Image
           src={logoBg}
           alt="login-bg"
-          className="absolute top-[-32px]  z-[-10] w-390pxr bg-gray-900 object-cover"
+          className="absolute  top-[-32px] z-[-10] w-390pxr bg-gray-900 object-cover"
         />
         <p className="relative mt-56pxr text-left text-lg text-white">
           Welcome to
@@ -25,13 +33,13 @@ const AuthLogin = () => {
           Wild Alliance
         </p>
 
-        {/* <div>
+        <div className="relative mt-270pxr">
           {Object.values(LoginOAuth).map(
-            ({ id, component: OAuthLoginButton }) => (
-              <OAuthLoginButton key={id} />
+            ({ id, component: OAuthLoginButton, st }) => (
+              <OAuthLoginButton key={id} st={st} />
             )
           )}
-        </div> */}
+        </div>
       </div>
     </>
   )

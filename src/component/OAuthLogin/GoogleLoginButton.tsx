@@ -1,13 +1,26 @@
-import Button from '@/component/common/Button'
-import GoogleLoginIcon from '@/public/assets/icons/google-login-Icon.svg'
+import { twMerge } from 'tailwind-merge'
 
-const GoogleLoginButton = () => {
-  const handler = () => {}
+import Button from '@/component/common/Button'
+
+interface Props {
+  st?: string
+}
+const buttonStyles = {
+  button:
+    'mb-15pxr flex relative overflow-hidden rounded-2xl bg-[#153e6d] text-white items-center justify-center',
+}
+
+const GoogleLoginButton = ({ st }: Props) => {
+  const handler = () => {
+    alert('as')
+  }
+  const containerStyles = twMerge('my-3pxr flex list-none justify-center', st)
+
   return (
-    <li className="flex list-none justify-center">
-      <GoogleLoginIcon className="absolute left-7pxr top-5pxr h-30pxr w-30pxr object-cover" />
+    <li className={containerStyles}>
       <Button
-        className={'text-center '}
+        icon={'/assets/icons/google-login-Icon.svg'}
+        style={buttonStyles}
         title={'Google Login'}
         handler={handler}
       />
