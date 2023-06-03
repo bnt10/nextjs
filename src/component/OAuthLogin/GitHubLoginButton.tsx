@@ -4,6 +4,7 @@ import Button from '@/component/common/Button'
 
 interface Props {
   st?: string
+  handler: () => void
 }
 
 const buttonStyles = {
@@ -11,10 +12,7 @@ const buttonStyles = {
     'flex relative overflow-hidden rounded-2xl bg-[#dddede] text-neutral-900 items-center justify-center',
 }
 
-const GithubLoginButton = ({ st }: Props) => {
-  const handler = () => {
-    alert('as')
-  }
+const GithubLoginButton = ({ st, handler }: Props) => {
   const containerStyles = twMerge('my-3pxr flex list-none justify-center', st)
 
   return (

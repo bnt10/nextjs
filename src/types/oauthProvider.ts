@@ -1,5 +1,8 @@
+type ComponentProps = {
+  st?: string
+  handler: () => void
+}
 export type ProviderConfig = {
   id: string
-  component: React.ElementType
-  st?: string
-}
+  component: (props: ComponentProps) => JSX.Element
+} & ComponentProps

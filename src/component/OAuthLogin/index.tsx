@@ -1,9 +1,10 @@
 import Image from 'next/image'
+import { signIn } from 'next-auth/react'
 
 import logoBg from '@/public/assets/images/app-login-bg.png'
 import type { ProviderConfig } from '@/types/oauthProvider'
 
-import GithubLoginButton from './GitHubLoginButton'
+import GitHubLoginButton from './GitHubLoginButton'
 import GoogleLoginButton from './GoogleLoginButton'
 
 const AuthLogin = () => {
@@ -11,10 +12,16 @@ const AuthLogin = () => {
     google: {
       id: 'googleLogin',
       component: GoogleLoginButton,
+      handler: async () => {
+        signIn('google')
+      },
     },
     github: {
       id: 'githubLogin',
-      component: GithubLoginButton,
+      component: GitHubLoginButton,
+      handler: async () => {
+        signIn('github')
+      },
     },
   }
 
@@ -35,8 +42,8 @@ const AuthLogin = () => {
 
         <div className="relative mt-270pxr">
           {Object.values(LoginOAuth).map(
-            ({ id, component: OAuthLoginButton, st }) => (
-              <OAuthLoginButton key={id} st={st} />
+            ({ id, component: OAuthLoginButton, st, handler }) => (
+              <OAuthLoginButton key={id} st={st} handler={handler} />
             )
           )}
         </div>
