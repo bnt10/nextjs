@@ -6,6 +6,10 @@ import { SessionProvider } from 'next-auth/react'
 
 import Layout from '@/layouts'
 
+if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
+  import('../mocks')
+}
+
 const MyApp = ({
   Component,
   pageProps: { session, ...pageProps },

@@ -84,6 +84,18 @@
         "project": "./cypress/tsconfig.json"
       }
     },
+    // Configuration for msw
+    {
+      "files": ["**/mocks/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": true
+          }
+        ]
+      }
+    },
     // Configuration for Storybook
     {
       "files": ["*.stories.*"],
