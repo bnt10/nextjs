@@ -5,7 +5,7 @@ const tw = <T extends Record<string, string>>(
   customStyle?: T
 ): T => {
   if (!customStyle || typeof customStyle === 'string') {
-    return customStyle as unknown as T
+    return originStyle as unknown as T
   }
 
   const mergedStyle = (
