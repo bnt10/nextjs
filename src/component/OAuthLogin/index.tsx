@@ -13,19 +13,8 @@ const AuthLogin = () => {
       id: 'googleLogin',
       component: GoogleLoginButton,
       handler: async () => {
-        const clientId = `` // Google에서 받은 클라이언트 ID를 여기에 입력하세요
-        const redirectUri = `http://ec2-15-164-0-19.ap-northeast-2.compute.amazonaws.com/login/oauth2/code/google` // 콜백 URL을 여기에 입력하세요
-        const scope = 'email profile' // 요청하려는 스코프를 여기에 입력하세요
-
-        const authorizationUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=${encodeURIComponent(
-          scope
-        )}&response_type=code&redirect_uri=${encodeURIComponent(
-          redirectUri
-        )}&client_id=${encodeURIComponent(clientId)}`
-
-        window.location.href = authorizationUrl
-        console.log(authorizationUrl)
-        // signIn('customGoogle')
+        window.location.href =
+          'http://ec2-15-164-0-19.ap-northeast-2.compute.amazonaws.com/oauth2/authorization/google'
       },
     },
     github: {

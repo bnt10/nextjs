@@ -1,5 +1,6 @@
 import type { NextAuthOptions } from 'next-auth'
 import NextAuth from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
 import GithubProvider from 'next-auth/providers/github'
 import GoogleProvider from 'next-auth/providers/google'
 
@@ -10,6 +11,19 @@ import GoogleProvider from 'next-auth/providers/google'
 // https://next-auth.js.org/configuration/options
 export const authOptions: NextAuthOptions = {
   providers: [
+    Credentials({
+      name: 'googleCustom',
+      credentials: {},
+      authorize: async (_) => {
+        try {
+          return {
+            id: 'jin',
+          }
+        } catch (e) {
+          return null // or throw an error
+        }
+      },
+    }),
     GithubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
