@@ -1,10 +1,5 @@
-import { useSession } from 'next-auth/react'
-
 const OAuthLogin = () => {
-  const { data: session, status } = useSession()
-
-  console.log(session, status)
-  return <div>Login access</div>
+  return <div>Login access complate</div>
 }
 
 export default OAuthLogin

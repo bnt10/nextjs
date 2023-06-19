@@ -1,15 +1,29 @@
 import type { NextAuthOptions } from 'next-auth'
 import NextAuth from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
 import GithubProvider from 'next-auth/providers/github'
 import GoogleProvider from 'next-auth/providers/google'
+
 // import AppleProvider from "next-auth/providers/apple"
 // import EmailProvider from "next-auth/providers/email"
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 export const authOptions: NextAuthOptions = {
-  // https://next-auth.js.org/configuration/providers/oauth
   providers: [
+    Credentials({
+      name: 'googleCustom',
+      credentials: {},
+      authorize: async (_) => {
+        try {
+          return {
+            id: 'jin',
+          }
+        } catch (e) {
+          return null // or throw an error
+        }
+      },
+    }),
     GithubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
@@ -19,14 +33,14 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_SECRET,
     }),
   ],
+
   callbacks: {
     async jwt({ token }) {
-      console.log(token, 'asdasssss')
       return token
     },
-    async redirect({ url, baseUrl }) {
-      console.log(url, baseUrl, 'asdas')
-      return baseUrl
+
+    async redirect({ baseUrl }) {
+      return `${baseUrl}/auth`
     },
   },
   theme: {

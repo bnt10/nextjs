@@ -13,7 +13,8 @@ const AuthLogin = () => {
       id: 'googleLogin',
       component: GoogleLoginButton,
       handler: async () => {
-        signIn('google')
+        window.location.href =
+          'http://ec2-15-164-0-19.ap-northeast-2.compute.amazonaws.com/oauth2/authorization/google'
       },
     },
     github: {
