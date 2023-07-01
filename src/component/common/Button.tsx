@@ -24,7 +24,7 @@ const Button = ({
   disabled = false,
 }: ButtonProps) => {
   const twButtonStyles = {
-    button: 'flex h-48pxr w-314pxr bg-gray-900 justify-center item-center',
+    button: 'flex h-48pxr w-314pxr bg-gray-900 justify-center item-center ',
     icon: '',
     span: '',
   }

@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+
 export const IntroSteps = {
   stepOne: 'stepOne',
   stepTwo: 'stepTwo',
@@ -6,6 +8,9 @@ export const IntroSteps = {
 
 export type IntroStepType = (typeof IntroSteps)[keyof typeof IntroSteps]
 
+export type OnNextPath = Pick<IntroProps, 'onNext'>
 export interface IntroProps {
   onNext: () => void
+  children: ReactNode
+  DisableNextButton?: boolean
 }
