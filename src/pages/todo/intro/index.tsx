@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
+import IntroStepFour from '@/component/intro/stepFour'
 import IntroStepOne from '@/component/intro/stepOne'
 import IntroStepThree from '@/component/intro/stepThree'
 import IntroStepTwo from '@/component/intro/stepTwo'
@@ -19,9 +20,11 @@ export default function Intro() {
         <IntroStepTwo onNext={() => setIntroStep(IntroSteps.stepThree)} />
       )}
       {introStep === IntroSteps.stepThree && (
-        <IntroStepThree onNext={() => router.push('/')} />
+        <IntroStepThree onNext={() => setIntroStep(IntroSteps.stepFour)} />
       )}
-      Intro
+      {introStep === IntroSteps.stepFour && (
+        <IntroStepFour onNext={() => router.push('/')} />
+      )}
     </div>
   )
 }

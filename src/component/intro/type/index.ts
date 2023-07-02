@@ -4,6 +4,7 @@ export const IntroSteps = {
   stepOne: 'stepOne',
   stepTwo: 'stepTwo',
   stepThree: 'stepThree',
+  stepFour: 'stepFour',
 } as const
 
 export type IntroStepType = (typeof IntroSteps)[keyof typeof IntroSteps]

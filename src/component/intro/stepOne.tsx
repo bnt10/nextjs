@@ -1,16 +1,32 @@
-import Button from '../common/Button'
-import type { IntroProps } from './type'
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
-export default function IntroStepOne(props: IntroProps) {
-  const { onNext } = props
-  const buttonStyles = {
-    button:
-      'flex relative overflow-hidden rounded-2xl bg-[#dddede] text-neutral-900 items-center justify-center',
-  }
+import type { OnNextPath } from './type'
+import IntroWraper from './wraper'
+
+interface Props {
+  onNext: OnNextPath['onNext']
+}
+export default function IntroStepOne({ onNext }: Props) {
+  const router = useRouter()
+
+  useEffect(() => {
+    setTimeout(() => {
+      onNext()
+    }, 2000)
+  }, [router])
+
   return (
-    <div>
-      Intro Step One
-      <Button style={buttonStyles} handler={onNext} title={'Next'} />
-    </div>
+    <IntroWraper onNext={onNext} DisableNextButton>
+      <div className="flex h-screen items-center justify-center">
+        <Image
+          src={'/assets/images/intro/intro-main-splash.svg'}
+          alt="Image description"
+          width={200}
+          height={200}
+        />
+      </div>
+    </IntroWraper>
   )
 }
