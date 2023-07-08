@@ -8,15 +8,24 @@ interface Props {
 
 const Icon = (props: Props) => {
   const { iconSrc, style } = props
-  const st = twMerge(
-    `absolute left-24pxr top-10pxr h-30pxr w-30pxr object-cover`,
-    style
-  )
+  const st = twMerge(`absolute object-cover`, style)
+
+  const matchesW = st?.match(/w-(\d+)/)
+  const matchesH = st?.match(/h-(\d+)/)
+
+  const safeNumber = {
+    w: matchesW && matchesW[1] ? parseInt(matchesW[1], 10) : 10,
+    h: matchesH && matchesH[1] ? parseInt(matchesH[1], 10) : 10,
+  }
 
   return (
-    <div>
-      <Image src={iconSrc} alt={'icon'} width={10} height={10} className={st} />
-    </div>
+    <Image
+      src={iconSrc}
+      alt={'icon'}
+      width={safeNumber.w}
+      height={safeNumber.h}
+      className={st}
+    />
   )
 }
 
