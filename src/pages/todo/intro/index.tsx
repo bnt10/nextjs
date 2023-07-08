@@ -20,10 +20,16 @@ export default function Intro() {
         <IntroStepTwo onNext={() => setIntroStep(IntroSteps.stepThree)} />
       )}
       {introStep === IntroSteps.stepThree && (
-        <IntroStepThree onNext={() => setIntroStep(IntroSteps.stepFour)} />
+        <IntroStepThree
+          onPrev={() => setIntroStep(IntroSteps.stepTwo)}
+          onNext={() => setIntroStep(IntroSteps.stepFour)}
+        />
       )}
       {introStep === IntroSteps.stepFour && (
-        <IntroStepFour onNext={() => router.push('/')} />
+        <IntroStepFour
+          onPrev={() => setIntroStep(IntroSteps.stepThree)}
+          onNext={() => router.push('/')}
+        />
       )}
     </div>
   )

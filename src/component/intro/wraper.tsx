@@ -1,15 +1,14 @@
 import { motion } from 'framer-motion'
-import { useRouter } from 'next/router'
 
 import Button from '../common/Button'
 import type { IntroProps } from './type'
 
 export default function IntroWraper({
   onNext,
+  onPrev,
   DisableNextButton = false,
   children,
 }: IntroProps) {
-  const router = useRouter()
   const preButtonSt = {
     button: 'mr-auto text-left text-base uppercase text-white/[0.44]',
   }
@@ -35,11 +34,9 @@ export default function IntroWraper({
 
         {!DisableNextButton && (
           <div className="absolute bottom-62pxr flex w-327pxr ">
-            <Button
-              style={preButtonSt}
-              handler={() => router.back()}
-              title={'Back'}
-            />
+            {onPrev && (
+              <Button style={preButtonSt} handler={onPrev} title={'Back'} />
+            )}
             <Button style={nextButtonSt} handler={onNext} title={'Next'} />
           </div>
         )}
