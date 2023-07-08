@@ -25,7 +25,7 @@ export default function IntroWraper({
   }
 
   const onSkip = () => {
-    router.push('/')
+    router.push('/todo/home')
   }
 
   return (

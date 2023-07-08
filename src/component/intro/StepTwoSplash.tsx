@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
 import type { OnNextPath } from './type'
-import IntroWraper from './wraper'
+import IntroWraper from './Wrapper'
 
 export default function IntroStepTwo({ onNext, onPrev }: OnNextPath) {
   return (

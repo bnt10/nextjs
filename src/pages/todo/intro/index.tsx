@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
-import IntroStepFour from '@/component/intro/stepFour'
-import IntroStepOne from '@/component/intro/stepOne'
-import IntroStepThree from '@/component/intro/stepThree'
-import IntroStepTwo from '@/component/intro/stepTwo'
+import IntroStepFour from '@/component/intro/StepFourSplash'
+import IntroStepOne from '@/component/intro/StepOneSplash'
+import IntroStepThree from '@/component/intro/StepThreeSpalsh'
+import IntroStepTwo from '@/component/intro/StepTwoSplash'
 import type { IntroStepType } from '@/component/intro/type'
 import { IntroSteps } from '@/component/intro/type'
 
@@ -28,7 +28,7 @@ export default function Intro() {
       {introStep === IntroSteps.stepFour && (
         <IntroStepFour
           onPrev={() => setIntroStep(IntroSteps.stepThree)}
-          onNext={() => router.push('/')}
+          onNext={() => router.push('/todo/home')}
         />
       )}
     </div>

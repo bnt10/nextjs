@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 import type { OnNextPath } from './type'
-import IntroWraper from './wraper'
+import IntroWraper from './Wrapper'
 
 interface Props {
   onNext: OnNextPath['onNext']
