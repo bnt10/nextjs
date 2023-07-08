@@ -1,7 +1,9 @@
+import HomeLayout from '@/layouts/todo/HomeLayout'
+
 export default function TodoHome() {
   return (
     <>
-      <div>TodoHome home</div>
+      <HomeLayout>TodoHome home</HomeLayout>
     </>
   )
 }
