@@ -5,7 +5,7 @@ import Icon from './Icon'
 type Style = {
   button?: string
   icon?: string
-  span?: string
+  title?: string
 }
 
 type ButtonProps = {
@@ -26,7 +26,7 @@ const Button = ({
   const twButtonStyles = {
     button: '',
     icon: '',
-    span: '',
+    title: '',
   }
 
   const st = tw<Style>(twButtonStyles, style)
@@ -38,7 +38,7 @@ const Button = ({
       onClick={handler}
     >
       {icon && <Icon iconSrc={icon} style={st.icon} />}
-      <span className={st.span}>{title}</span>
+      <span className={st.title}>{title}</span>
     </button>
   )
 }

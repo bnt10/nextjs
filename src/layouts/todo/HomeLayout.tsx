@@ -8,7 +8,7 @@ interface LayoutProps {
 }
 export default function HomeLayout({ children }: LayoutProps) {
   return (
-    <div className="relative flex h-screen flex-col items-center bg-slate-900 ">
+    <div className="relative flex h-screen flex-col items-center bg-app-bg ">
       <Header />
       {children}
       <Footer />

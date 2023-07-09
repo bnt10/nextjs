@@ -36,6 +36,9 @@ module.exports = {
     },
     extend: {
       colors: {
+        'footer-gray': '#363636',
+        'app-bg': '#121212',
+        primary: '#8687E7',
         gray: {
           100: '#f7fafc',
           200: '#edf2f7',
