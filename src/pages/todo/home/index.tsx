@@ -1,8 +1,11 @@
 import Image from 'next/image'
 
+import Modal from '@/component/common/Modal'
+import useModal from '@/hooks/useModal'
 import HomeLayout from '@/layouts/todo/HomeLayout'
 
 export default function TodoHome() {
+  const { openModal } = useModal()
   return (
     <>
       <HomeLayout>
@@ -23,6 +26,11 @@ export default function TodoHome() {
               Tap + to add your tasks
             </div>
           </div>
+          {openModal && (
+            <Modal>
+              <div>modal!</div>
+            </Modal>
+          )}
         </div>
       </HomeLayout>
     </>

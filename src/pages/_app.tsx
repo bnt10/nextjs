@@ -5,6 +5,7 @@ import type { Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
+import { ModalProvider } from '@/contexts/ModalContext'
 import Layout from '@/layouts'
 
 if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
@@ -20,9 +21,11 @@ const MyApp = ({
 }: AppProps<{ session: Session }>) => (
   <QueryClientProvider client={queryClient}>
     <SessionProvider session={session}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <ModalProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ModalProvider>
     </SessionProvider>
   </QueryClientProvider>
 )

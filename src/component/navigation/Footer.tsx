@@ -1,6 +1,9 @@
+import useModal from '@/hooks/useModal'
+
 import Button from '../common/Button'
 
 export default function Footer() {
+  const { openModal, setOpenModal } = useModal()
   const textWithIconBtnStyle = {
     button:
       'flex ml-20 w-48pxr h-50pxr flex-col align-middle justify-center items-center',
@@ -23,7 +26,9 @@ export default function Footer() {
     {
       title: '',
       icon: '/assets/images/todo/footer/add.svg',
-      handler: () => {},
+      handler: () => {
+        setOpenModal(!openModal)
+      },
       style: {
         button:
           'w-64pxr h-64pxr rounded-full bg-primary flex items-center justify-center relative bottom-42pxr',
