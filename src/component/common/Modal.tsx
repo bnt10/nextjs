@@ -17,16 +17,21 @@ function Modal({ children }: Props) {
       setOpenModal(false)
     }
   }
-  return createPortal(
-    <div
-      className={'absolute grid h-screen place-items-center'}
-      onClick={(e) => closeModal(e)}
-      ref={modalRef}
-    >
-      {children}
-    </div>,
-    document.body
-  )
+  if (typeof window === 'undefined') return <></>
+  const element = document.getElementById('modal-root')
+
+  return element
+    ? createPortal(
+        <div
+          className={'absolute grid h-screen place-items-center'}
+          onClick={(e) => closeModal(e)}
+          ref={modalRef}
+        >
+          {children}
+        </div>,
+        element
+      )
+    : null
 }
 
 export default Modal
