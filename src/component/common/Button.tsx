@@ -16,6 +16,12 @@ type ButtonProps = {
   disabled?: boolean
 }
 
+const twButtonStyles = {
+  button: '',
+  icon: '',
+  title: '',
+}
+
 const Button = ({
   title,
   handler,
@@ -23,12 +29,6 @@ const Button = ({
   icon,
   disabled = false,
 }: ButtonProps) => {
-  const twButtonStyles = {
-    button: '',
-    icon: '',
-    title: '',
-  }
-
   const st = tw<Style>(twButtonStyles, style)
   return (
     <button
