@@ -1,3 +1,5 @@
+import type { RefObject } from 'react'
+
 export const INPUT_TYPE = {
   TEXT: 'text',
   PAWSSWORD: 'password',
@@ -17,13 +19,27 @@ export type FormSchema = {
     value: string
     error?: FormError
     isControlled?: boolean
-    ref?: React.Ref<any>
+    ref?: RefObject<HTMLInputElement>
     name: string
     validate: (value: string, formState?: FormState | undefined) => FormError
     onChange?: () => void
   }
 }
+export type FormFieldValue = {
+  value: string
+  ref?: RefObject<HTMLInputElement>
+  name: string
+  onChange?: () => void
+}
+
+export type FormFields = {
+  [x: string]: FormFieldValue
+}
 
 export type ResponseError = {
   details: string
+}
+
+export type FormRefs = {
+  [key: string]: React.RefObject<any>
 }

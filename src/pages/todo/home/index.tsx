@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import { useRef } from 'react'
 
 import Input from '@/component/common/Input'
 import Modal from '@/component/common/Modal'
@@ -11,6 +10,7 @@ import HomeLayout from '@/layouts/todo/HomeLayout'
 export type FormState = {
   [x: string]: string
 }
+
 const addTaskShcema: FormSchema = {
   taskTitle: {
     value: '',
@@ -24,15 +24,17 @@ const addTaskShcema: FormSchema = {
     },
   },
 }
+
 export default function TodoHome() {
   const { openModal } = useModal()
-  const { form, handleOnChange, handleOnSubmit, registerRzef, getForm } =
+  const { form, handleOnChange, handleOnSubmit, getFormFields } =
     useForm(addTaskShcema)
-
 
   const addTaskSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
   }
+  const fields = getFormFields()
+
   return (
     <>
       <HomeLayout>
@@ -62,20 +64,19 @@ export default function TodoHome() {
                   </p>
 
                   <Input
-                    inputRef={registerRef('taskTitle')}
-                    value={form.taskTitle?.value}
-                    name={addTaskShcema.taskTitle?.name as string}
+                    value={fields.taskTitle?.value}
+                    inputRef={fields.taskTitle?.ref}
+                    name={fields.taskTitle?.name as string}
+                    handleInputChange={handleOnChange}
                   />
                   <p className="text-left text-lg text-[#afafaf]">
-                    {/* {form.taskTitle?.value} */}
+                    {form.taskTitle?.value}
                   </p>
 
                   <button
                     type="button"
                     onClick={() => {
-                      const a = getForm()
-                      console.log(a.current?.ref?.current?.value)
-                
+                      // console.log(fields.taskTitle?.ref?.current.value)
                     }}
                   >
                     dd

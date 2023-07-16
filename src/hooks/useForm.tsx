@@ -1,7 +1,13 @@
 import type { FormEvent } from 'react'
-import { useRef, useState } from 'react'
+import { createRef, useRef, useState } from 'react'
 
-import type { FormSchema, FormState } from './type'
+import type {
+  FormFields,
+  FormFieldValue,
+  FormRefs,
+  FormSchema,
+  FormState,
+} from './type'
 
 type UseInputSchemaReturn = {
   form: FormState
@@ -10,21 +16,58 @@ type UseInputSchemaReturn = {
   handleOnSubmit: (
     submit: (e: FormEvent<HTMLFormElement>) => Promise<void>
   ) => (event: FormEvent<HTMLFormElement>) => Promise<void>
-  registerRef: (name: string) => React.RefObject<HTMLInputElement>
-  getForm: () => FormSchema
+
+  getFormFields: () => FormFields
 }
 
-const RegisterRef = (formSchema: FormSchema, name: string) => {
-  const ref = useRef()
+const generateFormFields = (formSchema: FormSchema): FormFields => {
+  const formFields = {} as FormFields
 
-  return (formSchema[name] = {
-    ...formSchema[name],
-    ref,
+  Object.keys(formSchema).forEach((key) => {
+    const { name, value, ref, onChange } = formSchema[key] as FormFieldValue
+
+    formFields[key] = { name, value, ref, onChange }
+  })
+
+  return formFields
+}
+const initializeFormRefs = (
+  formState: FormSchema,
+  formRefs: React.MutableRefObject<FormRefs>
+): void => {
+  Object.keys(formState).forEach((input) => {
+    if (formState[input]?.isControlled && !formRefs.current[input]) {
+      // eslint-disable-next-line no-param-reassign
+      formRefs.current[input] = createRef()
+    }
   })
 }
 
-const useForm = (formSchema: FormSchema): UseInputSchemaReturn => {
-  const initForm = Object.keys(formSchema).reduce((acc, input) => {
+const generateInitFormState = (
+  formState: FormSchema,
+  formRefs: React.MutableRefObject<FormRefs>
+): FormSchema => {
+  return Object.keys(formState).reduce((acc, input) => {
+    return {
+      ...acc,
+      [input]: {
+        ...(formState[input] || {}),
+        ref: formState[input]?.isControlled ? formRefs.current[input] : null,
+      },
+    }
+  }, {})
+}
+
+const useForm = (
+  formSchema: FormSchema,
+  options?: FormSchema
+): UseInputSchemaReturn => {
+  const formRefs = useRef<FormRefs>({})
+  const initFormState = { ...formSchema, ...options }
+  initializeFormRefs(initFormState, formRefs)
+  const preprocessedFormState = generateInitFormState(initFormState, formRefs)
+
+  const initForm = Object.keys(preprocessedFormState).reduce((acc, input) => {
     return {
       ...acc,
       [input]: {
@@ -55,27 +98,26 @@ const useForm = (formSchema: FormSchema): UseInputSchemaReturn => {
     setForm(changedForm)
     checkFormValid(changedForm)
   }
-  const getForm = () => {
-    return formSchema
+  const getFormFields = () => {
+    return generateFormFields(preprocessedFormState)
   }
   const handleOnSubmit =
     (onSubmit: { (e: FormEvent<HTMLFormElement>): Promise<void> }) =>
     async (formSubmit: FormEvent<HTMLFormElement>) => {
       if (isFormValid) {
         formSubmit.preventDefault()
-        const uncontrolledValues = Object.entries(formSchema)
-          .filter(([_, schema]) => schema.isControlled)
-          .reduce(
-            (values: Record<string, string | undefined>, [key, schema]) => {
-              return {
-                ...values,
-                [key]: schema.ref?.current?.value,
-              }
-            },
-            {}
-          )
-        const finalFormValues = { ...form, ...uncontrolledValues }
-        console.log(finalFormValues)
+        // const uncontrolledValues = Object.entries(formSchema)
+        //   .filter(([_, schema]) => schema.isControlled)
+        //   .reduce(
+        //     (values: Record<string, string | undefined>, [key, schema]) => {
+        //       return {
+        //         ...values,
+        //         [key]: schema.ref?.current?.value,
+        //       }
+        //     },
+        //     {}
+        //   )
+        // const finalFormValues = { ...form, ...uncontrolledValues }
 
         onSubmit(formSubmit)
       }
@@ -88,7 +130,7 @@ const useForm = (formSchema: FormSchema): UseInputSchemaReturn => {
     isFormValid,
     handleOnSubmit,
 
-    getForm,
+    getFormFields,
   }
 }
 
