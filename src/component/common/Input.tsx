@@ -5,7 +5,7 @@ interface InputProps {
   style?: Style
   name: string
   disabled?: boolean
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  handleInputChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   inputRef?: React.RefObject<HTMLInputElement>
 }
 type Style = {
@@ -18,14 +18,14 @@ const twInputStyles = {
   input: '',
 }
 
-export default function Input({
+const Input = ({
   value = '',
   disabled = false,
   style,
   name,
   inputRef,
   handleInputChange,
-}: InputProps) {
+}: InputProps) => {
   const st = tw<Style>(twInputStyles, style)
 
   return (
@@ -37,8 +37,10 @@ export default function Input({
         name={name}
         disabled={disabled}
         type="text"
-        value={value}
+        defaultValue={value}
       />
     </div>
   )
 }
+
+export default Input

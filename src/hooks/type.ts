@@ -16,6 +16,9 @@ export type FormSchema = {
   [x: string]: {
     value: string
     error?: FormError
+    isControlled?: boolean
+    ref?: React.Ref<any>
+    name: string
     validate: (value: string, formState?: FormState | undefined) => FormError
     onChange?: () => void
   }

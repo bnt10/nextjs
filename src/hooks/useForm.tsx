@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import type { FormSchema, FormState } from './type'
 
@@ -10,6 +10,17 @@ type UseInputSchemaReturn = {
   handleOnSubmit: (
     submit: (e: FormEvent<HTMLFormElement>) => Promise<void>
   ) => (event: FormEvent<HTMLFormElement>) => Promise<void>
+  registerRef: (name: string) => React.RefObject<HTMLInputElement>
+  getForm: () => FormSchema
+}
+
+const RegisterRef = (formSchema: FormSchema, name: string) => {
+  const ref = useRef()
+
+  return (formSchema[name] = {
+    ...formSchema[name],
+    ref,
+  })
 }
 
 const useForm = (formSchema: FormSchema): UseInputSchemaReturn => {
@@ -44,18 +55,41 @@ const useForm = (formSchema: FormSchema): UseInputSchemaReturn => {
     setForm(changedForm)
     checkFormValid(changedForm)
   }
-
+  const getForm = () => {
+    return formSchema
+  }
   const handleOnSubmit =
     (onSubmit: { (e: FormEvent<HTMLFormElement>): Promise<void> }) =>
     async (formSubmit: FormEvent<HTMLFormElement>) => {
       if (isFormValid) {
+        formSubmit.preventDefault()
+        const uncontrolledValues = Object.entries(formSchema)
+          .filter(([_, schema]) => schema.isControlled)
+          .reduce(
+            (values: Record<string, string | undefined>, [key, schema]) => {
+              return {
+                ...values,
+                [key]: schema.ref?.current?.value,
+              }
+            },
+            {}
+          )
+        const finalFormValues = { ...form, ...uncontrolledValues }
+        console.log(finalFormValues)
+
         onSubmit(formSubmit)
-      } else {
-        // Todo inValidate form error handle
       }
+      // Todo inValidate form error handle
     }
 
-  return { form, handleOnChange, isFormValid, handleOnSubmit }
+  return {
+    form,
+    handleOnChange,
+    isFormValid,
+    handleOnSubmit,
+
+    getForm,
+  }
 }
 
 export { useForm }

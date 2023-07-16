@@ -23,7 +23,9 @@ function Modal({ children }: Props) {
   return element
     ? createPortal(
         <div
-          className={'absolute grid h-screen place-items-center'}
+          className={
+            'fixed inset-[0] flex h-screen items-center justify-center'
+          }
           onClick={(e) => closeModal(e)}
           ref={modalRef}
         >
