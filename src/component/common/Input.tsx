@@ -14,7 +14,7 @@ type Style = {
 }
 
 const twInputStyles = {
-  wrapper: 'flex w-325pxr, py-8xpr px-16pxr gep-10pxr',
+  wrapper: 'w-full',
   input: '',
 }
 

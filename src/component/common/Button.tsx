@@ -9,7 +9,7 @@ type Style = {
 }
 
 type ButtonProps = {
-  title: string
+  title?: string
   icon?: string
   handler: () => void
   style?: Style
