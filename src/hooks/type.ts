@@ -24,6 +24,7 @@ export type FormSchema<T extends keyof FormKeys> = {
     ref?: RefObject<HTMLInputElement>
     name: string
     type: string
+    placeholder?: string
     validate: (value: string, formState?: FormState<T> | undefined) => FormError
     onChange?: () => void
   }
@@ -32,6 +33,7 @@ export type FormFieldValue = {
   value: string
   ref?: RefObject<HTMLInputElement>
   name: string
+  placeholder?: string
   onChange?: () => void
 }
 

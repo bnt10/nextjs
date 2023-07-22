@@ -8,16 +8,29 @@ import type { FormSchema } from '@/hooks/type'
 import { useForm } from '@/hooks/useForm'
 import useModal from '@/hooks/useModal'
 import HomeLayout from '@/layouts/todo/HomeLayout'
-import { addTaskSt } from '@/styles/todo/home'
+import { addTaskDescription, addTaskInputSt } from '@/styles/todo/home'
 
-type TaskFormElements = 'taskTitle'
+type TaskFormElements = 'title' | 'description'
 
 const addTaskShcema: FormSchema<TaskFormElements> = {
-  taskTitle: {
+  title: {
     value: '',
     type: 'text',
     isControlled: true,
-    name: 'taskTitle',
+    name: 'title',
+    validate: (value: string) => {
+      if (!value) {
+        return '입력이 필요합니다.'
+      }
+      return null
+    },
+  },
+  description: {
+    value: '',
+    type: 'text',
+    isControlled: true,
+    name: 'description',
+    placeholder: 'description',
     validate: (value: string) => {
       if (!value) {
         return '입력이 필요합니다.'
@@ -35,11 +48,11 @@ export default function TodoHome() {
   const addTaskSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
   }
-  const fields = getFormFields()
+  const { title, description } = getFormFields()
 
   useEffect(() => {
     if (openModal) {
-      fields.taskTitle.ref?.current?.focus()
+      title.ref?.current?.focus()
     }
   }, [openModal])
 
@@ -72,15 +85,21 @@ export default function TodoHome() {
                   </p>
 
                   <Input
-                    value={fields.taskTitle.value}
-                    inputRef={fields.taskTitle.ref}
-                    name={fields.taskTitle.name as string}
+                    value={title.value}
+                    inputRef={title.ref}
+                    name={title.name}
                     handleInputChange={handleOnChange}
-                    style={addTaskSt}
+                    style={addTaskInputSt}
                   />
-                  <p className="mb-35pxr text-left text-lg text-[#afafaf]">
-                    Description
-                  </p>
+                  <Input
+                    value={description.value}
+                    inputRef={description.ref}
+                    name={description.name}
+                    placeholder={description.placeholder}
+                    handleInputChange={handleOnChange}
+                    style={addTaskDescription}
+                  />
+
                   <TaskButton />
                 </form>
               </div>

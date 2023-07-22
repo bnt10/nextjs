@@ -5,6 +5,7 @@ interface InputProps {
   style?: Style
   name: string
   disabled?: boolean
+  placeholder?: string
   handleInputChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   inputRef?: React.RefObject<HTMLInputElement>
 }
@@ -24,10 +25,11 @@ const Input = ({
   style,
   name,
   inputRef,
+  placeholder,
   handleInputChange,
 }: InputProps) => {
   const st = tw<Style>(twInputStyles, style)
-
+  console.log(placeholder)
   return (
     <div className={st.wrapper}>
       <input
@@ -37,6 +39,7 @@ const Input = ({
         name={name}
         disabled={disabled}
         type="text"
+        placeholder={placeholder}
         defaultValue={value}
       />
     </div>
