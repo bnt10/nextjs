@@ -6,22 +6,24 @@ export const INPUT_TYPE = {
 } as const
 
 export type FormError = string | null | undefined
-
-export type FormState = {
-  [name: string]: {
-    value: string
-    error: FormError
-  }
+export type FormKeys = string | number | symbol | any
+export type FormValidateFields = {
+  value: string
+  error: FormError
 }
 
-export type FormSchema = {
-  [x: string]: {
+export type FormState<T extends keyof FormKeys> = Partial<{
+  [K in T]: FormValidateFields
+}>
+
+export type FormSchema<T extends keyof FormKeys> = {
+  [K in T]: {
     value: string
     error?: FormError
     isControlled?: boolean
     ref?: RefObject<HTMLInputElement>
     name: string
-    validate: (value: string, formState?: FormState | undefined) => FormError
+    validate: (value: string, formState?: FormState<T> | undefined) => FormError
     onChange?: () => void
   }
 }
@@ -32,14 +34,14 @@ export type FormFieldValue = {
   onChange?: () => void
 }
 
-export type FormFields = {
-  [x: string]: FormFieldValue
+export type FormFields<T extends keyof FormKeys> = {
+  [K in T]: FormFieldValue
 }
 
 export type ResponseError = {
   details: string
 }
 
-export type FormRefs = {
-  [key: string]: React.RefObject<any>
-}
+export type FormRefs<T extends keyof FormKeys> = Partial<{
+  [K in T]: React.RefObject<any>
+}>

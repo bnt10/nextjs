@@ -4,26 +4,31 @@ import { createRef, useRef, useState } from 'react'
 import type {
   FormFields,
   FormFieldValue,
+  FormKeys,
   FormRefs,
   FormSchema,
   FormState,
+  FormValidateFields,
 } from './type'
 
-type UseInputSchemaReturn = {
-  form: FormState
+type UseInputSchemaReturn<T extends keyof FormKeys> = {
+  form: FormState<T>
   isFormValid: boolean
   handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   handleOnSubmit: (
     submit: (e: FormEvent<HTMLFormElement>) => Promise<void>
   ) => (event: FormEvent<HTMLFormElement>) => Promise<void>
 
-  getFormFields: () => FormFields
+  getFormFields: () => FormFields<T>
 }
 
-const generateFormFields = (formSchema: FormSchema): FormFields => {
-  const formFields = {} as FormFields
+const generateFormFields = <T extends keyof FormKeys>(
+  formSchema: FormSchema<T>
+): FormFields<T> => {
+  const formFields = {} as FormFields<T>
+  const keys = Object.keys(formSchema) as T[]
 
-  Object.keys(formSchema).forEach((key) => {
+  keys.forEach((key) => {
     const { name, value, ref, onChange } = formSchema[key] as FormFieldValue
 
     formFields[key] = { name, value, ref, onChange }
@@ -31,11 +36,13 @@ const generateFormFields = (formSchema: FormSchema): FormFields => {
 
   return formFields
 }
-const initializeFormRefs = (
-  formState: FormSchema,
-  formRefs: React.MutableRefObject<FormRefs>
+const initializeFormRefs = <T extends keyof FormKeys>(
+  formState: FormSchema<T>,
+  formRefs: React.MutableRefObject<FormRefs<T>>
 ): void => {
-  Object.keys(formState).forEach((input) => {
+  const keys = Object.keys(formState) as T[]
+
+  keys.forEach((input) => {
     if (formState[input]?.isControlled && !formRefs.current[input]) {
       // eslint-disable-next-line no-param-reassign
       formRefs.current[input] = createRef()
@@ -43,11 +50,11 @@ const initializeFormRefs = (
   })
 }
 
-const generateInitFormState = (
-  formState: FormSchema,
-  formRefs: React.MutableRefObject<FormRefs>
-): FormSchema => {
-  return Object.keys(formState).reduce((acc, input) => {
+const generateInitFormState = <T extends keyof FormKeys>(
+  formState: FormSchema<T>,
+  formRefs: React.MutableRefObject<FormRefs<T>>
+): FormSchema<T> => {
+  return (Object.keys(formState) as T[]).reduce<FormSchema<T>>((acc, input) => {
     return {
       ...acc,
       [input]: {
@@ -55,19 +62,19 @@ const generateInitFormState = (
         ref: formState[input]?.isControlled ? formRefs.current[input] : null,
       },
     }
-  }, {})
+  }, {} as FormSchema<T>)
 }
 
-const useForm = (
-  formSchema: FormSchema,
-  options?: FormSchema
-): UseInputSchemaReturn => {
-  const formRefs = useRef<FormRefs>({})
+const useForm = <T extends keyof FormKeys>(
+  formSchema: FormSchema<T>,
+  options?: FormSchema<T>
+): UseInputSchemaReturn<T> => {
+  const formRefs = useRef<FormRefs<T>>({})
   const initFormState = { ...formSchema, ...options }
   initializeFormRefs(initFormState, formRefs)
   const preprocessedFormState = generateInitFormState(initFormState, formRefs)
-
-  const initForm = Object.keys(preprocessedFormState).reduce((acc, input) => {
+  const keys = Object.keys(preprocessedFormState) as T[]
+  const initForm = keys.reduce<FormState<T>>((acc, input: T) => {
     return {
       ...acc,
       [input]: {
@@ -77,18 +84,18 @@ const useForm = (
     }
   }, {})
 
-  const [form, setForm] = useState<FormState>(initForm)
+  const [form, setForm] = useState<FormState<T>>(initForm)
   const [isFormValid, setIsFormValid] = useState(false)
 
-  const checkFormValid = (nextForm: FormState): void => {
-    const formValues = Object.values(nextForm)
-    const hasErrors = formValues.some((data) => data.error !== null)
+  const checkFormValid = (nextForm: FormState<T>): void => {
+    const formValues = Object.values(nextForm) as FormValidateFields[]
+    const hasErrors = formValues.some((data) => data && data.error !== null)
     setIsFormValid(!hasErrors)
   }
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
-    const errorMessage = formSchema[name]?.validate(value, form)
+    const errorMessage = formSchema[name as T]?.validate(value, form)
 
     const changedForm = {
       ...form,

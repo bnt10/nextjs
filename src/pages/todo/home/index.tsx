@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { useEffect } from 'react'
 
 import Button from '@/component/common/Button'
 import Input from '@/component/common/Input'
@@ -9,11 +10,9 @@ import useModal from '@/hooks/useModal'
 import HomeLayout from '@/layouts/todo/HomeLayout'
 import type { Component } from '@/types/component'
 
-export type FormState = {
-  [x: string]: string
-}
+type TaskFormElements = 'taskTitle'
 
-const addTaskShcema: FormSchema = {
+const addTaskShcema: FormSchema<TaskFormElements> = {
   taskTitle: {
     value: '',
     isControlled: true,
@@ -78,6 +77,12 @@ export default function TodoHome() {
     },
   }
 
+  useEffect(() => {
+    if (openModal) {
+      fields.taskTitle.ref?.current?.focus()
+    }
+  }, [openModal])
+
   return (
     <>
       <HomeLayout>
@@ -107,9 +112,9 @@ export default function TodoHome() {
                   </p>
 
                   <Input
-                    value={fields.taskTitle?.value}
-                    inputRef={fields.taskTitle?.ref}
-                    name={fields.taskTitle?.name as string}
+                    value={fields.taskTitle.value}
+                    inputRef={fields.taskTitle.ref}
+                    name={fields.taskTitle.name as string}
                     handleInputChange={handleOnChange}
                     style={addTaskSt}
                   />
