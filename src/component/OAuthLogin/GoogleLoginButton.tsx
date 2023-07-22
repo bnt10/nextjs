@@ -8,7 +8,8 @@ interface Props {
 }
 const buttonStyles = {
   button:
-    'mb-15pxr flex relative overflow-hidden rounded-2xl bg-[#153e6d] text-white items-center justify-center',
+    'flex h-48pxr w-314pxr bg-gray-900 justify-center mb-15pxr flex relative overflow-hidden rounded-2xl bg-[#153e6d] text-white items-center',
+  icon: 'left-24pxr top-10pxr h-30pxr w-30pxr ',
 }
 
 const GoogleLoginButton = ({ st, handler }: Props) => {
