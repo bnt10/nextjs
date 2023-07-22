@@ -1,20 +1,21 @@
 import Image from 'next/image'
 import { useEffect } from 'react'
 
-import Button from '@/component/common/Button'
 import Input from '@/component/common/Input'
 import Modal from '@/component/common/Modal'
+import TaskButton from '@/component/todo/home/TasskButton'
 import type { FormSchema } from '@/hooks/type'
 import { useForm } from '@/hooks/useForm'
 import useModal from '@/hooks/useModal'
 import HomeLayout from '@/layouts/todo/HomeLayout'
-import type { Component } from '@/types/component'
+import { addTaskSt } from '@/styles/todo/home'
 
 type TaskFormElements = 'taskTitle'
 
 const addTaskShcema: FormSchema<TaskFormElements> = {
   taskTitle: {
     value: '',
+    type: 'text',
     isControlled: true,
     name: 'taskTitle',
     validate: (value: string) => {
@@ -26,15 +27,6 @@ const addTaskShcema: FormSchema<TaskFormElements> = {
   },
 }
 
-const addTaskSt = {
-  input:
-    'w-full flex py-8pxr px-16pxr gap-2.5 item-center rounded border border-[#979797] bg-transparent text-white mb-13pxr',
-}
-const iconBtnSt = {
-  button: '',
-  icon: 'w-24pxr h-24pxr relative flex-shrink-0',
-}
-
 export default function TodoHome() {
   const { openModal } = useModal()
   const { handleOnChange, handleOnSubmit, getFormFields } =
@@ -44,38 +36,6 @@ export default function TodoHome() {
     event.preventDefault()
   }
   const fields = getFormFields()
-
-  const TaskWithButton: Record<string, Component> = {
-    timer: {
-      id: 'timer',
-      component: Button,
-      props: { style: iconBtnSt, icon: '/assets/images/todo/home/timer.svg' },
-      handler: async () => {},
-    },
-    tag: {
-      id: 'tag',
-      component: Button,
-      props: { style: iconBtnSt, icon: '/assets/images/todo/home/tag.svg' },
-      handler: async () => {},
-    },
-    flag: {
-      id: 'flag',
-      component: Button,
-      props: { style: iconBtnSt, icon: '/assets/images/todo/home/flag.svg' },
-      handler: async () => {},
-    },
-    send: {
-      id: 'send',
-      component: Button,
-      props: {
-        style: {
-          icon: 'absolute right-26pxr bottom-17pxr w-24pxr h-24pxr flex-shrink-0',
-        },
-        icon: '/assets/images/todo/home/send.svg',
-      },
-      handler: async () => {},
-    },
-  }
 
   useEffect(() => {
     if (openModal) {
@@ -121,15 +81,7 @@ export default function TodoHome() {
                   <p className="mb-35pxr text-left text-lg text-[#afafaf]">
                     Description
                   </p>
-                  <div className="flex w-full justify-between">
-                    <div className="flex w-150pxr justify-between">
-                      {Object.values(TaskWithButton).map(
-                        ({ id, component: Component, props, handler }) => (
-                          <Component key={id} {...props} handler={handler} />
-                        )
-                      )}
-                    </div>
-                  </div>
+                  <TaskButton />
                 </form>
               </div>
             </Modal>

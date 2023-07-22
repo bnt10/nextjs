@@ -23,6 +23,7 @@ export type FormSchema<T extends keyof FormKeys> = {
     isControlled?: boolean
     ref?: RefObject<HTMLInputElement>
     name: string
+    type: string
     validate: (value: string, formState?: FormState<T> | undefined) => FormError
     onChange?: () => void
   }
