@@ -1,7 +1,27 @@
 /** @type {import('tailwindcss').Config} */
+const pxToRem = (px, base = 16) => `${px / base}rem`;
+const range = (start, end) => {
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+};
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    spacing: {
+      ...range(0, 1000).reduce((acc, px) => {
+        acc[`${px}pxr`] = pxToRem(px);
+        return acc;
+      }, {}),
+    },
+
+    screens: {
+      mobile: '360px',
+      foldable: '523px',
+      tablet: '768px',
+      'under-foldable': { max: '522px' },
+      'under-tablet': { max: '767px' },
+      'under-mobile': { max: '359px' },
+      dssktop: '1200px',
+    },
     fontSize: {
       xs: '0.75rem',
       sm: '0.875rem',
@@ -16,6 +36,9 @@ module.exports = {
     },
     extend: {
       colors: {
+        'footer-gray': '#363636',
+        'app-bg': '#121212',
+        primary: '#8687E7',
         gray: {
           100: '#f7fafc',
           200: '#edf2f7',
@@ -24,8 +47,8 @@ module.exports = {
           500: '#a0aec0',
           600: '#718096',
           700: '#4a5568',
-          800: '#2d3748',
-          900: '#1a202c',
+          800: '#AFAFAF',
+          900: '#979797',
         },
         blue: {
           100: '#ebf8ff',
