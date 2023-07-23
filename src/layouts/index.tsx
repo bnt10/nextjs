@@ -7,7 +7,7 @@ type Props = {
 const Layout = ({ children }: Props) => {
   return (
     <div className="grid h-screen place-items-center">
-      <div className="relative h-full w-393pxr ">{children}</div>
+      <div className="relative h-screen w-screen ">{children}</div>
     </div>
   )
 }
