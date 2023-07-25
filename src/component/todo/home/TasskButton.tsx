@@ -1,14 +1,23 @@
+import { useRecoilState } from 'recoil'
+
 import Button from '@/component/common/Button'
+import { modalContentState } from '@/pages/state/modalAtom'
 import { iconBtnSt } from '@/styles/todo/home'
 import type { Component } from '@/types/component'
 
+import Calendar from '../modal/Calendar'
+
 export default function TaskButton() {
+  const [, setModalContent] = useRecoilState(modalContentState)
+
   const TaskWithButton: Record<string, Component> = {
     timer: {
       id: 'timer',
       component: Button,
       props: { style: iconBtnSt, icon: '/assets/images/todo/home/timer.svg' },
-      handler: async () => {},
+      handler: async () => {
+        setModalContent(<Calendar />)
+      },
     },
     tag: {
       id: 'tag',

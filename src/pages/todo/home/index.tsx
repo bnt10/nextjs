@@ -78,7 +78,7 @@ export default function TodoHome() {
           </div>
           {openModal && (
             <Modal>
-              <div className="absolute bottom-[0] h-228pxr w-full max-w-md flex-col items-center justify-center rounded-t-2xl bg-footer-gray px-25pxr pb-17pxr pt-25pxr">
+              <div className="absolute bottom-[0] h-228pxr w-393pxr flex-col items-center justify-center rounded-t-2xl bg-footer-gray px-25pxr pb-17pxr pt-25pxr">
                 <form onSubmit={handleOnSubmit(addTaskSubmit)}>
                   <p className="mb-14pxr text-left text-xl font-bold text-white/[0.87]">
                     Add Task
