@@ -19,7 +19,7 @@ function Modal() {
     ? createPortal(
         <div
           className={
-            'fixed inset-[0] flex h-screen items-center justify-center'
+            'fixed inset-[0] flex h-screen items-center justify-center bg-black/75'
           }
           onClick={(e) => closeModal(e)}
           ref={modalRef}
