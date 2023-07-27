@@ -1,0 +1,4 @@
+
+.react-calendar {
+  @apply bg-footer-gray border-none rounded-sm text-white;
+}

@@ -12,6 +12,7 @@ function Modal() {
       setModalContent(null) // <-- Close the modal by setting the content to null
     }
   }
+
   if (typeof window === 'undefined' || !modalContent) return null // <-- Don't render if there is no content
   const element = document.getElementById('modal-sub')
 

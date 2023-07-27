@@ -1,10 +1,10 @@
-import Calendar from 'react-calendar'
 import { useRecoilState } from 'recoil'
 
 import useModal from '@/hooks/useModal'
 import { modalContentState } from '@/pages/state/modalAtom'
 
 import Button from '../common/Button'
+import Calendar from '../todo/modal/Calendar'
 
 export default function Footer() {
   const { openModal, setOpenModal } = useModal()
@@ -25,7 +25,7 @@ export default function Footer() {
     {
       title: 'Calendar',
       icon: '/assets/images/todo/footer/calendar.svg',
-      handler: () => {
+      handler: async () => {
         setModalContent(<Calendar />)
       },
       style: textWithIconBtnStyle,
