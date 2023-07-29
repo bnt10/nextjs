@@ -8,7 +8,7 @@ interface Props {
 }
 const buttonStyles = {
   button:
-    'flex h-48pxr w-314pxr bg-gray-900 justify-center mb-15pxr flex relative overflow-hidden rounded-2xl bg-[#153e6d] text-white items-center',
+    'flex h-48pxr w-314pxrjustify-center mb-15pxr relative overflow-hidden rounded-2xl bg-[#153e6d] text-white items-center',
   icon: 'left-24pxr top-10pxr h-30pxr w-30pxr ',
 }
 
