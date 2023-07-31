@@ -1,10 +1,8 @@
-import 'react-calendar/dist/Calendar.css'
-
 import { useState } from 'react'
-import Calendar from 'react-calendar'
 
 import CalendarNavigation from './CalendarNavigation'
-import styles from './calendarStyle.module.css'
+import ModalActionButtons from './ModalActionButtons'
+import StyledCalendar from './StyledCalendar'
 
 type ValuePiece = Date | null
 
@@ -15,16 +13,21 @@ export default function CalendarModal() {
 
   return (
     <div className="absolute flex-col items-center justify-center ">
-      <div>
-        <Calendar
+      <div className="bg-footer-gray">
+        <StyledCalendar
           locale={'en'}
           calendarType={'gregory'}
-          className={styles['react-calendar']}
           onChange={onChange}
           value={value}
           next2Label={null}
           prev2Label={null}
           navigationLabel={CalendarNavigation}
+        />
+        <ModalActionButtons
+          saveTitle={'Choose Time'}
+          saveHandler={() => {}}
+          cancelHandler={() => {}}
+          cancelTitle="Cancel"
         />
       </div>
     </div>
