@@ -27,6 +27,7 @@
     "postbuild": "next-sitemap"
   },
   "dependencies": {
+    "@use-gesture/react": "^10.2.27",
     "axios": "^1.4.0",
     "framer-motion": "^10.12.16",
     "next": "^13.3.0",
