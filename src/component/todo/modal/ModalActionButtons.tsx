@@ -21,12 +21,12 @@ export default function ModalActionButtons({
       <Button
         title={cancelTitle}
         style={modalCancelButtonSt}
-        handler={saveHandler}
+        handler={cancelHandler}
       />
       <Button
         title={saveTitle}
         style={modalSaveButtonSt}
-        handler={cancelHandler}
+        handler={saveHandler}
       />
     </div>
   )
