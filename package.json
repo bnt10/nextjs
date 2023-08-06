@@ -27,6 +27,7 @@
     "postbuild": "next-sitemap"
   },
   "dependencies": {
+    "@react-spring/web": "^9.7.3",
     "@use-gesture/react": "^10.2.27",
     "axios": "^1.4.0",
     "framer-motion": "^10.12.16",
