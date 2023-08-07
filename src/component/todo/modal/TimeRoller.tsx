@@ -2,20 +2,24 @@ import { a, useSprings } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import { useCallback, useRef } from 'react'
 
-type TimeType = 'H' | 'M' | 'S'
+type TimeType = 'H' | 'M' | 'AmPm'
 interface Props {
   timeType: TimeType
 }
 const timeItems = {
   H: Array.from({ length: 24 }, (_, index) => index),
   M: Array.from({ length: 60 }, (_, index) => index),
-  S: Array.from({ length: 60 }, (_, index) => index),
+  AmPm: ['AM', 'PM'],
 }
-const ITEM_HEIGHT = 28
-const VISIABLE_INDEX = 3
+
+const TIME_VISIABLE_INDEX = 3
+const AM_PM_VISIABLE_INDEX = 2
+const ITEM_HEIGHT = 22
 
 export default function TimeRoller({ timeType }: Props) {
   const rollerItems = timeItems[timeType]
+  const visiableCount =
+    timeType === 'AmPm' ? AM_PM_VISIABLE_INDEX : TIME_VISIABLE_INDEX
   const rollerLength = rollerItems.length
 
   const circularIndex = useCallback(
@@ -38,10 +42,10 @@ export default function TimeRoller({ timeType }: Props) {
   )
 
   const [springs, api] = useSprings(rollerLength, (rollerIndex: number) => {
-    if (rollerIndex === rollerLength - 1) return { y: -ITEM_HEIGHT }
-    if (rollerIndex === 0) return { y: 0 }
-    if (rollerIndex === 1) return { y: ITEM_HEIGHT }
-    return { y: ITEM_HEIGHT * (rollerIndex - 1) * 2 }
+    if (rollerIndex < visiableCount) {
+      return { y: ITEM_HEIGHT * rollerIndex }
+    }
+    return { y: ITEM_HEIGHT * (rollerIndex + visiableCount - 1) }
   })
   const prev = useRef([0, 1])
   const target = useRef<HTMLDivElement | null>(null)
@@ -51,8 +55,8 @@ export default function TimeRoller({ timeType }: Props) {
       const firstVisableItem = circularIndex(
         Math.floor(y / ITEM_HEIGHT) % rollerItems.length
       )
-      const firstViableItemIndex =
-        dy < 0 ? rollerItems.length - VISIABLE_INDEX - 1 : 1
+
+      const firstViableItemIndex = 0
       api.start((i) => {
         const position = getPosition(i, firstVisableItem, firstViableItemIndex)
         const prevPosition = getPosition(
@@ -68,7 +72,6 @@ export default function TimeRoller({ timeType }: Props) {
         const configPos = dy > 0 ? position : rollerItems.length - position
         return {
           y: (-y % (ITEM_HEIGHT * rollerItems.length)) + ITEM_HEIGHT * rank,
-
           immediate: dy < 0 ? prevPosition > position : prevPosition < position,
           config: {
             tension: (1 + rollerItems.length - configPos) * 100,
@@ -97,30 +100,23 @@ export default function TimeRoller({ timeType }: Props) {
   return (
     <div
       ref={target}
-      className="relative flex h-64pxr w-64pxr items-center justify-center overflow-hidden bg-[#272727]"
+      className="relative flex h-66pxr w-64pxr  justify-center overflow-hidden bg-[#272727]"
     >
       {springs.map(({ y }, i) => {
-        const currentIndex = Math.round(-y / ITEM_HEIGHT)
         return (
           <a.div
             key={i}
             className="absolute will-change-transform"
-            style={{ y }}
+            style={{ y, height: 22, width: '22px' }}
           >
             <a.div
               style={{
-                height: '36px',
-                width: '28px',
                 textAlign: 'center',
-
-                color: y.to(
-                  [-(i - 1) * ITEM_HEIGHT, -i * ITEM_HEIGHT],
-                  ['white', 'rgba(255, 255, 255, 0.87)']
-                ),
-                fontSize: currentIndex ? '18px' : '9px',
+                color: 'white',
+                fontSize: '9px',
               }}
             >
-              {i}
+              {rollerItems[i]}
             </a.div>
           </a.div>
         )

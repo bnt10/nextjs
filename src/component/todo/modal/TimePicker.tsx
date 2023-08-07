@@ -17,7 +17,7 @@ export default function TimePicker() {
             <TimeRoller timeType={'M'} />
           </div>
           <div>
-            <TimeRoller timeType={'S'} />
+            <TimeRoller timeType={'AmPm'} />
           </div>
         </div>
         <ModalActionButtons
