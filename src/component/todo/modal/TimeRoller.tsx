@@ -42,41 +42,28 @@ export default function TimeRoller({ timeType }: Props) {
   )
 
   const [springs, api] = useSprings(rollerLength, (rollerIndex: number) => {
-    if (rollerIndex < visiableCount) {
-      return { y: ITEM_HEIGHT * rollerIndex }
-    }
-    return { y: ITEM_HEIGHT * (rollerIndex + visiableCount - 1) }
+    return { y: ITEM_HEIGHT * rollerIndex }
   })
   const prev = useRef([0, 1])
   const target = useRef<HTMLDivElement | null>(null)
+  const firstVisibleItemIndex = useRef(0)
 
   const runSprings = useCallback(
     (y: number, dy: number) => {
-      const firstVisableItem = circularIndex(
-        Math.floor(y / ITEM_HEIGHT) % rollerItems.length
-      )
-
+      const firstVisableItem = firstVisibleItemIndex.current
+      console.log(firstVisableItem)
       const firstViableItemIndex = 0
       api.start((i) => {
-        const position = getPosition(i, firstVisableItem, firstViableItemIndex)
+        const position = getPosition(i, firstVisableItem, 0)
         const prevPosition = getPosition(
           i,
           prev.current[0] as number,
           prev.current[1] as number
         )
-        const rank =
-          firstVisableItem -
-          (y < 0 ? rollerItems.length : 0) +
-          position -
-          firstViableItemIndex
-        const configPos = dy > 0 ? position : rollerItems.length - position
+
         return {
-          y: (-y % (ITEM_HEIGHT * rollerItems.length)) + ITEM_HEIGHT * rank,
+          y: -ITEM_HEIGHT * firstVisableItem + ITEM_HEIGHT * position,
           immediate: dy < 0 ? prevPosition > position : prevPosition < position,
-          config: {
-            tension: (1 + rollerItems.length - configPos) * 100,
-            friction: 30 + configPos * 40,
-          },
         }
       })
       prev.current = [firstVisableItem, firstViableItemIndex]
@@ -89,8 +76,10 @@ export default function TimeRoller({ timeType }: Props) {
     {
       onWheel: ({ event, offset: [, y], direction: [, dy] }) => {
         event.preventDefault()
-        if (dy) {
+        if (dy && wheelOffset.current !== y) {
           wheelOffset.current = y
+      
+          firstVisibleItemIndex.current += dy > 0 ? 1 : -1
           runSprings(dragOffset.current + y, dy)
         }
       },
@@ -106,7 +95,7 @@ export default function TimeRoller({ timeType }: Props) {
         return (
           <a.div
             key={i}
-            className="absolute will-change-transform"
+            className="absolute flex items-center justify-center will-change-transform"
             style={{ y, height: 22, width: '22px' }}
           >
             <a.div
