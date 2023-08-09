@@ -44,29 +44,26 @@ export default function TimeRoller({ timeType }: Props) {
   const [springs, api] = useSprings(rollerLength, (rollerIndex: number) => {
     return { y: ITEM_HEIGHT * rollerIndex }
   })
-  const prev = useRef([0, 1])
+  const prev = useRef(0)
   const target = useRef<HTMLDivElement | null>(null)
   const firstVisibleItemIndex = useRef(0)
 
   const runSprings = useCallback(
     (y: number, dy: number) => {
       const firstVisableItem = firstVisibleItemIndex.current
-      console.log(firstVisableItem)
-      const firstViableItemIndex = 0
+
       api.start((i) => {
         const position = getPosition(i, firstVisableItem, 0)
-        const prevPosition = getPosition(
-          i,
-          prev.current[0] as number,
-          prev.current[1] as number
-        )
+        const prevPosition = getPosition(i, prev.current as number, 0)
 
+        const yValue = position * ITEM_HEIGHT // 수정된 y 값 계산
+        console.log(yValue)
         return {
-          y: -ITEM_HEIGHT * firstVisableItem + ITEM_HEIGHT * position,
+          y: yValue,
           immediate: dy < 0 ? prevPosition > position : prevPosition < position,
         }
       })
-      prev.current = [firstVisableItem, firstViableItemIndex]
+      prev.current = firstVisableItem
     },
     [getPosition, api]
   )
@@ -78,8 +75,11 @@ export default function TimeRoller({ timeType }: Props) {
         event.preventDefault()
         if (dy && wheelOffset.current !== y) {
           wheelOffset.current = y
-      
+
           firstVisibleItemIndex.current += dy > 0 ? 1 : -1
+          firstVisibleItemIndex.current =
+            (firstVisibleItemIndex.current + rollerLength) % rollerLength
+
           runSprings(dragOffset.current + y, dy)
         }
       },
