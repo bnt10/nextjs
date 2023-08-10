@@ -29,13 +29,8 @@ export default function TimeRoller({ timeType }: Props) {
     [rollerItems]
   )
   const getPosition = useCallback(
-    (
-      currentItemIndex: number,
-      firstVisableItem: number,
-      firstVisableIndex: number
-    ) => {
-      const actualPosition =
-        currentItemIndex - firstVisableItem + firstVisableIndex
+    (currentItemIndex: number, firstVisableItem: number) => {
+      const actualPosition = currentItemIndex - firstVisableItem
       return circularIndex(actualPosition)
     },
     [circularIndex]
@@ -49,26 +44,31 @@ export default function TimeRoller({ timeType }: Props) {
   const firstVisibleItemIndex = useRef(0)
 
   const runSprings = useCallback(
-    (y: number, dy: number) => {
-      const firstVisableItem = firstVisibleItemIndex.current
+    (dy: number) => {
+      let firstVisibleItem = firstVisibleItemIndex.current
+
+      if (dy < 0) {
+        firstVisibleItem = firstVisibleItem === 0 ? 23 : firstVisibleItem - 1
+      } else {
+        firstVisibleItem = (firstVisibleItem + 1) % 24
+      }
 
       api.start((i) => {
-        const position = getPosition(i, firstVisableItem, 0)
-        const prevPosition = getPosition(i, prev.current as number, 0)
+        const position = (i + firstVisibleItem) % 24
+        const yValue = position * ITEM_HEIGHT
 
-        const yValue = position * ITEM_HEIGHT // 수정된 y 값 계산
-        console.log(yValue)
         return {
           y: yValue,
-          immediate: dy < 0 ? prevPosition > position : prevPosition < position,
+          immediate: true,
         }
       })
-      prev.current = firstVisableItem
+      firstVisibleItemIndex.current = firstVisibleItem
     },
-    [getPosition, api]
+    [api]
   )
+
   const wheelOffset = useRef(0)
-  const dragOffset = useRef(0)
+
   useGesture(
     {
       onWheel: ({ event, offset: [, y], direction: [, dy] }) => {
@@ -80,7 +80,7 @@ export default function TimeRoller({ timeType }: Props) {
           firstVisibleItemIndex.current =
             (firstVisibleItemIndex.current + rollerLength) % rollerLength
 
-          runSprings(dragOffset.current + y, dy)
+          runSprings(dy)
         }
       },
     },
