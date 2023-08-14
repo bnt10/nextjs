@@ -28,44 +28,48 @@ export default function TimeRoller({ timeType }: Props) {
       totalItems,
     [rollerItems]
   )
+
   const getPosition = useCallback(
-    (currentItemIndex: number, firstVisableItem: number) => {
-      const actualPosition = currentItemIndex - firstVisableItem
-      return circularIndex(actualPosition)
+    (
+      currentItemIndex: number,
+      firstVisableItem: number,
+      itemTotalLength: number
+    ) => {
+      const actualPosition =
+        firstVisableItem === 0
+          ? currentItemIndex
+          : (itemTotalLength - firstVisableItem + currentItemIndex) %
+            itemTotalLength
+      return actualPosition
     },
-    [circularIndex]
+    []
   )
 
   const [springs, api] = useSprings(rollerLength, (rollerIndex: number) => {
-    return { y: ITEM_HEIGHT * rollerIndex }
+    return {
+      y:
+        rollerIndex < rollerLength - 1
+          ? ITEM_HEIGHT * rollerIndex
+          : -ITEM_HEIGHT,
+    }
   })
-  const prev = useRef(0)
+
   const target = useRef<HTMLDivElement | null>(null)
   const firstVisibleItemIndex = useRef(0)
 
-  const runSprings = useCallback(
-    (dy: number) => {
-      let firstVisibleItem = firstVisibleItemIndex.current
+  const runSprings = useCallback(() => {
+    const firstVisableItem = firstVisibleItemIndex.current
 
-      if (dy < 0) {
-        firstVisibleItem = firstVisibleItem === 0 ? 23 : firstVisibleItem - 1
-      } else {
-        firstVisibleItem = (firstVisibleItem + 1) % 24
+    api.start((i) => {
+      const position = getPosition(i, firstVisableItem, rollerLength)
+      const lastIndex = circularIndex(firstVisableItem - 1, rollerLength)
+
+      return {
+        y: i === lastIndex ? -ITEM_HEIGHT : ITEM_HEIGHT * position,
+        immediate: i === lastIndex || position > visiableCount - 1,
       }
-
-      api.start((i) => {
-        const position = (i + firstVisibleItem) % 24
-        const yValue = position * ITEM_HEIGHT
-
-        return {
-          y: yValue,
-          immediate: true,
-        }
-      })
-      firstVisibleItemIndex.current = firstVisibleItem
-    },
-    [api]
-  )
+    })
+  }, [getPosition, api])
 
   const wheelOffset = useRef(0)
 
@@ -73,6 +77,7 @@ export default function TimeRoller({ timeType }: Props) {
     {
       onWheel: ({ event, offset: [, y], direction: [, dy] }) => {
         event.preventDefault()
+
         if (dy && wheelOffset.current !== y) {
           wheelOffset.current = y
 
@@ -80,8 +85,17 @@ export default function TimeRoller({ timeType }: Props) {
           firstVisibleItemIndex.current =
             (firstVisibleItemIndex.current + rollerLength) % rollerLength
 
-          runSprings(dy)
+          runSprings()
         }
+      },
+      onClick: ({ event }) => {
+        event.preventDefault()
+
+        firstVisibleItemIndex.current += +1
+        firstVisibleItemIndex.current =
+          (firstVisibleItemIndex.current + rollerLength) % rollerLength
+
+        runSprings()
       },
     },
     { target, wheel: { eventOptions: { passive: false } } }
