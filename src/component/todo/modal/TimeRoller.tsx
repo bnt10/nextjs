@@ -9,7 +9,7 @@ interface Props {
   timeType: TimeType
 }
 const timeItems = {
-  H: Array.from({ length: 24 }, (_, index) => index),
+  H: Array.from({ length: 12 }, (_, index) => index),
   M: Array.from({ length: 60 }, (_, index) => index),
   AmPm: ['AM', 'PM'],
 }
@@ -53,6 +53,8 @@ export default function TimeRoller({ timeType }: Props) {
         rollerIndex < rollerLength - 1
           ? ITEM_HEIGHT * rollerIndex
           : -ITEM_HEIGHT,
+      fontSize: rollerIndex === 1 ? '24px' : '16px',
+      opacity: rollerIndex === 1 ? '0.75' : '0.1',
       config: {
         tension: 200,
         friction: 20,
@@ -75,8 +77,12 @@ export default function TimeRoller({ timeType }: Props) {
         const scrollDown =
           i === scrollingTargetIndex ? false : position > visiableCount
 
+        const visiableCenterIndex = (firstVisableItem + 1) % rollerLength
+
         return {
           y: i === scrollingTargetIndex ? -ITEM_HEIGHT : ITEM_HEIGHT * position,
+          fontSize: i === visiableCenterIndex ? '24px' : '16px',
+          opacity: i === visiableCenterIndex ? '0.75' : '0.1',
           immediate: dy < 0 ? scrollUp : scrollDown,
         }
       })
@@ -116,20 +122,21 @@ export default function TimeRoller({ timeType }: Props) {
   return (
     <div
       ref={target}
-      className="relative flex h-66pxr w-64pxr  justify-center overflow-hidden bg-[#272727]"
+      className="relative flex h-64pxr w-64pxr  justify-center overflow-hidden bg-[#272727]"
     >
-      {springs.map(({ y }, i) => {
+      {springs.map(({ y, fontSize, opacity }, i) => {
         return (
           <a.div
             key={i}
             className="absolute flex items-center justify-center will-change-transform"
-            style={{ y, height: 22, width: '22px' }}
+            style={{ y, height: `${ITEM_HEIGHT}px`, width: '22px' }}
           >
             <a.div
               style={{
                 textAlign: 'center',
                 color: 'white',
-                fontSize: '9px',
+                opacity,
+                fontSize,
               }}
             >
               {rollerItems[i]}
