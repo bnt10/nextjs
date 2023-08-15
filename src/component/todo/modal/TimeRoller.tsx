@@ -7,10 +7,16 @@ import { throttle } from '@/utils/timing'
 type TimeType = 'H' | 'M' | 'AmPm'
 interface Props {
   timeType: TimeType
+  value?: string
 }
 const timeItems = {
-  H: Array.from({ length: 12 }, (_, index) => index),
-  M: Array.from({ length: 60 }, (_, index) => index),
+  H: Array.from({ length: 12 }, (_, index) =>
+    index.toString().padStart(2, '0')
+  ),
+  M: Array.from({ length: 60 }, (_, index) =>
+    index.toString().padStart(2, '0')
+  ),
+
   AmPm: ['AM', 'PM'],
 }
 
@@ -18,8 +24,11 @@ const TIME_VISIABLE_INDEX = 3
 const AM_PM_VISIABLE_INDEX = 2
 const ITEM_HEIGHT = 22
 
-export default function TimeRoller({ timeType }: Props) {
+export default function TimeRoller({ timeType, value }: Props) {
   const rollerItems = timeItems[timeType]
+
+  const defaultValueIndex = value ? rollerItems.indexOf(value) : 1
+
   const visiableCount =
     timeType === 'AmPm' ? AM_PM_VISIABLE_INDEX : TIME_VISIABLE_INDEX
   const rollerLength = rollerItems.length
@@ -53,8 +62,8 @@ export default function TimeRoller({ timeType }: Props) {
         rollerIndex < rollerLength - 1
           ? ITEM_HEIGHT * rollerIndex
           : -ITEM_HEIGHT,
-      fontSize: rollerIndex === 1 ? '24px' : '16px',
-      opacity: rollerIndex === 1 ? '0.75' : '0.1',
+      fontSize: rollerIndex === defaultValueIndex ? '24px' : '16px',
+      opacity: rollerIndex === defaultValueIndex ? '0.75' : '0.1',
       config: {
         tension: 200,
         friction: 20,
