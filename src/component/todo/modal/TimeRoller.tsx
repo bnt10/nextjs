@@ -2,6 +2,8 @@ import { a, useSprings } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import { useCallback, useRef } from 'react'
 
+import { throttle } from '@/utils/timing'
+
 type TimeType = 'H' | 'M' | 'AmPm'
 interface Props {
   timeType: TimeType
@@ -51,31 +53,42 @@ export default function TimeRoller({ timeType }: Props) {
         rollerIndex < rollerLength - 1
           ? ITEM_HEIGHT * rollerIndex
           : -ITEM_HEIGHT,
+      config: {
+        tension: 200,
+        friction: 20,
+      },
     }
   })
 
   const target = useRef<HTMLDivElement | null>(null)
   const firstVisibleItemIndex = useRef(0)
 
-  const runSprings = useCallback(() => {
-    const firstVisableItem = firstVisibleItemIndex.current
+  const runSprings = useCallback(
+    (firstVisableItem: number, dy: number) => {
+      api.start((i) => {
+        const position = getPosition(i, firstVisableItem, rollerLength)
+        const scrollingTargetIndex = circularIndex(
+          firstVisableItem - 1,
+          rollerLength
+        )
+        const scrollUp = position > visiableCount
+        const scrollDown =
+          i === scrollingTargetIndex ? false : position > visiableCount
 
-    api.start((i) => {
-      const position = getPosition(i, firstVisableItem, rollerLength)
-      const lastIndex = circularIndex(firstVisableItem - 1, rollerLength)
-
-      return {
-        y: i === lastIndex ? -ITEM_HEIGHT : ITEM_HEIGHT * position,
-        immediate: i === lastIndex || position > visiableCount - 1,
-      }
-    })
-  }, [getPosition, api])
+        return {
+          y: i === scrollingTargetIndex ? -ITEM_HEIGHT : ITEM_HEIGHT * position,
+          immediate: dy < 0 ? scrollUp : scrollDown,
+        }
+      })
+    },
+    [getPosition, api]
+  )
 
   const wheelOffset = useRef(0)
 
   useGesture(
     {
-      onWheel: ({ event, offset: [, y], direction: [, dy] }) => {
+      onWheel: throttle(({ event, offset: [, y], direction: [, dy] }) => {
         event.preventDefault()
 
         if (dy && wheelOffset.current !== y) {
@@ -85,9 +98,9 @@ export default function TimeRoller({ timeType }: Props) {
           firstVisibleItemIndex.current =
             (firstVisibleItemIndex.current + rollerLength) % rollerLength
 
-          runSprings()
+          runSprings(firstVisibleItemIndex.current, dy)
         }
-      },
+      }, 200),
       onClick: ({ event }) => {
         event.preventDefault()
 
@@ -95,7 +108,7 @@ export default function TimeRoller({ timeType }: Props) {
         firstVisibleItemIndex.current =
           (firstVisibleItemIndex.current + rollerLength) % rollerLength
 
-        runSprings()
+        runSprings(firstVisibleItemIndex.current, 1)
       },
     },
     { target, wheel: { eventOptions: { passive: false } } }
