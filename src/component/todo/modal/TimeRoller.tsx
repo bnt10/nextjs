@@ -1,6 +1,6 @@
 import { a, useSprings } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { throttle } from '@/utils/timing'
 
@@ -23,12 +23,17 @@ const timeItems = {
 const TIME_VISIABLE_INDEX = 3
 const AM_PM_VISIABLE_INDEX = 2
 const ITEM_HEIGHT = 22
+const ACTIVE_ITEM_FONT_SIZE = '24px'
+const ITEM_FONT_SIZE = '16px'
+const ACTIVE_ITEM_OPACITY = '0.75'
+const ITEM_OPACITY = '0.1'
 
 export default function TimeRoller({ timeType, value }: Props) {
   const rollerItems = timeItems[timeType]
 
-  const defaultValueIndex = value ? rollerItems.indexOf(value) : 1
-
+  const firstVisibleItemIndex = useRef(
+    (value ? rollerItems.indexOf(value) : 0) - 1
+  )
   const visiableCount =
     timeType === 'AmPm' ? AM_PM_VISIABLE_INDEX : TIME_VISIABLE_INDEX
   const rollerLength = rollerItems.length
@@ -55,15 +60,39 @@ export default function TimeRoller({ timeType, value }: Props) {
     },
     []
   )
-
+  const springHeight = (rollerIndex: number) => {
+    return {
+      AmPm: {
+        y: ITEM_HEIGHT * rollerIndex,
+        updateY: ITEM_HEIGHT,
+      },
+      H: {
+        y:
+          rollerIndex < rollerLength - 1
+            ? ITEM_HEIGHT * rollerIndex
+            : -ITEM_HEIGHT,
+        updateY: -ITEM_HEIGHT,
+      },
+      M: {
+        y:
+          rollerIndex < rollerLength - 1
+            ? ITEM_HEIGHT * rollerIndex
+            : -ITEM_HEIGHT,
+        updateY: -ITEM_HEIGHT,
+      },
+    }
+  }
   const [springs, api] = useSprings(rollerLength, (rollerIndex: number) => {
     return {
-      y:
-        rollerIndex < rollerLength - 1
-          ? ITEM_HEIGHT * rollerIndex
-          : -ITEM_HEIGHT,
-      fontSize: rollerIndex === defaultValueIndex ? '24px' : '16px',
-      opacity: rollerIndex === defaultValueIndex ? '0.75' : '0.1',
+      y: springHeight(rollerIndex)[timeType].y,
+      fontSize:
+        rollerIndex === firstVisibleItemIndex.current
+          ? ACTIVE_ITEM_FONT_SIZE
+          : ITEM_FONT_SIZE,
+      opacity:
+        rollerIndex === firstVisibleItemIndex.current
+          ? ACTIVE_ITEM_OPACITY
+          : ITEM_OPACITY,
       config: {
         tension: 200,
         friction: 20,
@@ -72,7 +101,6 @@ export default function TimeRoller({ timeType, value }: Props) {
   })
 
   const target = useRef<HTMLDivElement | null>(null)
-  const firstVisibleItemIndex = useRef(0)
 
   const runSprings = useCallback(
     (firstVisableItem: number, dy: number) => {
@@ -89,15 +117,24 @@ export default function TimeRoller({ timeType, value }: Props) {
         const visiableCenterIndex = (firstVisableItem + 1) % rollerLength
 
         return {
-          y: i === scrollingTargetIndex ? -ITEM_HEIGHT : ITEM_HEIGHT * position,
-          fontSize: i === visiableCenterIndex ? '24px' : '16px',
-          opacity: i === visiableCenterIndex ? '0.75' : '0.1',
+          y:
+            i === scrollingTargetIndex
+              ? springHeight(position)[timeType].updateY
+              : ITEM_HEIGHT * position,
+          fontSize:
+            i === visiableCenterIndex ? ACTIVE_ITEM_FONT_SIZE : ITEM_FONT_SIZE,
+          opacity:
+            i === visiableCenterIndex ? ACTIVE_ITEM_OPACITY : ITEM_OPACITY,
           immediate: dy < 0 ? scrollUp : scrollDown,
         }
       })
     },
     [getPosition, api]
   )
+
+  useEffect(() => {
+    runSprings(firstVisibleItemIndex.current, 1)
+  }, [])
 
   const wheelOffset = useRef(0)
 
