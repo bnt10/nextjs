@@ -8,6 +8,7 @@ type TimeType = 'H' | 'M' | 'AmPm'
 interface Props {
   timeType: TimeType
   value?: string
+  onTimeChange: (time: { [x in TimeType]?: string }) => void
 }
 const timeItems = {
   H: Array.from({ length: 12 }, (_, index) =>
@@ -27,13 +28,16 @@ const ACTIVE_ITEM_FONT_SIZE = '24px'
 const ITEM_FONT_SIZE = '16px'
 const ACTIVE_ITEM_OPACITY = '0.75'
 const ITEM_OPACITY = '0.1'
+const SCROLL_UP = 1
+const SCROLL_DOWN = -1
 
-export default function TimeRoller({ timeType, value }: Props) {
+export default function TimeRoller({ timeType, value, onTimeChange }: Props) {
   const rollerItems = timeItems[timeType]
 
   const firstVisibleItemIndex = useRef(
     (value ? rollerItems.indexOf(value) : 0) - 1
   )
+
   const visiableCount =
     timeType === 'AmPm' ? AM_PM_VISIABLE_INDEX : TIME_VISIABLE_INDEX
   const rollerLength = rollerItems.length
@@ -44,6 +48,8 @@ export default function TimeRoller({ timeType, value }: Props) {
       totalItems,
     [rollerItems]
   )
+  const selectedValueIndex = (firstVisableItem: number) =>
+    (firstVisableItem + 1) % rollerLength || 0
 
   const getPosition = useCallback(
     (
@@ -60,6 +66,7 @@ export default function TimeRoller({ timeType, value }: Props) {
     },
     []
   )
+
   const springHeight = (rollerIndex: number) => {
     return {
       AmPm: {
@@ -82,6 +89,13 @@ export default function TimeRoller({ timeType, value }: Props) {
       },
     }
   }
+
+  const setTimes = (visiableItemIndex: number) => {
+    return onTimeChange({
+      [timeType]: rollerItems[selectedValueIndex(visiableItemIndex)],
+    })
+  }
+
   const [springs, api] = useSprings(rollerLength, (rollerIndex: number) => {
     return {
       y: springHeight(rollerIndex)[timeType].y,
@@ -94,7 +108,7 @@ export default function TimeRoller({ timeType, value }: Props) {
           ? ACTIVE_ITEM_OPACITY
           : ITEM_OPACITY,
       config: {
-        tension: 200,
+        tension: 150,
         friction: 20,
       },
     }
@@ -114,7 +128,7 @@ export default function TimeRoller({ timeType, value }: Props) {
         const scrollDown =
           i === scrollingTargetIndex ? false : position > visiableCount
 
-        const visiableCenterIndex = (firstVisableItem + 1) % rollerLength
+        const visiableCenterIndex = selectedValueIndex(firstVisableItem)
 
         return {
           y:
@@ -133,7 +147,8 @@ export default function TimeRoller({ timeType, value }: Props) {
   )
 
   useEffect(() => {
-    runSprings(firstVisibleItemIndex.current, 1)
+    runSprings(firstVisibleItemIndex.current, SCROLL_UP)
+    setTimes(firstVisibleItemIndex.current)
   }, [])
 
   const wheelOffset = useRef(0)
@@ -146,21 +161,23 @@ export default function TimeRoller({ timeType, value }: Props) {
         if (dy && wheelOffset.current !== y) {
           wheelOffset.current = y
 
-          firstVisibleItemIndex.current += dy > 0 ? 1 : -1
+          firstVisibleItemIndex.current += dy > 0 ? SCROLL_UP : SCROLL_DOWN
           firstVisibleItemIndex.current =
             (firstVisibleItemIndex.current + rollerLength) % rollerLength
 
           runSprings(firstVisibleItemIndex.current, dy)
+
+          setTimes(firstVisibleItemIndex.current)
         }
-      }, 200),
+      }, 100),
       onClick: ({ event }) => {
         event.preventDefault()
 
-        firstVisibleItemIndex.current += +1
+        firstVisibleItemIndex.current += SCROLL_UP
         firstVisibleItemIndex.current =
           (firstVisibleItemIndex.current + rollerLength) % rollerLength
 
-        runSprings(firstVisibleItemIndex.current, 1)
+        runSprings(firstVisibleItemIndex.current, SCROLL_UP)
       },
     },
     { target, wheel: { eventOptions: { passive: false } } }

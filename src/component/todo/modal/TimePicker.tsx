@@ -1,7 +1,20 @@
+import { useRef } from 'react'
+
 import ModalActionButtons from './ModalActionButtons'
 import TimeRoller from './TimeRoller'
 
+type TimeType = 'H' | 'M' | 'AmPm'
+type TimeData = {
+  [x in TimeType]?: string
+}
 export default function TimePicker() {
+  const timeRef = useRef<TimeData>({})
+  const onChange = (time: TimeData) => {
+    timeRef.current = {
+      ...timeRef.current,
+      ...time,
+    }
+  }
   return (
     <div className="absolute flex-col items-center justify-center ">
       <div className="h-206pxr w-327pxr rounded bg-footer-gray px-8pxr pb-8pxr">
@@ -10,19 +23,21 @@ export default function TimePicker() {
         </div>
         <div className="flex h-106pxr items-center px-43pxr py-21pxr">
           <div className="mr-13pxr">
-            <TimeRoller timeType={'H'} />
+            <TimeRoller timeType={'H'} onTimeChange={onChange} />
           </div>
           <div className="mr-14pxr">:</div>
           <div className="mr-16pxr">
-            <TimeRoller timeType={'M'} />
+            <TimeRoller timeType={'M'} onTimeChange={onChange} />
           </div>
           <div>
-            <TimeRoller timeType={'AmPm'} />
+            <TimeRoller timeType={'AmPm'} onTimeChange={onChange} />
           </div>
         </div>
         <ModalActionButtons
           saveTitle={'Save'}
-          saveHandler={() => {}}
+          saveHandler={() => {
+            console.log(timeRef.current)
+          }}
           cancelTitle={'Cancel'}
           cancelHandler={() => {}}
         />
