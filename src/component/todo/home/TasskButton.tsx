@@ -1,7 +1,7 @@
 import { useRecoilState } from 'recoil'
 
+import { modalContentState } from '@/atoms/modalAtom'
 import Button from '@/component/common/Button'
-import { modalContentState } from '@/pages/state/modalAtom'
 import { iconBtnSt } from '@/styles/todo/home'
 import type { Component } from '@/types/component'
 

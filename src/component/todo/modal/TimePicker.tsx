@@ -1,4 +1,8 @@
 import { useRef } from 'react'
+import { useRecoilState } from 'recoil'
+
+import { modalContentState } from '@/atoms/modalAtom'
+import { scheduleTimeState } from '@/selectors/timeSelector'
 
 import ModalActionButtons from './ModalActionButtons'
 import TimeRoller from './TimeRoller'
@@ -9,12 +13,16 @@ type TimeData = {
 }
 export default function TimePicker() {
   const timeRef = useRef<TimeData>({})
+  const [, setModalContent] = useRecoilState(modalContentState)
+
+  const [schemduleState, setSchemduleState] = useRecoilState(scheduleTimeState)
   const onChange = (time: TimeData) => {
     timeRef.current = {
       ...timeRef.current,
       ...time,
     }
   }
+
   return (
     <div className="absolute flex-col items-center justify-center ">
       <div className="h-206pxr w-327pxr rounded bg-footer-gray px-8pxr pb-8pxr">
@@ -23,23 +31,37 @@ export default function TimePicker() {
         </div>
         <div className="flex h-106pxr items-center px-43pxr py-21pxr">
           <div className="mr-13pxr">
-            <TimeRoller timeType={'H'} onTimeChange={onChange} />
+            <TimeRoller
+              timeType={'H'}
+              onTimeChange={onChange}
+              value={schemduleState.H}
+            />
           </div>
           <div className="mr-14pxr">:</div>
           <div className="mr-16pxr">
-            <TimeRoller timeType={'M'} onTimeChange={onChange} />
+            <TimeRoller
+              timeType={'M'}
+              onTimeChange={onChange}
+              value={schemduleState.M}
+            />
           </div>
           <div>
-            <TimeRoller timeType={'AmPm'} onTimeChange={onChange} />
+            <TimeRoller
+              timeType={'AmPm'}
+              onTimeChange={onChange}
+              value={schemduleState.AmPm}
+            />
           </div>
         </div>
         <ModalActionButtons
           saveTitle={'Save'}
           saveHandler={() => {
-            console.log(timeRef.current)
+            setSchemduleState(timeRef.current)
           }}
           cancelTitle={'Cancel'}
-          cancelHandler={() => {}}
+          cancelHandler={() => {
+            setModalContent(null)
+          }}
         />
       </div>
     </div>

@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useRecoilState } from 'recoil'
 
-import { modalContentState } from '@/pages/state/modalAtom'
+import { modalContentState } from '@/atoms/modalAtom'
 
 function Modal() {
   const [modalContent, setModalContent] = useRecoilState(modalContentState)

@@ -1,7 +1,7 @@
 import { useRecoilState } from 'recoil'
 
+import { modalContentState } from '@/atoms/modalAtom'
 import useModal from '@/hooks/useModal'
-import { modalContentState } from '@/pages/state/modalAtom'
 
 import Button from '../common/Button'
 import Calendar from '../todo/modal/Calendar'
