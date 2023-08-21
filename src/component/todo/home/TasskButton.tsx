@@ -6,6 +6,7 @@ import { iconBtnSt } from '@/styles/todo/home'
 import type { Component } from '@/types/component'
 
 import Calendar from '../modal/Calendar'
+import TaskPriority from '../modal/TaskPriority'
 
 export default function TaskButton() {
   const [, setModalContent] = useRecoilState(modalContentState)
@@ -29,7 +30,9 @@ export default function TaskButton() {
       id: 'flag',
       component: Button,
       props: { style: iconBtnSt, icon: '/assets/images/todo/home/flag.svg' },
-      handler: async () => {},
+      handler: async () => {
+        setModalContent(<TaskPriority />)
+      },
     },
     send: {
       id: 'send',

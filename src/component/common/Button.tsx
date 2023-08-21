@@ -11,7 +11,7 @@ type Style = {
 type ButtonProps = {
   title?: string
   icon?: string
-  handler: () => void
+  handler: (value?: any) => void
   style?: Style
   disabled?: boolean
 }

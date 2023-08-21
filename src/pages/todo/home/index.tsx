@@ -18,6 +18,7 @@ const addTaskShcema: FormSchema<TaskFormElements> = {
     type: 'text',
     isControlled: true,
     name: 'title',
+    placeholder: 'title',
     validate: (value: string) => {
       if (!value) {
         return '입력이 필요합니다.'
@@ -88,6 +89,7 @@ export default function TodoHome() {
                     value={title.value}
                     inputRef={title.ref}
                     name={title.name}
+                    placeholder={title.placeholder}
                     handleInputChange={handleOnChange}
                     style={addTaskInputSt}
                   />
