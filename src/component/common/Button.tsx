@@ -1,6 +1,6 @@
 import tw from '@/utils/twMergeObjects'
 
-import Icon from './Icon'
+import ImageIcon from './ImageIcon'
 
 type Style = {
   button?: string
@@ -37,7 +37,7 @@ const Button = ({
       className={st.button}
       onClick={handler}
     >
-      {icon && <Icon iconSrc={icon} style={st.icon} />}
+      {icon && <ImageIcon iconSrc={icon} style={st.icon} />}
       <span className={st.title}>{title}</span>
     </button>
   )

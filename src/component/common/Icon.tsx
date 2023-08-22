@@ -1,32 +1,33 @@
-import Image from 'next/image'
-import { twMerge } from 'tailwind-merge'
+import type { FC, SVGProps } from 'react'
+import React from 'react'
+import * as AiIcons from 'react-icons/ai'
+import * as FaIcons from 'react-icons/fa'
 
-interface Props {
-  iconSrc: string
-  style?: string
+export type IconKeys = keyof typeof FaIcons | keyof typeof AiIcons
+
+interface DynamicIconProps {
+  iconName: IconKeys
+  style: React.CSSProperties | undefined
 }
 
-const Icon = (props: Props) => {
-  const { iconSrc, style } = props
-  const st = twMerge(`absolute object-cover`, style)
+const DynamicIcon: FC<DynamicIconProps> = ({ iconName, style }) => {
+  let IconComponent: React.ComponentType<SVGProps<SVGSVGElement>> | null = null
 
-  const matchesW = st?.match(/w-(\d+)/)
-  const matchesH = st?.match(/h-(\d+)/)
-
-  const safeNumber = {
-    w: matchesW && matchesW[1] ? parseInt(matchesW[1], 10) : 10,
-    h: matchesH && matchesH[1] ? parseInt(matchesH[1], 10) : 10,
+  if (Object.hasOwnProperty.call(FaIcons, iconName)) {
+    IconComponent = FaIcons[
+      iconName as keyof typeof FaIcons
+    ] as React.ComponentType<SVGProps<SVGSVGElement>>
+  } else if (Object.hasOwnProperty.call(AiIcons, iconName)) {
+    IconComponent = AiIcons[
+      iconName as keyof typeof AiIcons
+    ] as React.ComponentType<SVGProps<SVGSVGElement>>
   }
 
-  return (
-    <Image
-      src={iconSrc}
-      alt={'icon'}
-      width={safeNumber.w}
-      height={safeNumber.h}
-      className={st}
-    />
-  )
+  if (IconComponent) {
+    return <IconComponent style={style} />
+  }
+
+  return null
 }
 
-export default Icon
+export default DynamicIcon

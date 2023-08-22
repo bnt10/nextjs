@@ -6,6 +6,7 @@ import { iconBtnSt } from '@/styles/todo/home'
 import type { Component } from '@/types/component'
 
 import Calendar from '../modal/Calendar'
+import Category from '../modal/Category'
 import TaskPriority from '../modal/TaskPriority'
 
 export default function TaskButton() {
@@ -24,7 +25,9 @@ export default function TaskButton() {
       id: 'tag',
       component: Button,
       props: { style: iconBtnSt, icon: '/assets/images/todo/home/tag.svg' },
-      handler: async () => {},
+      handler: async () => {
+        setModalContent(<Category />)
+      },
     },
     flag: {
       id: 'flag',
