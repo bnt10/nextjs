@@ -3,14 +3,16 @@ import React from 'react'
 import * as AiIcons from 'react-icons/ai'
 import * as FaIcons from 'react-icons/fa'
 
+import { darkenColor } from '@/utils/darkcolor'
+
 export type IconKeys = keyof typeof FaIcons | keyof typeof AiIcons
 
 interface DynamicIconProps {
   iconName: IconKeys
-  style: React.CSSProperties | undefined
+  color?: string
 }
 
-const DynamicIcon: FC<DynamicIconProps> = ({ iconName, style }) => {
+const DynamicIcon: FC<DynamicIconProps> = ({ iconName, color = '#80FFD1' }) => {
   let IconComponent: React.ComponentType<SVGProps<SVGSVGElement>> | null = null
 
   if (Object.hasOwnProperty.call(FaIcons, iconName)) {
@@ -23,8 +25,9 @@ const DynamicIcon: FC<DynamicIconProps> = ({ iconName, style }) => {
     ] as React.ComponentType<SVGProps<SVGSVGElement>>
   }
 
+  const iconColor = darkenColor(color, 30)
   if (IconComponent) {
-    return <IconComponent style={style} />
+    return <IconComponent className="text-3xl" style={{ color: iconColor }} />
   }
 
   return null
