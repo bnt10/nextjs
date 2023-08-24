@@ -13,6 +13,7 @@ type SchemduleStateType = {
   time: TimeData
   date: DateData | null
   priority: number
+  category: string | null
 }
 
 export const SchemduleState = atom<SchemduleStateType>({
@@ -21,5 +22,6 @@ export const SchemduleState = atom<SchemduleStateType>({
     time: { H: '00', M: '00', AmPm: 'AM' },
     date: null,
     priority: 1,
+    category: null,
   },
 })
