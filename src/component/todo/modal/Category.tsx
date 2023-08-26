@@ -33,8 +33,12 @@ const CategoryList: CategoryListType[] = [
 
 export default function Category() {
   const [, setModalContent] = useRecoilState(modalContentState)
-  const [, setCategoryState] = useRecoilState(scheduleCategoryState)
-  const saveHandler = () => {}
+  const [categoryState, setCategoryState] = useRecoilState(
+    scheduleCategoryState
+  )
+  const saveHandler = () => {
+    setModalContent(null)
+  }
   const cancelHandler = () => {
     setModalContent(null)
   }
@@ -50,9 +54,10 @@ export default function Category() {
         <div className="flex flex-wrap items-center px-4pxr pt-22pxr">
           {CategoryList.map(({ id, icon, title, color }) => (
             <CategoryItem
-              key={id}
               id={id}
+              key={id}
               onCategoryClickHandler={onCategoryClickHandler}
+              selected={categoryState === id}
               icon={icon}
               title={title}
               color={color}
