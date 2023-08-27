@@ -3,7 +3,7 @@ import Image from 'next/image'
 export default function EmptyTodoList() {
   return (
     <>
-      <div className="items-start">
+      <div className="mt-75pxr items-start">
         <Image
           src={'/assets/images/todo/home/index.svg'}
           alt="Image description"

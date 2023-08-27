@@ -61,7 +61,7 @@ export default function TodoHome() {
   return (
     <>
       <HomeLayout>
-        <div className="mt-75pxr flex flex-col items-center justify-center">
+        <div className="flex w-full flex-col items-center justify-center">
           {isEmptyTodoList ? <EmptyTodoList /> : <TodoList />}
 
           {openModal && (
