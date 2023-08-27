@@ -29,11 +29,11 @@ const generateFormFields = <T extends keyof FormKeys>(
   const keys = Object.keys(formSchema) as T[]
 
   keys.forEach((key) => {
-    const { name, value, ref, placeholder, onChange } = formSchema[
+    const { name, value, ref, placeholder, type, onChange } = formSchema[
       key
     ] as FormFieldValue
 
-    formFields[key] = { name, value, ref, placeholder, onChange }
+    formFields[key] = { name, value, ref, placeholder, type, onChange }
   })
 
   return formFields

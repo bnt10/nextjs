@@ -34,6 +34,7 @@ export type FormFieldValue = {
   ref?: RefObject<HTMLInputElement>
   name: string
   placeholder?: string
+  type: string
   onChange?: () => void
 }
 

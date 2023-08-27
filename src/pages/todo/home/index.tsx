@@ -4,6 +4,7 @@ import Input from '@/component/common/Input'
 import Modal from '@/component/common/Modal'
 import EmptyTodoList from '@/component/todo/home/EmptyTodoList'
 import TaskButton from '@/component/todo/home/TasskButton'
+import TodoList from '@/component/todo/home/TodoList'
 import type { FormSchema } from '@/hooks/type'
 import { useForm } from '@/hooks/useForm'
 import useModal from '@/hooks/useModal'
@@ -56,12 +57,13 @@ export default function TodoHome() {
       title.ref?.current?.focus()
     }
   }, [openModal])
-  const isEmptyTodoList = true
+  const isEmptyTodoList = false
   return (
     <>
       <HomeLayout>
         <div className="mt-75pxr flex flex-col items-center justify-center">
-          {isEmptyTodoList && <EmptyTodoList />}
+          {isEmptyTodoList ? <EmptyTodoList /> : <TodoList />}
+
           {openModal && (
             <Modal>
               <div className="absolute bottom-[0] h-228pxr w-393pxr flex-col items-center justify-center rounded-t-2xl bg-footer-gray px-25pxr pb-17pxr pt-25pxr">
@@ -71,6 +73,7 @@ export default function TodoHome() {
                   </p>
 
                   <Input
+                    type={title.type}
                     value={title.value}
                     inputRef={title.ref}
                     name={title.name}
@@ -79,6 +82,7 @@ export default function TodoHome() {
                     style={addTaskInputSt}
                   />
                   <Input
+                    type={description.type}
                     value={description.value}
                     inputRef={description.ref}
                     name={description.name}

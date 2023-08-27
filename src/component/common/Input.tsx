@@ -8,6 +8,7 @@ interface InputProps {
   placeholder?: string
   handleInputChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   inputRef?: React.RefObject<HTMLInputElement>
+  type: string
 }
 type Style = {
   wrapper?: string
@@ -26,10 +27,11 @@ const Input = ({
   name,
   inputRef,
   placeholder,
+  type = 'text',
   handleInputChange,
 }: InputProps) => {
   const st = tw<Style>(twInputStyles, style)
-  console.log(placeholder)
+
   return (
     <div className={st.wrapper}>
       <input
@@ -38,7 +40,7 @@ const Input = ({
         onChange={handleInputChange}
         name={name}
         disabled={disabled}
-        type="text"
+        type={type}
         placeholder={placeholder}
         defaultValue={value}
       />
