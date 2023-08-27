@@ -1,0 +1,48 @@
+import { a, useSpring } from '@react-spring/web'
+
+import DynamicIcon from '@/component/common/Icon'
+
+const EXPAND_STATE = 'rotate(90deg)'
+const COLLAPSE_STATE = 'rotate(0deg)'
+
+interface Props {
+  title: string
+}
+
+const SortButton = ({ title }: Props) => {
+  const [springProps, api] = useSpring(() => ({
+    config: {
+      duration: 100,
+      friction: 300,
+    },
+    from: { transform: EXPAND_STATE },
+  }))
+
+  const isExpanded = () =>
+    api.current[0]?.springs.transform.get() === EXPAND_STATE
+
+  const toggleRotation = () => {
+    const nextRotation = isExpanded() ? COLLAPSE_STATE : EXPAND_STATE
+    api.start({ to: { transform: nextRotation } })
+  }
+
+  const handleSortListClick = () => {
+    toggleRotation()
+  }
+
+  return (
+    <div
+      onClick={handleSortListClick}
+      className="flex h-31pxr w-76pxr items-center justify-center rounded-md bg-footer-gray"
+    >
+      <span className="mr-10pxr text-xs leading-normal tracking-tight text-white/[87]">
+        {title}
+      </span>
+      <a.div style={springProps}>
+        <DynamicIcon color={'#FFFFFFDE'} size={14} iconName="FaChevronRight" />
+      </a.div>
+    </div>
+  )
+}
+
+export default SortButton
