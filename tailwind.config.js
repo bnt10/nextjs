@@ -40,6 +40,9 @@ module.exports = {
         'footer-gray': '#363636',
         'app-bg': '#121212',
         primary: '#8687E7',
+        black: {
+          100: '#1D1D1D',
+        },
         gray: {
           100: '#f7fafc',
           200: '#272727',
