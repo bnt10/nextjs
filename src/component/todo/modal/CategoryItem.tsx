@@ -53,7 +53,7 @@ export default function CategoryItem({
         style={{ backgroundColor: color }}
         onClick={onClick}
       >
-        <DynamicIcon iconName={icon} color={color} />
+        <DynamicIcon iconName={icon} color={color} luminance={30} />
       </a.button>
       <a.p
         style={{ color: selected === true ? springValues.color : '#FFFFFFDF' }}

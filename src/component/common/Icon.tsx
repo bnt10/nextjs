@@ -10,9 +10,16 @@ export type IconKeys = keyof typeof FaIcons | keyof typeof AiIcons
 interface DynamicIconProps {
   iconName: IconKeys
   color?: string
+  luminance?: number
+  size?: number
 }
 
-const DynamicIcon: FC<DynamicIconProps> = ({ iconName, color = '#80FFD1' }) => {
+const DynamicIcon: FC<DynamicIconProps> = ({
+  iconName,
+  color = '#80FFD1',
+  luminance = 0,
+  size = 24,
+}) => {
   let IconComponent: React.ComponentType<SVGProps<SVGSVGElement>> | null = null
 
   if (Object.hasOwnProperty.call(FaIcons, iconName)) {
@@ -25,9 +32,9 @@ const DynamicIcon: FC<DynamicIconProps> = ({ iconName, color = '#80FFD1' }) => {
     ] as React.ComponentType<SVGProps<SVGSVGElement>>
   }
 
-  const iconColor = darkenColor(color, 30)
+  const iconColor = darkenColor(color, luminance)
   if (IconComponent) {
-    return <IconComponent className="text-3xl" style={{ color: iconColor }} />
+    return <IconComponent fontSize={size} style={{ color: iconColor }} />
   }
 
   return null
