@@ -1,8 +1,8 @@
-import Image from 'next/image'
 import { useEffect } from 'react'
 
 import Input from '@/component/common/Input'
 import Modal from '@/component/common/Modal'
+import EmptyTodoList from '@/component/todo/home/EmptyTodoList'
 import TaskButton from '@/component/todo/home/TasskButton'
 import type { FormSchema } from '@/hooks/type'
 import { useForm } from '@/hooks/useForm'
@@ -56,27 +56,12 @@ export default function TodoHome() {
       title.ref?.current?.focus()
     }
   }, [openModal])
-
+  const isEmptyTodoList = true
   return (
     <>
       <HomeLayout>
         <div className="mt-75pxr flex flex-col items-center justify-center">
-          <div className="items-start">
-            <Image
-              src={'/assets/images/todo/home/index.svg'}
-              alt="Image description"
-              width={227}
-              height={227}
-            />
-          </div>
-          <div className="relative mt-[10pxr]">
-            <div className=" text-xl leading-normal  text-white text-opacity-90">
-              What do you want to do today?
-            </div>
-            <div className="mt-10pxr text-center text-base font-normal leading-normal text-white text-opacity-90">
-              Tap + to add your tasks
-            </div>
-          </div>
+          {isEmptyTodoList && <EmptyTodoList />}
           {openModal && (
             <Modal>
               <div className="absolute bottom-[0] h-228pxr w-393pxr flex-col items-center justify-center rounded-t-2xl bg-footer-gray px-25pxr pb-17pxr pt-25pxr">
