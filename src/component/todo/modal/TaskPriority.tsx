@@ -27,7 +27,7 @@ export default function TaskPriority() {
   return (
     <div className="absolute flex-col items-center justify-center ">
       <div className=" w-327pxr rounded bg-footer-gray px-8pxr pb-8pxr">
-        <div className="flex items-center justify-center border-b border-[#979797] py-10pxr">
+        <div className="flex items-center justify-center border-b border-gray-900 py-10pxr">
           <span className="text-white">Task Proirity</span>
         </div>
         <div className="flex flex-wrap items-center px-4pxr pt-22pxr">

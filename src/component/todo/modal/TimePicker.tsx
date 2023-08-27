@@ -26,7 +26,7 @@ export default function TimePicker() {
   return (
     <div className="absolute flex-col items-center justify-center ">
       <div className="h-206pxr w-327pxr rounded bg-footer-gray px-8pxr pb-8pxr">
-        <div className="flex items-center justify-center border-b border-[#979797] py-10pxr">
+        <div className="flex items-center justify-center border-b border-gray-900 py-10pxr">
           <span className="text-white">Choose Time</span>
         </div>
         <div className="flex h-106pxr items-center px-43pxr py-21pxr">
