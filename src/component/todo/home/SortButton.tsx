@@ -33,7 +33,7 @@ const SortButton = ({ title }: Props) => {
   return (
     <div
       onClick={handleSortListClick}
-      className="flex h-31pxr w-76pxr items-center justify-center rounded-md bg-footer-gray"
+      className="mb-16pxr flex h-31pxr w-76pxr items-center justify-center rounded-md bg-footer-gray"
     >
       <span className="mr-10pxr text-xs leading-normal tracking-tight text-white/[87]">
         {title}
