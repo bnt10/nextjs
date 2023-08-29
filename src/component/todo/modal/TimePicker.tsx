@@ -54,6 +54,7 @@ export default function TimePicker() {
           saveTitle={'Save'}
           saveHandler={() => {
             setSchemduleState(timeRef.current)
+            setModalContent(null)
           }}
           cancelTitle={'Cancel'}
           cancelHandler={() => {

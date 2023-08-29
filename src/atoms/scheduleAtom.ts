@@ -9,5 +9,6 @@ export const SchemduleState = atom<SchemduleStateType>({
     date: null,
     priority: 1,
     category: null,
+    timeZone: process.env.TIMEZONE || 'Asia/Seoul',
   },
 })
