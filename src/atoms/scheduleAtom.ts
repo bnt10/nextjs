@@ -1,25 +1,11 @@
 import { atom } from 'recoil'
 
-type TimeType = 'H' | 'M' | 'AmPm'
-type TimeData = {
-  [x in TimeType]?: string
-}
-type DateType = 'year' | 'month' | 'day'
-type DateData = {
-  [x in DateType]: number
-}
-
-type SchemduleStateType = {
-  time: TimeData
-  date: DateData | null
-  priority: number
-  category: string | null
-}
+import type { SchemduleStateType } from '@/types/schedule'
 
 export const SchemduleState = atom<SchemduleStateType>({
   key: 'SchemduleState',
   default: {
-    time: { H: '00', M: '00', AmPm: 'AM' },
+    time: { hour: '00', minute: '00', amPm: 'AM' },
     date: null,
     priority: 1,
     category: null,

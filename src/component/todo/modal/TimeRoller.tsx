@@ -2,23 +2,27 @@ import { a, useSprings } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import { useCallback, useEffect, useRef } from 'react'
 
+import type { TimeType } from '@/types/schedule'
 import { throttle } from '@/utils/timing'
 
-type TimeType = 'H' | 'M' | 'AmPm'
+type TimeItems = {
+  [x in TimeType]: string[]
+}
 interface Props {
   timeType: TimeType
   value?: string
   onTimeChange: (time: { [x in TimeType]?: string }) => void
 }
-const timeItems = {
-  H: Array.from({ length: 12 }, (_, index) =>
+
+const timeItems: TimeItems = {
+  hour: Array.from({ length: 12 }, (_, index) =>
     index.toString().padStart(2, '0')
   ),
-  M: Array.from({ length: 60 }, (_, index) =>
+  minute: Array.from({ length: 60 }, (_, index) =>
     index.toString().padStart(2, '0')
   ),
 
-  AmPm: ['AM', 'PM'],
+  amPm: ['AM', 'PM'],
 }
 
 const TIME_VISIABLE_INDEX = 3
@@ -39,7 +43,7 @@ export default function TimeRoller({ timeType, value, onTimeChange }: Props) {
   )
 
   const visiableCount =
-    timeType === 'AmPm' ? AM_PM_VISIABLE_INDEX : TIME_VISIABLE_INDEX
+    timeType === 'amPm' ? AM_PM_VISIABLE_INDEX : TIME_VISIABLE_INDEX
   const rollerLength = rollerItems.length
 
   const circularIndex = useCallback(
@@ -69,18 +73,18 @@ export default function TimeRoller({ timeType, value, onTimeChange }: Props) {
 
   const springHeight = (rollerIndex: number) => {
     return {
-      AmPm: {
+      amPm: {
         y: ITEM_HEIGHT * rollerIndex,
         updateY: ITEM_HEIGHT,
       },
-      H: {
+      hour: {
         y:
           rollerIndex < rollerLength - 1
             ? ITEM_HEIGHT * rollerIndex
             : -ITEM_HEIGHT,
         updateY: -ITEM_HEIGHT,
       },
-      M: {
+      minute: {
         y:
           rollerIndex < rollerLength - 1
             ? ITEM_HEIGHT * rollerIndex

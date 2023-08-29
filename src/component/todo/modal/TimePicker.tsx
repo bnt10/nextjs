@@ -3,14 +3,11 @@ import { useRecoilState } from 'recoil'
 
 import { modalContentState } from '@/atoms/modalAtom'
 import { scheduleTimeState } from '@/selectors/timeSelector'
+import type { TimeData } from '@/types/schedule'
 
 import ModalActionButtons from './ModalActionButtons'
 import TimeRoller from './TimeRoller'
 
-type TimeType = 'H' | 'M' | 'AmPm'
-type TimeData = {
-  [x in TimeType]?: string
-}
 export default function TimePicker() {
   const timeRef = useRef<TimeData>({})
   const [, setModalContent] = useRecoilState(modalContentState)
@@ -32,24 +29,24 @@ export default function TimePicker() {
         <div className="flex h-106pxr items-center px-43pxr py-21pxr">
           <div className="mr-13pxr">
             <TimeRoller
-              timeType={'H'}
+              timeType={'hour'}
               onTimeChange={onChange}
-              value={schemduleState.H}
+              value={schemduleState.hour}
             />
           </div>
           <div className="mr-14pxr">:</div>
           <div className="mr-16pxr">
             <TimeRoller
-              timeType={'M'}
+              timeType={'minute'}
               onTimeChange={onChange}
-              value={schemduleState.M}
+              value={schemduleState.minute}
             />
           </div>
           <div>
             <TimeRoller
-              timeType={'AmPm'}
+              timeType={'amPm'}
               onTimeChange={onChange}
-              value={schemduleState.AmPm}
+              value={schemduleState.amPm}
             />
           </div>
         </div>
