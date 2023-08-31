@@ -3,7 +3,7 @@ import '../styles/global.css'
 import type { AppProps } from 'next/app'
 import type { Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
 import { RecoilRoot } from 'recoil'
 
 import NestedModal from '@/component/common/NestedModal'
@@ -16,21 +16,29 @@ if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
 // Create a client
 const queryClient = new QueryClient()
 
+type RootProps = AppProps & {
+  pageProps: AppProps['pageProps'] & {
+    dehydratedState: any
+    session: Session
+  }
+}
 const MyApp = ({
   Component,
   pageProps: { session, ...pageProps },
-}: AppProps<{ session: Session }>) => {
+}: RootProps) => {
   return (
     <RecoilRoot>
       <QueryClientProvider client={queryClient}>
-        <SessionProvider session={session}>
-          <ModalProvider>
-            <Layout>
-              <Component {...pageProps} />
-              <NestedModal />
-            </Layout>
-          </ModalProvider>
-        </SessionProvider>
+        <Hydrate state={pageProps.dehydratedState}>
+          <SessionProvider session={session}>
+            <ModalProvider>
+              <Layout>
+                <Component {...pageProps} />
+                <NestedModal />
+              </Layout>
+            </ModalProvider>
+          </SessionProvider>
+        </Hydrate>
       </QueryClientProvider>
     </RecoilRoot>
   )

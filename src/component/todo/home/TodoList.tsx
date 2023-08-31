@@ -1,18 +1,43 @@
-import { useQuery } from 'react-query'
+import { dehydrate, QueryClient, useQuery } from 'react-query'
 
 import { fetchTodoList } from '@/services/todoList/api'
+import type { TodoItem } from '@/types/todoList'
 
 import SortButton from './SortButton'
 import TodoListItem from './TodoListItem'
 import TodoSearchBar from './TodoSearchBar'
 
-export default function TodoList() {
-  const { data, error, isLoading } = useQuery('todoList', fetchTodoList)
+type TodoListProps = {
+  initialData: TodoItem[]
+}
+
+export async function getServerSideProps() {
+  const queryClient = new QueryClient()
+  await queryClient.prefetchQuery('todoList', fetchTodoList)
+
+  const initialData = queryClient.getQueryData('todoList')
+
+  return {
+    props: {
+      initialData,
+      dehydratedState: dehydrate(queryClient),
+    },
+  }
+}
+
+export default function TodoList({ initialData }: TodoListProps) {
+  const {
+    data = initialData,
+    error,
+    isLoading,
+  } = useQuery('todoList', fetchTodoList, {
+    initialData,
+  })
   if (isLoading) {
-    return <div>Loading..</div>
+    return <div className="text-white">Loading..</div>
   }
   if (error) {
-    return <div>No data!</div>
+    return <div className="text-white">No data!</div>
   }
 
   return (
@@ -21,7 +46,6 @@ export default function TodoList() {
       <SortButton title={'Today'} />
       {data?.map(
         ({ id, title, categoryId, isCompleted, priority, targetDay }) => {
-          console.log(targetDay)
           return (
             <TodoListItem
               key={id}
@@ -36,4 +60,8 @@ export default function TodoList() {
       )}
     </div>
   )
+}
+
+TodoList.defaultProps = {
+  initialData: [],
 }
