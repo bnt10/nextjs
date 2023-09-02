@@ -1,5 +1,6 @@
 import process from 'process'
 import { useState } from 'react'
+import type { Value } from 'react-calendar/dist/cjs/shared/types'
 import { useRecoilState } from 'recoil'
 
 import { modalContentState } from '@/atoms/modalAtom'
@@ -9,10 +10,6 @@ import CalendarNavigation from './CalendarNavigation'
 import ModalActionButtons from './ModalActionButtons'
 import StyledCalendar from './StyledCalendar'
 import TimePicker from './TimePicker'
-
-type ValuePiece = Date | null
-
-type Value = ValuePiece | [ValuePiece, ValuePiece]
 
 export default function CalendarModal() {
   const [schemduleDate, setSchemduleDate] = useRecoilState(schemduleDateState)

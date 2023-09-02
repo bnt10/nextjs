@@ -1,14 +1,13 @@
-import { useRecoilState } from 'recoil'
+import { useRouter } from 'next/router'
 
-import { modalContentState } from '@/atoms/modalAtom'
 import useModal from '@/hooks/useModal'
 
 import Button from '../common/Button'
-import Calendar from '../todo/modal/Calendar'
 
 export default function Footer() {
   const { openModal, setOpenModal } = useModal()
-  const [, setModalContent] = useRecoilState(modalContentState)
+  const router = useRouter()
+
   const textWithIconBtnStyle = {
     button:
       'flex ml-20 w-48pxr h-50pxr flex-col align-middle justify-center items-center',
@@ -26,7 +25,7 @@ export default function Footer() {
       title: 'Calendar',
       icon: '/assets/images/todo/footer/calendar.svg',
       handler: async () => {
-        setModalContent(<Calendar />)
+        router.push('/todo/calendar/')
       },
       style: textWithIconBtnStyle,
     },
