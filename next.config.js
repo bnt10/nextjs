@@ -22,4 +22,7 @@ module.exports = withBundleAnalyzer({
     });
     return config;
   },
+  compiler: {
+    styledComponents: true,
+  },
 });
