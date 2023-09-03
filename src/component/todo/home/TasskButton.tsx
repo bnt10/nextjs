@@ -2,6 +2,7 @@ import { useRecoilState } from 'recoil'
 
 import { modalContentState } from '@/atoms/modalAtom'
 import Button from '@/component/common/Button'
+import { ICON_FALG, ICON_SEND, ICON_TAG, ICON_TIMER } from '@/config/icon'
 import { iconBtnSt } from '@/styles/todo/home'
 import type { Component } from '@/types/component'
 
@@ -16,7 +17,7 @@ export default function TaskButton() {
     timer: {
       id: 'timer',
       component: Button,
-      props: { style: iconBtnSt, icon: '/assets/images/todo/home/timer.svg' },
+      props: { style: iconBtnSt, icon: ICON_TIMER },
       handler: async () => {
         setModalContent(<Calendar />)
       },
@@ -24,7 +25,7 @@ export default function TaskButton() {
     tag: {
       id: 'tag',
       component: Button,
-      props: { style: iconBtnSt, icon: '/assets/images/todo/home/tag.svg' },
+      props: { style: iconBtnSt, icon: ICON_TAG },
       handler: async () => {
         setModalContent(<Category />)
       },
@@ -32,7 +33,7 @@ export default function TaskButton() {
     flag: {
       id: 'flag',
       component: Button,
-      props: { style: iconBtnSt, icon: '/assets/images/todo/home/flag.svg' },
+      props: { style: iconBtnSt, icon: ICON_FALG },
       handler: async () => {
         setModalContent(<TaskPriority />)
       },
@@ -44,7 +45,7 @@ export default function TaskButton() {
         style: {
           icon: 'absolute right-26pxr bottom-17pxr w-24pxr h-24pxr flex-shrink-0',
         },
-        icon: '/assets/images/todo/home/send.svg',
+        icon: ICON_SEND,
       },
       handler: async () => {},
     },

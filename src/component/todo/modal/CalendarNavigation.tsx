@@ -6,7 +6,7 @@ export default function CalendarNavigation({ label }: Props) {
 
   return (
     <div>
-      <div className={'text-sm leading-6 text-white/[87]'}>{monthlabel}</div>
+      <div className={'text-sm leading-6 text-white/[0.87]'}>{monthlabel}</div>
       <div className={'text-xsm leading-6 text-[#AFAFAF]'}>{yearLabel}</div>
     </div>
   )

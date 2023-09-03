@@ -1,3 +1,5 @@
+import { ICON_HEADER_PROFILE, ICON_MORE } from '@/config/icon'
+
 import Button from '../common/Button'
 
 export default function Header() {
@@ -12,7 +14,7 @@ export default function Header() {
   return (
     <div className="mx-auto mt-13pxr flex h-42pxr w-327pxr items-center justify-between ">
       <Button
-        icon={'/assets/images/todo/header/more-button.svg'}
+        icon={ICON_MORE}
         style={headerBtnSt}
         title={''}
         handler={() => {}}
@@ -22,7 +24,7 @@ export default function Header() {
       </span>
 
       <Button
-        icon={'/assets/images/todo/header/profile.jpg'}
+        icon={ICON_HEADER_PROFILE}
         style={profileSt}
         title={''}
         handler={() => {}}

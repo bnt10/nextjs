@@ -1,11 +1,13 @@
 import Image from 'next/image'
 
+import { ICON_EMPTY } from '@/config/icon'
+
 export default function EmptyTodoList() {
   return (
     <>
       <div className="mt-75pxr items-start">
         <Image
-          src={'/assets/images/todo/home/index.svg'}
+          src={ICON_EMPTY}
           alt="Image description"
           width={227}
           height={227}

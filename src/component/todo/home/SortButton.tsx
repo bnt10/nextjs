@@ -35,7 +35,7 @@ const SortButton = ({ title }: Props) => {
       onClick={handleSortListClick}
       className="mb-16pxr flex h-31pxr w-76pxr items-center justify-center rounded-md bg-footer-gray"
     >
-      <span className="mr-10pxr text-xs leading-normal tracking-tight text-white/[87]">
+      <span className="mr-10pxr text-xs leading-normal tracking-tight text-white/[0.87]">
         {title}
       </span>
       <a.div style={springProps}>

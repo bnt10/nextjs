@@ -1,5 +1,12 @@
 import { useRouter } from 'next/router'
 
+import {
+  ICON_ADD,
+  ICON_CALENDAR,
+  ICON_CLOCK,
+  ICON_HOME,
+  ICON_PROFILE,
+} from '@/config/icon'
 import useModal from '@/hooks/useModal'
 
 import Button from '../common/Button'
@@ -17,13 +24,13 @@ export default function Footer() {
   const footerItem = [
     {
       title: 'index',
-      icon: '/assets/images/todo/footer/home.svg',
+      icon: ICON_HOME,
       handler: () => {},
       style: textWithIconBtnStyle,
     },
     {
       title: 'Calendar',
-      icon: '/assets/images/todo/footer/calendar.svg',
+      icon: ICON_CALENDAR,
       handler: async () => {
         router.push('/todo/calendar/')
       },
@@ -31,7 +38,7 @@ export default function Footer() {
     },
     {
       title: '',
-      icon: '/assets/images/todo/footer/add.svg',
+      icon: ICON_ADD,
       handler: () => {
         setOpenModal(!openModal)
       },
@@ -43,13 +50,13 @@ export default function Footer() {
     },
     {
       title: 'Focuse',
-      icon: '/assets/images/todo/footer/clock.svg',
+      icon: ICON_CLOCK,
       handler: () => {},
       style: textWithIconBtnStyle,
     },
     {
       title: 'Profile',
-      icon: '/assets/images/todo/footer/profile.svg',
+      icon: ICON_PROFILE,
       handler: () => {},
       style: textWithIconBtnStyle,
     },
