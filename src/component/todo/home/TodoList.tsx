@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { dehydrate, QueryClient, useQuery } from 'react-query'
 
 import { fetchTodoList } from '@/services/todoList/api'
@@ -26,6 +27,7 @@ export async function getServerSideProps() {
 }
 
 export default function TodoList({ initialData }: TodoListProps) {
+  const router = useRouter()
   const {
     data = initialData,
     error,
@@ -39,25 +41,26 @@ export default function TodoList({ initialData }: TodoListProps) {
   if (error) {
     return <div className="text-white">No data!</div>
   }
-
+  const openDetailWithTask = (taskIconId: string) => {
+    router.push(`/todo/taskEditor?taskIconId=${taskIconId}`)
+  }
   return (
     <div className="mt-16pxr flex w-full flex-col px-24pxr">
       <TodoSearchBar />
       <SortButton title={'Today'} />
-      {data?.map(
-        ({ id, title, categoryId, isCompleted, priority, targetDay }) => {
-          return (
-            <TodoListItem
-              key={id}
-              isComplated={isCompleted}
-              title={title}
-              startDay={'Today At 16:45'}
-              taskIconId={categoryId}
-              priority={priority}
-            />
-          )
-        }
-      )}
+      {data?.map(({ id, title, categoryId, isCompleted, priority }) => {
+        return (
+          <TodoListItem
+            key={id}
+            isComplated={isCompleted}
+            title={title}
+            startDay={'Today At 16:45'}
+            taskIconId={categoryId}
+            priority={priority}
+            onClickHandler={openDetailWithTask}
+          />
+        )
+      })}
     </div>
   )
 }
