@@ -1,3 +1,5 @@
+import CustomCalendar from '@/component/todo/calendarPage/CustomCalendar'
+
 export default function TodoCalendar() {
   // const onDateChangeHandler = () => {}
   // const [schemduleDate, setSchemduleDate] = useRecoilState(schemduleDateState)
@@ -15,5 +17,9 @@ export default function TodoCalendar() {
   //     />
   //   </CalendarPageLayout>
   // )
-  return <div>Calendar Page</div>
+  return (
+    <div>
+      <CustomCalendar />
+    </div>
+  )
 }
