@@ -2,7 +2,7 @@ import tw from '@/utils/twMergeObjects'
 
 import ImageIcon from './ImageIcon'
 
-type Style = {
+export type ButtonStyle = {
   button?: string
   icon?: string
   title?: string
@@ -12,7 +12,7 @@ type ButtonProps = {
   title?: string
   icon?: string
   handler: (value?: any) => void
-  style?: Style
+  style?: ButtonStyle
   disabled?: boolean
 }
 
@@ -29,7 +29,7 @@ const Button = ({
   icon,
   disabled = false,
 }: ButtonProps) => {
-  const st = tw<Style>(twButtonStyles, style)
+  const st = tw<ButtonStyle>(twButtonStyles, style)
   return (
     <button
       type="button"
