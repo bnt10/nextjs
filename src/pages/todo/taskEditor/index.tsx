@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router'
 
+import TaskCompleteToggle from '@/component/todo/taskEditor/TaskCompleteToggle'
 import TaskItem from '@/component/todo/taskEditor/TaskItem'
-import { ICON_PRIORITY, ICON_SEND, ICON_TAG, ICON_TIMER } from '@/config/icon'
+import { ICON_PRIORITY, ICON_SUB, ICON_TAG, ICON_TIMER } from '@/config/icon'
 import TaskEditorPageLayout from '@/layouts/todo/TaskEditorPageLayout'
 
 const TaskType = {
@@ -35,7 +36,7 @@ const TaskDetailList = [
     id: 4,
     title: 'Sub - Task',
     taskType: TaskType.Sub,
-    icon: ICON_SEND,
+    icon: ICON_SUB,
   },
 ]
 export default function TaskEditor() {
@@ -48,6 +49,7 @@ export default function TaskEditor() {
   return (
     <TaskEditorPageLayout>
       <div className="flex w-full flex-col items-center justify-center px-24pxr">
+        <TaskCompleteToggle />
         {TaskDetailList.map(({ id, title, taskType, icon }) => (
           <TaskItem
             key={id}

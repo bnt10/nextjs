@@ -16,3 +16,6 @@ export const ICON_EMPTY = '/assets/images/todo/home/index.svg'
 
 export const ICON_CLOSE = '/assets/images/todo/editor/close.svg'
 export const ICON_REPEAT = '/assets/images/todo/editor/repeat.svg'
+
+export const ICON_SUB = '/assets/images/hierarchy.svg'
+export const ICON_DETAIL_EDIT = '/assets/images/detail-edit.svg'
