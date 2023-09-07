@@ -1,43 +1,68 @@
-import type { ButtonStyle } from '@/component/common/Button'
-import Button from '@/component/common/Button'
+import DynamicIcon from '@/component/common/Icon'
 import ImageIcon from '@/component/common/ImageIcon'
+import type { CategoryListType } from '@/config/category'
+import { CategoryList } from '@/config/category'
 import type { TaskTypeKeys } from '@/pages/todo/taskEditor'
-import tw from '@/utils/twMergeObjects'
 
 const TaskItemIconStyle = 'relative w-24pxr h-24pxr mr-8pxr'
-
-const TaskItemButtonStyle: ButtonStyle = {
-  icon: 'relative w-24pxr h-24pxr mr-8pxr',
-  button:
-    'rounded-md bg-white/[0.22] flex justify-center items-center px-16pxr py-8pxr',
-  title: 'text-white/[0.87]',
-}
 
 interface Props {
   taskType: TaskTypeKeys
   title: string
-  style?: ButtonStyle
   TaskHandler: (taskType: TaskTypeKeys) => void
   icon: string
+  content?: string
+  contentIconID?: string
+  customClass?: string
 }
 export default function TaskItem({
   taskType,
   title,
-  style,
   TaskHandler,
   icon,
+  content,
+  contentIconID,
+  customClass = '',
 }: Props) {
   const handler = () => {
     TaskHandler(taskType)
   }
-  const buttonStyle = tw<ButtonStyle>(TaskItemButtonStyle, style)
+  const categoryInfo = contentIconID
+    ? (CategoryList.find(
+        (item) => item.id === contentIconID
+      ) as CategoryListType)
+    : false
+
   return (
-    <div className="mb-34pxr flex h-37pxr w-full justify-between">
+    <div
+      onClick={handler}
+      className={`mb-34pxr flex h-37pxr w-full cursor-auto justify-between hover:cursor-pointer `}
+    >
       <div className="flex items-center">
         <ImageIcon style={TaskItemIconStyle} iconSrc={icon} />
-        <span className="text-base text-white/[0.87]">{title}</span>
+        <span className={`text-base text-white/[0.87]  ${customClass}`}>
+          {title}
+        </span>
       </div>
-      <Button style={buttonStyle} handler={handler} title="Today At 16:45" />
+      {(content || contentIconID) && (
+        <div className="flex items-center justify-center rounded-md bg-white/[0.22] px-16pxr py-8pxr">
+          {categoryInfo && (
+            <>
+              <div className="mr-10pxr">
+                <DynamicIcon
+                  iconName={categoryInfo.icon}
+                  color={categoryInfo.color}
+                  luminance={30}
+                />
+              </div>
+              <span className="text-white/[0.87]">{categoryInfo.title}</span>
+            </>
+          )}
+          {!categoryInfo && (
+            <span className="text-white/[0.87]"> {content}</span>
+          )}
+        </div>
+      )}
     </div>
   )
 }

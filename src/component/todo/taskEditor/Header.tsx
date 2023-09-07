@@ -11,7 +11,7 @@ export default function TaskEditorPageHeader() {
   const onRefeatHandler = () => {}
 
   return (
-    <div className="mx-auto mt-13pxr flex h-42pxr w-full items-center justify-between px-28pxr ">
+    <div className="mx-auto mt-13pxr flex h-42pxr w-full items-center justify-between ">
       <Button
         style={headerButtonStyle}
         handler={onCloseHandler}
