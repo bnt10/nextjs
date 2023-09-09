@@ -1,5 +1,9 @@
+import { a, useSprings } from '@react-spring/web'
+import { useGesture } from '@use-gesture/react'
 import moment from 'moment'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+
+import { throttle } from '@/utils/timing'
 
 // const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 const VISIBLE_DAY_COUNT = 7
@@ -24,15 +28,39 @@ export default function CustomCalendar() {
   useEffect(() => {
     returnToday()
   }, [])
+  const [springValues, api] = useSprings(visibleDays.length, (i) => {
+    return {
+      x: i * 30,
+    }
+  })
+  const runSprings = useCallback(() => {
+    api.start((i) => {
+      return {
+        x: i * 60,
+      }
+    })
+  }, [api])
 
+  const target = useRef<HTMLDivElement | null>(null)
+  useGesture(
+    {
+      onWheel: throttle(({ event, offset: [, y], direction: [, dy] }) => {
+        event.preventDefault()
+
+        runSprings()
+      }, 100),
+    },
+
+    { target, wheel: { eventOptions: { passive: false } } }
+  )
   return (
     <>
-      <div>
-        {visibleDays.map(({ day, weekDay, key }) => {
+      <div ref={target} className="flex">
+        {visibleDays.map(({ day, weekDay, key }, i) => {
           return (
-            <div key={key}>
+            <a.div style={{ x: springValues[i]?.x }} key={key}>
               <span>{day}</span> <span>{weekDay}</span>
-            </div>
+            </a.div>
           )
         })}
       </div>
