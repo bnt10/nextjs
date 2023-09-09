@@ -66,7 +66,12 @@ export default function TaskEditor() {
   return (
     <TaskEditorPageLayout>
       <div className="flex w-full flex-col items-center justify-center">
-        <TaskCompleteToggle />
+        <TaskCompleteToggle
+          taskId={''}
+          onCompleteHandler={function (taskId: string): void {
+            console.log(taskId)
+          }}
+        />
         {TaskDetailList.map(
           ({
             id,

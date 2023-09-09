@@ -1,69 +1,93 @@
-import { a, useSprings } from '@react-spring/web'
+import { a, useSpring } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import moment from 'moment'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 
 import { throttle } from '@/utils/timing'
 
-// const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-const VISIBLE_DAY_COUNT = 7
-const SIDE_DAY_COUNT = 3
+// const VISIBLE_DAY_COUNT = 7
+const PRELOAD_DAY_COUNT = 0
+const SIDE_DAY_COUNT = 10
+const DAY_WIDTH = 29
+const DAY_HEIGHT = 42
+
+function generateDayObject(currentDay: moment.Moment) {
+  return {
+    day: currentDay.format('D'),
+    weekDay: currentDay.format('ddd'),
+    key: `${currentDay.format('YYYY-MM-DD')}-${currentDay.format('ddd')}`,
+  }
+}
+
 export default function CustomCalendar() {
-  const [date, setdate] = useState<moment.Moment>(() => moment())
+  const [date] = useState(() => moment())
 
-  const returnToday = () => setdate(moment())
-  const visibleDays = Array.from({ length: VISIBLE_DAY_COUNT }, (_, i) => {
-    const currentDay = date
-      .clone()
-      .subtract(1, 'days')
-      .subtract(SIDE_DAY_COUNT, 'days')
-      .add(i, 'days')
+  const [visibleDays] = useState(() => {
+    return Array.from({ length: SIDE_DAY_COUNT * 2 + 1 }, (_, i) => {
+      const currentDay = date
+        .clone()
+        .subtract(SIDE_DAY_COUNT + PRELOAD_DAY_COUNT, 'days')
+        .add(i, 'days')
 
-    return {
-      day: currentDay.format('D'), // '4'
-      weekDay: currentDay.format('ddd'), // 'Mon'
-      key: `${currentDay.format('YYYY-MM-DD')}-${currentDay.format('ddd')}`,
-    }
-  })
-  useEffect(() => {
-    returnToday()
-  }, [])
-  const [springValues, api] = useSprings(visibleDays.length, (i) => {
-    return {
-      x: i * 30,
-    }
-  })
-  const runSprings = useCallback(() => {
-    api.start((i) => {
-      return {
-        x: i * 60,
-      }
+      return generateDayObject(currentDay)
     })
-  }, [api])
+  })
 
-  const target = useRef<HTMLDivElement | null>(null)
+  const [containerSpring, setContainerSpring] = useSpring(() => ({
+    // x:
+    //   -(PRELOAD_DAY_COUNT + SIDE_DAY_COUNT + VISIBLE_DAY_COUNT + 1) * DAY_WIDTH,
+    x: 0,
+  }))
+
+  const runSprings = useCallback((_: number) => {}, [visibleDays, date])
+
+  const target = useRef(null)
   useGesture(
     {
-      onWheel: throttle(({ event, offset: [, y], direction: [, dy] }) => {
+      onWheel: throttle(({ event, offset: [, _], direction: [, dy] }) => {
         event.preventDefault()
-
-        runSprings()
-      }, 100),
+        runSprings(dy)
+      }, 1000),
+      onClick: () => {
+        setContainerSpring(() => {
+          return {
+            x: containerSpring.x.get() + DAY_WIDTH,
+          }
+        })
+        runSprings(-1)
+      },
     },
-
-    { target, wheel: { eventOptions: { passive: false } } }
+    {
+      target,
+      wheel: { eventOptions: { passive: false } },
+    }
   )
+
   return (
     <>
-      <div ref={target} className="flex">
-        {visibleDays.map(({ day, weekDay, key }, i) => {
-          return (
-            <a.div style={{ x: springValues[i]?.x }} key={key}>
-              <span>{day}</span> <span>{weekDay}</span>
+      <div className="flex w-full max-w-[375px]  overflow-hidden">
+        <a.div
+          ref={target}
+          className="relative flex justify-center bg-red-100"
+          style={containerSpring}
+        >
+          {visibleDays.map(({ day, weekDay, key }) => (
+            <a.div
+              className="mr-15pxr rounded bg-gray-200 px-5pxr py-3pxr text-white"
+              key={key}
+            >
+              <div
+                className="flex flex-col items-center justify-center"
+                style={{ width: DAY_WIDTH, height: DAY_HEIGHT }}
+              >
+                <p className="text-xs">{weekDay}</p>
+                <p className="text-xs">{day}</p>
+              </div>
             </a.div>
-          )
-        })}
+          ))}
+        </a.div>
       </div>
+      <button ref={target}>test Button</button>
     </>
   )
 }
