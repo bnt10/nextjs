@@ -2,16 +2,27 @@ import type { FC, SVGProps } from 'react'
 import React from 'react'
 import * as AiIcons from 'react-icons/ai'
 import * as FaIcons from 'react-icons/fa'
+import * as Hi12Icons from 'react-icons/hi2'
 
 import { darkenColor } from '@/utils/darkcolor'
 
-export type IconKeys = keyof typeof FaIcons | keyof typeof AiIcons
+export type IconKeys =
+  | keyof typeof FaIcons
+  | keyof typeof AiIcons
+  | keyof typeof Hi12Icons
 
 interface DynamicIconProps {
   iconName: IconKeys
   color?: string
   luminance?: number
   size?: number
+}
+
+// 객체로 아이콘 라이브러리 묶기
+const iconLibraries = {
+  FaIcons,
+  AiIcons,
+  Hi12Icons,
 }
 
 const DynamicIcon: FC<DynamicIconProps> = ({
@@ -22,14 +33,13 @@ const DynamicIcon: FC<DynamicIconProps> = ({
 }) => {
   let IconComponent: React.ComponentType<SVGProps<SVGSVGElement>> | null = null
 
-  if (Object.hasOwnProperty.call(FaIcons, iconName)) {
-    IconComponent = FaIcons[
-      iconName as keyof typeof FaIcons
-    ] as React.ComponentType<SVGProps<SVGSVGElement>>
-  } else if (Object.hasOwnProperty.call(AiIcons, iconName)) {
-    IconComponent = AiIcons[
-      iconName as keyof typeof AiIcons
-    ] as React.ComponentType<SVGProps<SVGSVGElement>>
+  for (const library of Object.values(iconLibraries)) {
+    if (Object.hasOwnProperty.call(library, iconName)) {
+      IconComponent = library[
+        iconName as keyof typeof library
+      ] as React.ComponentType<SVGProps<SVGSVGElement>>
+      break
+    }
   }
 
   const iconColor = darkenColor(color, luminance)
