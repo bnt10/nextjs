@@ -23,7 +23,7 @@ export default function UserInfo() {
       </div>
       <div className="mb-20pxr text-xl text-white">Martha Hays</div>
 
-      <div className="mb-32pxr flex w-full justify-between">
+      <div className="mb-24pxr flex w-full justify-between">
         <Button style={buttonStyle} handler={handler} title={'10 Task left'} />
         <Button style={buttonStyle} handler={handler} title={'5 Task Done'} />
       </div>

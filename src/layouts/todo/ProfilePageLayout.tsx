@@ -5,9 +5,11 @@ import type { LayoutProps } from './type'
 
 export default function ProfileLayout({ children }: LayoutProps) {
   return (
-    <div className="relative flex h-screen flex-col items-center bg-app-bg px-24pxr">
-      <ProfileHeader />
-      {children}
+    <div className="relative flex h-screen flex-col items-center bg-app-bg ">
+      <div className="w-full overflow-y-auto px-24pxr">
+        <ProfileHeader />
+        <div className="mb-100pxr w-full ">{children}</div>
+      </div>
       <Footer />
     </div>
   )
