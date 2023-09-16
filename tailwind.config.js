@@ -14,13 +14,16 @@ module.exports = {
     },
 
     screens: {
-      mobile: '360px',
+      mobile: '375px',
       foldable: '523px',
       tablet: '768px',
       'under-foldable': { max: '522px' },
       'under-tablet': { max: '767px' },
       'under-mobile': { max: '359px' },
       dssktop: '1200px',
+    },
+    maxWidth: {
+      mobile: '100%',
     },
     fontSize: {
       xsm: '0.625rem',

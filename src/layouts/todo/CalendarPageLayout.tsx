@@ -5,10 +5,12 @@ import type { LayoutProps } from './type'
 
 export default function CalendarPageLayout({ children }: LayoutProps) {
   return (
-    <div className="relative flex h-screen flex-col items-center bg-app-bg ">
-      <CalendarPageHeader />
-      {children}
-      <Footer />
+    <div className="flex justify-center">
+      <div className="relative flex h-screen w-screen flex-col items-center bg-app-bg foldable:w-375pxr">
+        <CalendarPageHeader />
+        {children}
+        <Footer />
+      </div>
     </div>
   )
 }
