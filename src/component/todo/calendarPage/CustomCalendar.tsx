@@ -1,28 +1,51 @@
-import { a, useSpring } from '@react-spring/web'
+import { a, useSpring, useSprings } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import moment from 'moment'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import { throttle } from '@/utils/timing'
 
-// const VISIBLE_DAY_COUNT = 7
+const VISIBLE_DAY_COUNT = 7
 const PRELOAD_DAY_COUNT = 0
+const daysLeft = 3
 const SIDE_DAY_COUNT = 10
-const DAY_WIDTH = 29
-const DAY_HEIGHT = 42
+const DAY_WIDTH = 54
+const DAY_HEIGHT = 49
+const START_DAYS_OFFSET_X = 1
+// const NEXT_DAY = 1
+const PRIOUS_DAY = -1
+const ADD_DATE = 10
+// const PREVIOUS_DAY = +1
 
-function generateDayObject(currentDay: moment.Moment) {
+type DayItem = {
+  day: string
+  weekDay: string
+  key: string
+}
+
+const needsMoreData = (visibleDays: DayItem[], currentDay: moment.Moment) => {
+  console.log(visibleDays[daysLeft]?.key, currentDay.format('YYYY-MM-DD'))
+  return visibleDays[daysLeft]?.key === currentDay.format('YYYY-MM-DD')
+}
+function generateDayObject(currentDay: moment.Moment): DayItem {
   return {
     day: currentDay.format('D'),
     weekDay: currentDay.format('ddd'),
-    key: `${currentDay.format('YYYY-MM-DD')}-${currentDay.format('ddd')}`,
+    key: `${currentDay.format('YYYY-MM-DD')}`,
   }
+}
+
+function getSelectedDay(selectedDay: moment.Moment, currentDay: string) {
+  return selectedDay.format('YYYY-MM-DD') === currentDay ? '#8687E7' : '#4C4C4C'
 }
 
 export default function CustomCalendar() {
   const [date] = useState(() => moment())
+  const dateRef = useRef(date)
+  const target = useRef(null)
+  const isNeedsMoreData = useRef(false)
 
-  const [visibleDays] = useState(() => {
+  const [visibleDays, setVisibleDays] = useState(() => {
     return Array.from({ length: SIDE_DAY_COUNT * 2 + 1 }, (_, i) => {
       const currentDay = date
         .clone()
@@ -34,14 +57,67 @@ export default function CustomCalendar() {
   })
 
   const [containerSpring, setContainerSpring] = useSpring(() => ({
-    // x:
-    //   -(PRELOAD_DAY_COUNT + SIDE_DAY_COUNT + VISIBLE_DAY_COUNT + 1) * DAY_WIDTH,
-    x: 0,
+    x: -(VISIBLE_DAY_COUNT * DAY_WIDTH) - START_DAYS_OFFSET_X,
   }))
 
-  const runSprings = useCallback((_: number) => {}, [visibleDays, date])
+  const [daysSpring, api] = useSprings(visibleDays.length, (dayIndex) => {
+    return {
+      backgroundColor: getSelectedDay(
+        dateRef.current,
+        visibleDays[dayIndex]?.key ?? ''
+      ),
+    }
+  })
 
-  const target = useRef(null)
+  const addDate = (_: number) => {
+    const extraDays = Array.from({ length: ADD_DATE }, (__, i) => {
+      return generateDayObject(
+        moment(visibleDays[0]?.key).subtract(ADD_DATE - i, 'days')
+      )
+    })
+
+    setVisibleDays((prev) => [...extraDays, ...prev])
+  }
+
+  useEffect(() => {
+    if (isNeedsMoreData.current) {
+      console.log('sss')
+      setContainerSpring(() => {
+        return {
+          x: containerSpring.x.get() + DAY_WIDTH * ADD_DATE * -1,
+          immediate: true,
+        }
+      })
+    }
+    isNeedsMoreData.current = false
+  }, [visibleDays])
+
+  const runSprings = useCallback(
+    (dy: number) => {
+      setContainerSpring(() => {
+        return {
+          cancel: () => {
+            return true
+          },
+          x: containerSpring.x.get() + DAY_WIDTH * dy,
+        }
+      })
+
+      api.start((i) => {
+        return {
+          backgroundColor: getSelectedDay(
+            dateRef.current,
+            visibleDays[i]?.key ?? ''
+          ),
+        }
+      })
+      if (isNeedsMoreData.current) {
+        addDate(PRIOUS_DAY)
+      }
+    },
+    [visibleDays, date]
+  )
+
   useGesture(
     {
       onWheel: throttle(({ event, offset: [, _], direction: [, dy] }) => {
@@ -49,12 +125,10 @@ export default function CustomCalendar() {
         runSprings(dy)
       }, 1000),
       onClick: () => {
-        setContainerSpring(() => {
-          return {
-            x: containerSpring.x.get() + DAY_WIDTH,
-          }
-        })
-        runSprings(-1)
+        dateRef.current = dateRef.current.clone().add(PRIOUS_DAY, 'days')
+        console.log('clcik!')
+        isNeedsMoreData.current = needsMoreData(visibleDays, dateRef.current)
+        runSprings(-PRIOUS_DAY)
       },
     },
     {
@@ -65,29 +139,32 @@ export default function CustomCalendar() {
 
   return (
     <>
-      <div className="flex w-full max-w-[375px]  overflow-hidden">
+      <div className="flex w-full max-w-mobile overflow-hidden">
         <a.div
           ref={target}
-          className="relative flex justify-center bg-red-100"
+          className="relative flex justify-center bg-footer-gray"
           style={containerSpring}
         >
-          {visibleDays.map(({ day, weekDay, key }) => (
+          {visibleDays.map(({ day, weekDay, key }, index) => (
             <a.div
-              className="mr-15pxr rounded bg-gray-200 px-5pxr py-3pxr text-white"
+              className="box-border flex justify-center px-6pxr pb-3pxr text-white"
+              style={{ width: DAY_WIDTH, height: DAY_HEIGHT }}
               key={key}
             >
-              <div
-                className="flex flex-col items-center justify-center"
-                style={{ width: DAY_WIDTH, height: DAY_HEIGHT }}
+              <a.div
+                className={`flex w-full flex-col items-center  justify-center rounded`}
+                style={daysSpring[index]}
               >
                 <p className="text-xs">{weekDay}</p>
                 <p className="text-xs">{day}</p>
-              </div>
+              </a.div>
             </a.div>
           ))}
         </a.div>
       </div>
-      <button ref={target}>test Button</button>
+      <button className="text-white" ref={target}>
+        test Button
+      </button>
     </>
   )
 }

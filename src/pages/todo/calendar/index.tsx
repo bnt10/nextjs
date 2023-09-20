@@ -1,4 +1,5 @@
 import CustomCalendar from '@/component/todo/calendarPage/CustomCalendar'
+import CalendarPageLayout from '@/layouts/todo/CalendarPageLayout'
 
 export default function TodoCalendar() {
   // const onDateChangeHandler = () => {}
@@ -18,8 +19,8 @@ export default function TodoCalendar() {
   //   </CalendarPageLayout>
   // )
   return (
-    <div>
+    <CalendarPageLayout>
       <CustomCalendar />
-    </div>
+    </CalendarPageLayout>
   )
 }
