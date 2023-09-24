@@ -113,7 +113,7 @@ export default function CustomCalendar() {
     ) as string
 
     const extraDays = Array.from({ length: ADD_DATE }, (_, i) =>
-      generateDayObject(calculateDay(startDay, i, isAppending))
+      generateDayObject(calculateDay(startDay as string, i, isAppending))
     )
 
     setVisibleDays((prev) =>
