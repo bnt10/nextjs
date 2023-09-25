@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
 
-import TaskCompleteToggle from '@/component/todo/taskEditor/TaskCompleteToggle'
 import TaskItem from '@/component/todo/taskEditor/TaskItem'
 import {
   ICON_PRIORITY,
@@ -66,12 +65,6 @@ export default function TaskEditor() {
   return (
     <TaskEditorPageLayout>
       <div className="flex w-full flex-col items-center justify-center">
-        <TaskCompleteToggle
-          taskId={''}
-          onCompleteHandler={function (taskId: string): void {
-            console.log(taskId)
-          }}
-        />
         {TaskDetailList.map(
           ({
             id,

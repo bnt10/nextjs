@@ -4,9 +4,7 @@ import { dehydrate, QueryClient, useQuery } from 'react-query'
 import { fetchTodoList } from '@/services/todoList/api'
 import type { TodoItem } from '@/types/todoList'
 
-import SortButton from './SortButton'
 import TodoListItem from './TodoListItem'
-import TodoSearchBar from './TodoSearchBar'
 
 type TodoListProps = {
   initialData: TodoItem[]
@@ -46,8 +44,6 @@ export default function TodoList({ initialData }: TodoListProps) {
   }
   return (
     <div className="mt-16pxr flex w-full flex-col px-24pxr">
-      <TodoSearchBar />
-      <SortButton title={'Today'} />
       {data?.map(({ id, title, categoryId, isCompleted, priority }) => {
         return (
           <TodoListItem

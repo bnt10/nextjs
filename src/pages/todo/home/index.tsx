@@ -3,8 +3,10 @@ import { useEffect } from 'react'
 import Input from '@/component/common/Input'
 import Modal from '@/component/common/Modal'
 import EmptyTodoList from '@/component/todo/home/EmptyTodoList'
+import SortButton from '@/component/todo/home/SortButton'
 import TaskButton from '@/component/todo/home/TasskButton'
 import TodoList from '@/component/todo/home/TodoList'
+import TodoSearchBar from '@/component/todo/home/TodoSearchBar'
 import type { FormSchema } from '@/hooks/type'
 import { useForm } from '@/hooks/useForm'
 import useModal from '@/hooks/useModal'
@@ -62,6 +64,8 @@ export default function TodoHome() {
     <>
       <HomeLayout>
         <div className="flex w-full flex-col items-center justify-center">
+          <TodoSearchBar />
+          <SortButton title={'Today'} />
           {isEmptyTodoList ? <EmptyTodoList /> : <TodoList />}
 
           {openModal && (

@@ -10,6 +10,9 @@ import moment from 'moment'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import { throttle } from '../../../utils/timing'
+import EmptyTodoList from '../home/EmptyTodoList'
+import TodoList from '../home/TodoList'
+import TaskControlPanel from '../taskEditor/TaskControlPanel'
 
 const VISIBLE_DAY_COUNT = 7
 const PRELOAD_DAY_COUNT = 0
@@ -215,10 +218,10 @@ export default function CustomCalendar() {
       eventOptions: { passive: false },
     }
   )
-
+  const isEmptyTodoList = false
   return (
     <>
-      <div className="flex w-full max-w-mobile overflow-hidden">
+      <div className="mb-20pxr flex w-full max-w-mobile overflow-hidden">
         <a.div
           ref={target}
           className="relative flex justify-center bg-footer-gray"
@@ -241,9 +244,10 @@ export default function CustomCalendar() {
           ))}
         </a.div>
       </div>
-      {/* <button className="text-white" ref={target}>
-        test Button
-      </button> */}
+      <section className="w-full px-24pxr">
+        <TaskControlPanel onCheckedHandler={() => {}} />
+      </section>
+      {isEmptyTodoList ? <EmptyTodoList /> : <TodoList />}
     </>
   )
 }

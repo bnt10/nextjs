@@ -11,8 +11,9 @@ interface Props {
 
 // Constants
 const ButtonSt: ButtonStyle = {
-  button: 'rounded w-137pxr py-14pxr transparent  border-2 border-gray-900',
-  title: 'text-white',
+  button:
+    'rounded flex justify-center w-137pxr py-12pxr items-center border-box transparent leading-5  border-2 border-gray-900',
+  title: 'text-white text-base leading-5',
 }
 const ButtonList = ['Today', 'Completed'] as const
 const activeSt = { button: 'bg-primary border-0' }
@@ -33,7 +34,7 @@ export default function TaskControlPanel({ onCheckedHandler }: Props) {
   }))
 
   return (
-    <div className="flex w-full justify-between rounded bg-gray-400 px-10pxr pb-15pxr pt-16pxr">
+    <div className="box-border flex w-full justify-between rounded bg-gray-400 px-10pxr py-14pxr">
       {ToggleButton.map(({ style, title, handler }, i) => (
         <Button style={style} key={i} title={title} handler={handler} />
       ))}
