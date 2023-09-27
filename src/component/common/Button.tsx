@@ -14,6 +14,7 @@ type ButtonProps = {
   handler: (value?: any) => void
   style?: ButtonStyle
   disabled?: boolean
+  dataType?: string | number
 }
 
 const twButtonStyles = {
@@ -28,6 +29,7 @@ const Button = ({
   style,
   icon,
   disabled = false,
+  dataType = '',
 }: ButtonProps) => {
   const st = tw<ButtonStyle>(twButtonStyles, style)
   return (
@@ -36,6 +38,7 @@ const Button = ({
       disabled={disabled}
       className={st.button}
       onClick={handler}
+      data-type={`${dataType}`}
     >
       {icon && <ImageIcon iconSrc={icon} style={st.icon} />}
       <span className={st.title}>{title}</span>

@@ -7,7 +7,14 @@ import {
 } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import moment from 'moment'
+import type { SyntheticEvent } from 'react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useRecoilState } from 'recoil'
+
+import type { ButtonStyle } from '@/component/common/Button'
+import Button from '@/component/common/Button'
+import { LEFT_ARROW, RIGHT_ARROW } from '@/config/icon'
+import { schemduleDateState } from '@/selectors/dateSelector'
 
 import { throttle } from '../../../utils/timing'
 import EmptyTodoList from '../home/EmptyTodoList'
@@ -25,7 +32,6 @@ const NEXT_DAY = -1
 const PRIOUS_DAY = 1
 const ADD_DATE = 30
 
-// const appColor = tailwindColor
 type DayItem = {
   day: string
   weekDay: string
@@ -66,8 +72,15 @@ const calculateDay = (startDay: string, i: number, isAppending: boolean) => {
     : day.subtract(ADD_DATE - i, 'days')
 }
 
+const CalendarButtonStyle: ButtonStyle = {
+  button: 'px-24pxr py-12pxr ',
+  icon: 'w-16pxr h-16pxr relative',
+}
+
 export default function CustomCalendar() {
-  const [date] = useState(() => moment())
+  const [date, setDate] = useState(() => moment())
+  const [, setSchemduleDate] = useRecoilState(schemduleDateState)
+
   const dateRef = useRef(date)
   const target = useRef(null)
 
@@ -147,9 +160,10 @@ export default function CustomCalendar() {
       const direction = eventDirection.current
 
       if (direction === PRIOUS_DAY) {
+        containerX.current += DAY_WIDTH * (ADD_DATE + 1) * -direction
         setContainerSpring(() => {
           return {
-            x: containerX.current + DAY_WIDTH * (ADD_DATE + 1) * -direction,
+            x: containerX.current,
             immediate: true,
             onRest: () => {
               startDaysAnimataion()
@@ -172,9 +186,22 @@ export default function CustomCalendar() {
 
   useChain([containerSpringRef, daysSpringRef])
 
+  const checkUpdateMonthAndYear = () => {
+    const checkYear = date.year()
+    const checkMonth = date.month() + 1
+
+    const currentYear = dateRef.current.year()
+    const currentMonth = dateRef.current.month() + 1
+
+    if (checkYear !== currentYear || checkMonth !== currentMonth) {
+      setDate(dateRef.current)
+    }
+  }
+
   const runSprings = useCallback(() => {
     const direction = eventDirection.current
     dateRef.current = dateRef.current.clone().add(-direction, 'days')
+
     isNeedsMoreData.current = needsMoreData(
       visibleDays,
       dateRef.current,
@@ -191,6 +218,13 @@ export default function CustomCalendar() {
     setContainerSpring({ x: containerX.current })
     startDaysAnimataion()
   }, [visibleDays, date])
+
+  const updateDays = () => {
+    runSprings()
+    checkUpdateMonthAndYear()
+    setSchemduleDate(dateRef.current.toDate())
+  }
+
   const wheelOffset = useRef(0)
 
   useGesture(
@@ -208,20 +242,44 @@ export default function CustomCalendar() {
           runSprings() // 왼쪽으로 드래그할 경우 실행할 함수
         }
       }, 1000),
-      onClick: () => {
-        eventDirection.current = NEXT_DAY // 오른쪽으로 드래그할 경우 실행할 함수
-        runSprings()
-      },
     },
     {
       target,
       eventOptions: { passive: false },
     }
   )
+
+  const moveDays = (e: SyntheticEvent) => {
+    const dataType = (e.currentTarget as HTMLButtonElement).getAttribute(
+      'data-type'
+    ) as string
+
+    eventDirection.current = parseInt(dataType, 10)
+
+    updateDays()
+  }
   const isEmptyTodoList = false
   return (
     <>
-      <div className="mb-20pxr flex w-full max-w-mobile overflow-hidden">
+      <div className="flex w-full shrink-0 justify-between bg-footer-gray">
+        <Button
+          style={CalendarButtonStyle}
+          dataType={PRIOUS_DAY}
+          handler={moveDays}
+          icon={LEFT_ARROW}
+        />
+        <button className="flex flex-col ">
+          <span className="text-white/[0.87]">{date.format('MMM')}</span>
+          <span className="text-xsm text-gray-800">{date.format('YYYY')}</span>
+        </button>
+        <Button
+          dataType={NEXT_DAY}
+          style={CalendarButtonStyle}
+          handler={moveDays}
+          icon={RIGHT_ARROW}
+        />
+      </div>
+      <div className="mb-20pxr flex w-full max-w-mobile shrink-0 overflow-hidden">
         <a.div
           ref={target}
           className="relative flex justify-center bg-footer-gray"
@@ -244,7 +302,7 @@ export default function CustomCalendar() {
           ))}
         </a.div>
       </div>
-      <section className="w-full px-24pxr">
+      <section className="w-full shrink-0 px-24pxr">
         <TaskControlPanel onCheckedHandler={() => {}} />
       </section>
       {isEmptyTodoList ? <EmptyTodoList /> : <TodoList />}

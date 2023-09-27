@@ -20,3 +20,6 @@ export const ICON_REPEAT = '/assets/images/todo/editor/repeat.svg'
 export const ICON_SUB = '/assets/images/hierarchy.svg'
 export const ICON_DETAIL_EDIT = '/assets/images/detail-edit.svg'
 export const ICON_TRASH = '/assets/images/trash.svg'
+
+export const LEFT_ARROW = '/assets/images/arrow-left.svg'
+export const RIGHT_ARROW = '/assets/images/arrow-right.svg'

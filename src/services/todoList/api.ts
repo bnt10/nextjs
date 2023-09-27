@@ -14,13 +14,15 @@ type ResponseTodoList = {
   isCompleted: boolean
   targetDay: Date
 }
-export const fetchTodoList = async (): Promise<TodoItem[]> => {
-  const { data } = await axios.get('/api/todoLists/')
+export const fetchTodoList = async (date?: string): Promise<TodoItem[]> => {
+  const url = date ? `/api/todoLists?date=${date}` : '/api/todoLists/'
+  const { data } = await axios.get(url)
+
   if (!data) {
     throw new Error('No data available')
   }
 
-  const todoList = data?.map(
+  const todoList = data.map(
     (item: ResponseTodoList): TodoItem => ({
       id: item.id,
       userId: item.userId,
@@ -32,5 +34,6 @@ export const fetchTodoList = async (): Promise<TodoItem[]> => {
       targetDay: convertFromUTC(moment(item.targetDay)),
     })
   )
+
   return todoList
 }

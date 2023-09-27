@@ -1,5 +1,7 @@
 import { rest } from 'msw'
 
+import { newDate } from '@/utils/convert'
+
 import { MockTodoList } from './data/MockTodoList'
 
 export const handlers = [
@@ -29,10 +31,17 @@ export const handlers = [
       })
     )
   }),
-  rest.get('/api/todoLists', (_, res, ctx) => {
-    // const { id } = req.params
-    // const currentDay = req.url.searchParams.get('currentDay')
+  rest.get('/api/todoLists', (req, res, ctx) => {
+    const date = req.url.searchParams.get('date')
 
-    return res(ctx.status(200), ctx.json(MockTodoList))
+    let filteredData = MockTodoList
+
+    if (date) {
+      filteredData = MockTodoList.filter((item) => {
+        return item.targetDay === newDate(date)
+      })
+    }
+
+    return res(ctx.status(200), ctx.json(filteredData))
   }),
 ]

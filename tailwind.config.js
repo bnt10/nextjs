@@ -39,6 +39,9 @@ module.exports = {
       '6xl': '4rem',
     },
     extend: {
+      maxHeight: {
+        '100vh': '100vh',
+      },
       colors: {
         'footer-gray': '#363636',
         'app-bg': '#121212',
