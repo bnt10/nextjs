@@ -14,12 +14,10 @@ import { useRecoilState } from 'recoil'
 import type { ButtonStyle } from '@/component/common/Button'
 import Button from '@/component/common/Button'
 import { LEFT_ARROW, RIGHT_ARROW } from '@/config/icon'
+import { apiStateSelector } from '@/selectors/apiSelector'
 import { schemduleDateState } from '@/selectors/dateSelector'
 
 import { throttle } from '../../../utils/timing'
-import EmptyTodoList from '../home/EmptyTodoList'
-import TodoList from '../home/TodoList'
-import TaskControlPanel from '../taskEditor/TaskControlPanel'
 
 const VISIBLE_DAY_COUNT = 7
 const PRELOAD_DAY_COUNT = 0
@@ -80,7 +78,7 @@ const CalendarButtonStyle: ButtonStyle = {
 export default function CustomCalendar() {
   const [date, setDate] = useState(() => moment())
   const [, setSchemduleDate] = useRecoilState(schemduleDateState)
-
+  const [, setApiState] = useRecoilState(apiStateSelector)
   const dateRef = useRef(date)
   const target = useRef(null)
 
@@ -180,6 +178,7 @@ export default function CustomCalendar() {
         startDaysAnimataion()
       }
 
+      setApiState((prevState) => ({ ...prevState, needDate: true }))
       isNeedsMoreData.current = false
     }
   }, [visibleDays])
@@ -201,14 +200,13 @@ export default function CustomCalendar() {
   const runSprings = useCallback(() => {
     const direction = eventDirection.current
     dateRef.current = dateRef.current.clone().add(-direction, 'days')
+    containerX.current += DAY_WIDTH * direction
 
     isNeedsMoreData.current = needsMoreData(
       visibleDays,
       dateRef.current,
       direction
     )
-
-    containerX.current += DAY_WIDTH * direction
 
     if (isNeedsMoreData.current) {
       addDate(direction)
@@ -258,7 +256,7 @@ export default function CustomCalendar() {
 
     updateDays()
   }
-  const isEmptyTodoList = false
+
   return (
     <>
       <div className="flex w-full shrink-0 justify-between bg-footer-gray">
@@ -268,7 +266,7 @@ export default function CustomCalendar() {
           handler={moveDays}
           icon={LEFT_ARROW}
         />
-        <button className="flex flex-col ">
+        <button className="flex flex-col items-center">
           <span className="text-white/[0.87]">{date.format('MMM')}</span>
           <span className="text-xsm text-gray-800">{date.format('YYYY')}</span>
         </button>
@@ -302,10 +300,6 @@ export default function CustomCalendar() {
           ))}
         </a.div>
       </div>
-      <section className="w-full shrink-0 px-24pxr">
-        <TaskControlPanel onCheckedHandler={() => {}} />
-      </section>
-      {isEmptyTodoList ? <EmptyTodoList /> : <TodoList />}
     </>
   )
 }

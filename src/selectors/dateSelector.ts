@@ -4,7 +4,7 @@ import { selector } from 'recoil'
 import { SchemduleState } from '@/atoms/scheduleAtom'
 
 export const schemduleDateState = selector({
-  key: 'ScheduleDateState',
+  key: 'ScheduleDateStateSelector',
   get: ({ get }) => {
     const { date, timeZone } = get(SchemduleState)
 

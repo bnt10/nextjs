@@ -7,7 +7,7 @@ import { ICON_PRIORITY } from '@/config/icon'
 import CategoryListIcon from '../modal/CategoryListTaskIcon'
 
 interface Props {
-  isComplated: boolean
+  isCompleted: boolean
   title: string
   startDay: string
   taskIconId: string

@@ -1,49 +1,29 @@
 import moment from 'moment'
 import { useRouter } from 'next/router'
-import type { GetServerSidePropsContext } from 'next/types'
-import { dehydrate, QueryClient, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { useRecoilState } from 'recoil'
 
+import { apiStateSelector } from '@/selectors/apiSelector'
 import { schemduleDateState } from '@/selectors/dateSelector'
 import { fetchTodoList } from '@/services/todoList/api'
-import type { TodoItem } from '@/types/todoList'
+import type { TodoListType } from '@/types/todoList'
 
 import TodoListItem from './TodoListItem'
 
-type TodoListProps = {
-  initialData: TodoItem[]
-}
+export default function TodoList({ initialData }: TodoListType) {
+  const [apiState] = useRecoilState(apiStateSelector)
+  const [schemduleDate] = useRecoilState(schemduleDateState)
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const queryClient = new QueryClient()
-  const { date } = context.query // 쿼리 스트링에서 날짜를 가져옵니다.
-
-  await queryClient.prefetchQuery('todoList', () =>
-    fetchTodoList(date as string)
-  ) // 선택적 날짜를 넘겨줍니다.
-
-  const initialData = queryClient.getQueryData('todoList')
-
-  return {
-    props: {
-      initialData,
-      dehydratedState: dehydrate(queryClient),
-    },
-  }
-}
-
-export default function TodoList({ initialData }: TodoListProps) {
   const router = useRouter()
   const {
     data = initialData,
     error,
     isLoading,
-  } = useQuery('todoList', () => fetchTodoList(), {
+  } = useQuery('todoList', () => fetchTodoList(schemduleDate.toUTCString()), {
     initialData,
+    enabled: apiState.needDate,
   })
-
-  const [schemduleDate] = useRecoilState(schemduleDateState)
-
+  const renderData = apiState.needDate ? data : initialData
   if (isLoading) {
     return <div className="text-white">Loading..</div>
   }
@@ -57,7 +37,7 @@ export default function TodoList({ initialData }: TodoListProps) {
 
   return (
     <div className="mb-100pxr mt-16pxr flex max-h-100vh w-full flex-col overflow-scroll px-24pxr">
-      {data
+      {renderData
         ?.filter((targetDay) => {
           const { year, month, day } = targetDay.targetDay.date
 
@@ -70,7 +50,7 @@ export default function TodoList({ initialData }: TodoListProps) {
           return (
             <TodoListItem
               key={id}
-              isComplated={isCompleted}
+              isCompleted={isCompleted}
               title={title}
               startDay={'Today At 16:45'}
               taskIconId={categoryId}

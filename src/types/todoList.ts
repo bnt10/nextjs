@@ -4,7 +4,9 @@ export type TargetDay = {
   time: TimeData
   date: DateData
 }
-
+export type TodoListType = {
+  initialData: TodoItem[]
+}
 export type TodoItem = {
   id: string
   userId: string

@@ -16,7 +16,7 @@ export const handlers = [
     )
   }),
 
-  rest.get('/api/todoLists/:id', (req, res, ctx) => {
+  rest.get('/api/todo/:id', (req, res, ctx) => {
     const { id } = req.params
     const currentDay = req.url.searchParams.get('currentDay')
 
@@ -31,7 +31,7 @@ export const handlers = [
       })
     )
   }),
-  rest.get('/api/todoLists', (req, res, ctx) => {
+  rest.get('/api/todo', (req, res, ctx) => {
     const date = req.url.searchParams.get('date')
 
     let filteredData = MockTodoList
