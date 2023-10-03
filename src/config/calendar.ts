@@ -1,0 +1,12 @@
+export const calendarConfig = {
+  VISIBLE_DAY_COUNT: 7,
+  PRELOAD_DAY_COUNT: 0,
+  DAYS_FETCH_START: 3,
+  SIDE_DAY_COUNT: 10,
+  DAY_WIDTH: 54,
+  DAY_HEIGHT: 49,
+  START_DAYS_OFFSET_X: 1,
+  NEXT_DAY: -1,
+  ADD_DATE: 30,
+  PRIOUS_DAY: 1,
+}

@@ -3,6 +3,7 @@ import moment from 'moment-timezone'
 import type { TodoItem } from '@/types/todoList'
 import axiosInstance from '@/utils/axios'
 import { convertFromUTC } from '@/utils/convert'
+import { buildUrlWithParams } from '@/utils/url'
 
 type ResponseTodoList = {
   id: string
@@ -15,10 +16,10 @@ type ResponseTodoList = {
   targetDay: Date
 }
 export const fetchTodoList = async (
-  date: string | null
+  startDate?: string,
+  endDate?: string
 ): Promise<TodoItem[]> => {
-  const url = date ? `/api/todo?date=${date}` : '/api/todo'
-
+  const url = buildUrlWithParams('/api/todo', { startDate, endDate })
   const { data } = await axiosInstance.get(url)
 
   if (!data) {

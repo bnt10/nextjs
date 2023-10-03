@@ -9,26 +9,31 @@ import { useGesture } from '@use-gesture/react'
 import moment from 'moment'
 import type { SyntheticEvent } from 'react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
+import { TodoListState } from '@/atoms/todoLisAtom'
 import type { ButtonStyle } from '@/component/common/Button'
 import Button from '@/component/common/Button'
 import { LEFT_ARROW, RIGHT_ARROW } from '@/config/icon'
 import { apiStateSelector } from '@/selectors/apiSelector'
 import { schemduleDateState } from '@/selectors/dateSelector'
+import type { InitialDataType, TodoItem } from '@/types/todoList'
 
+import { calendarConfig } from '../../../config/calendar'
 import { throttle } from '../../../utils/timing'
 
-const VISIBLE_DAY_COUNT = 7
-const PRELOAD_DAY_COUNT = 0
-const DAYS_FETCH_START = 3
-const SIDE_DAY_COUNT = 10
-const DAY_WIDTH = 54
-const DAY_HEIGHT = 49
-const START_DAYS_OFFSET_X = 1
-const NEXT_DAY = -1
-const PRIOUS_DAY = 1
-const ADD_DATE = 30
+const {
+  VISIBLE_DAY_COUNT,
+  PRELOAD_DAY_COUNT,
+  DAYS_FETCH_START,
+  SIDE_DAY_COUNT,
+  DAY_WIDTH,
+  DAY_HEIGHT,
+  START_DAYS_OFFSET_X,
+  NEXT_DAY,
+  PRIOUS_DAY,
+  ADD_DATE,
+} = calendarConfig
 
 type DayItem = {
   day: string
@@ -49,6 +54,15 @@ const needsMoreData = (
     ]?.key === currentDay.format('YYYY-MM-DD')
   )
 }
+const hasTodoItemsOnDate = (todoList: TodoItem[]) => {
+  const idSet = new Set(
+    todoList?.map((item) =>
+      moment(item.targetDay.date).subtract(1, 'month').format('YYYY-MM-DD')
+    )
+  )
+  return idSet
+}
+
 function generateDayObject(currentDay: moment.Moment): DayItem {
   return {
     day: currentDay.format('D'),
@@ -75,10 +89,10 @@ const CalendarButtonStyle: ButtonStyle = {
   icon: 'w-16pxr h-16pxr relative',
 }
 
-export default function CustomCalendar() {
+function CustomCalendar({ initialData }: InitialDataType) {
   const [date, setDate] = useState(() => moment())
-  const [, setSchemduleDate] = useRecoilState(schemduleDateState)
-  const [, setApiState] = useRecoilState(apiStateSelector)
+  const setSchemduleDate = useSetRecoilState(schemduleDateState)
+  const setApiState = useSetRecoilState(apiStateSelector)
   const dateRef = useRef(date)
   const target = useRef(null)
 
@@ -89,6 +103,12 @@ export default function CustomCalendar() {
   const eventDirection = useRef<number>(0)
   const containerSpringRef = useSpringRef()
   const daysSpringRef = useSpringRef()
+
+  const [todoList] = useRecoilState(TodoListState)
+
+  const [hasCheckTodoList, setHasCheckTodoList] = useState(() =>
+    hasTodoItemsOnDate(initialData)
+  )
 
   const [visibleDays, setVisibleDays] = useState(() => {
     return Array.from({ length: SIDE_DAY_COUNT * 2 + 1 }, (_, i) => {
@@ -182,6 +202,12 @@ export default function CustomCalendar() {
       isNeedsMoreData.current = false
     }
   }, [visibleDays])
+
+  useEffect(() => {
+    if (!isNeedsMoreData.current) {
+      setHasCheckTodoList(hasTodoItemsOnDate(todoList))
+    }
+  }, [todoList])
 
   useChain([containerSpringRef, daysSpringRef])
 
@@ -295,6 +321,9 @@ export default function CustomCalendar() {
               >
                 <p className="text-xs">{weekDay}</p>
                 <p className="text-xs">{day}</p>
+                {hasCheckTodoList.has(key) && (
+                  <div className="h-4pxr w-4pxr rounded-full bg-primary" />
+                )}
               </a.div>
             </a.div>
           ))}
@@ -303,3 +332,5 @@ export default function CustomCalendar() {
     </>
   )
 }
+
+export default CustomCalendar

@@ -1,29 +1,35 @@
-import moment from 'moment'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
 import { useRecoilState } from 'recoil'
 
 import { apiStateSelector } from '@/selectors/apiSelector'
 import { schemduleDateState } from '@/selectors/dateSelector'
+import { todoListStateSelector } from '@/selectors/todoListSelector'
 import { fetchTodoList } from '@/services/todoList/api'
-import type { TodoListType } from '@/types/todoList'
+import type { InitialDataType } from '@/types/todoList'
 
+import EmptyTodoList from './EmptyTodoList'
 import TodoListItem from './TodoListItem'
 
-export default function TodoList({ initialData }: TodoListType) {
-  const [apiState] = useRecoilState(apiStateSelector)
+export default function TodoList({ initialData }: InitialDataType) {
+  const [apiState, setApiState] = useRecoilState(apiStateSelector)
   const [schemduleDate] = useRecoilState(schemduleDateState)
-
+  const [todoList, setTodoList] = useRecoilState(todoListStateSelector)
   const router = useRouter()
-  const {
-    data = initialData,
-    error,
-    isLoading,
-  } = useQuery('todoList', () => fetchTodoList(schemduleDate.toUTCString()), {
-    initialData,
-    enabled: apiState.needDate,
-  })
-  const renderData = apiState.needDate ? data : initialData
+
+  const { error, isLoading } = useQuery(
+    'todoList',
+    () => fetchTodoList(schemduleDate.toUTCString()),
+    {
+      initialData,
+      enabled: apiState.needDate,
+      onSuccess: (addDate) => {
+        setTodoList(addDate)
+        setApiState((prev) => ({ ...prev, needDate: false }))
+      },
+    }
+  )
+
   if (isLoading) {
     return <div className="text-white">Loading..</div>
   }
@@ -33,33 +39,29 @@ export default function TodoList({ initialData }: TodoListType) {
   const openDetailWithTask = (taskIconId: string) => {
     router.push(`/todo/taskEditor?taskIconId=${taskIconId}`)
   }
-  const targetDate = moment(schemduleDate).format('YYYY-MM-DD')
 
   return (
-    <div className="mb-100pxr mt-16pxr flex max-h-100vh w-full flex-col overflow-scroll px-24pxr">
-      {renderData
-        ?.filter((targetDay) => {
-          const { year, month, day } = targetDay.targetDay.date
-
-          return (
-            targetDate ===
-            moment({ year, month: month - 1, day }).format('YYYY-MM-DD')
-          )
-        })
-        .map(({ id, title, categoryId, isCompleted, priority }) => {
-          return (
-            <TodoListItem
-              key={id}
-              isCompleted={isCompleted}
-              title={title}
-              startDay={'Today At 16:45'}
-              taskIconId={categoryId}
-              priority={priority}
-              onClickHandler={openDetailWithTask}
-            />
-          )
-        })}
-    </div>
+    <>
+      {todoList.length === 0 ? (
+        <EmptyTodoList />
+      ) : (
+        <div className="mb-100pxr mt-16pxr flex max-h-100vh w-full flex-col overflow-scroll px-24pxr">
+          {todoList.map(({ id, title, categoryId, isCompleted, priority }) => {
+            return (
+              <TodoListItem
+                key={id}
+                isCompleted={isCompleted}
+                title={title}
+                startDay={'Today At 16:45'}
+                taskIconId={categoryId}
+                priority={priority}
+                onClickHandler={openDetailWithTask}
+              />
+            )
+          })}
+        </div>
+      )}
+    </>
   )
 }
 
