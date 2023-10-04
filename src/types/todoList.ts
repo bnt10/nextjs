@@ -4,6 +4,11 @@ export type TargetDay = {
   time: TimeData
   date: DateData
 }
+export type TodoListType = {
+  initialData: TodoItem[]
+  isLoading: boolean
+}
+export type InitialDataType = Pick<TodoListType, 'initialData'>
 
 export type TodoItem = {
   id: string

@@ -9,9 +9,10 @@ import { RecoilRoot } from 'recoil'
 import NestedModal from '@/component/common/NestedModal'
 import { ModalProvider } from '@/contexts/ModalContext'
 import Layout from '@/layouts'
+import { initMocks } from '@/mocks'
 
 if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
-  import('../mocks')
+  initMocks()
 }
 // Create a client
 const queryClient = new QueryClient()

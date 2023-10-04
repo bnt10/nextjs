@@ -1,8 +1,9 @@
-import axios from 'axios'
 import moment from 'moment-timezone'
 
 import type { TodoItem } from '@/types/todoList'
+import axiosInstance from '@/utils/axios'
 import { convertFromUTC } from '@/utils/convert'
+import { buildUrlWithParams } from '@/utils/url'
 
 type ResponseTodoList = {
   id: string
@@ -14,13 +15,18 @@ type ResponseTodoList = {
   isCompleted: boolean
   targetDay: Date
 }
-export const fetchTodoList = async (): Promise<TodoItem[]> => {
-  const { data } = await axios.get('/api/todoLists/')
+export const fetchTodoList = async (
+  startDate?: string,
+  endDate?: string
+): Promise<TodoItem[]> => {
+  const url = buildUrlWithParams('/api/todo', { startDate, endDate })
+  const { data } = await axiosInstance.get(url)
+
   if (!data) {
     throw new Error('No data available')
   }
 
-  const todoList = data?.map(
+  const todoList = data.map(
     (item: ResponseTodoList): TodoItem => ({
       id: item.id,
       userId: item.userId,
@@ -32,5 +38,6 @@ export const fetchTodoList = async (): Promise<TodoItem[]> => {
       targetDay: convertFromUTC(moment(item.targetDay)),
     })
   )
+
   return todoList
 }

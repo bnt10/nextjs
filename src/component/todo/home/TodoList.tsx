@@ -1,38 +1,35 @@
 import { useRouter } from 'next/router'
-import { dehydrate, QueryClient, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
+import { useRecoilState } from 'recoil'
 
+import { apiStateSelector } from '@/selectors/apiSelector'
+import { schemduleDateState } from '@/selectors/dateSelector'
+import { todoListStateSelector } from '@/selectors/todoListSelector'
 import { fetchTodoList } from '@/services/todoList/api'
-import type { TodoItem } from '@/types/todoList'
+import type { InitialDataType } from '@/types/todoList'
 
+import EmptyTodoList from './EmptyTodoList'
 import TodoListItem from './TodoListItem'
 
-type TodoListProps = {
-  initialData: TodoItem[]
-}
-
-export async function getServerSideProps() {
-  const queryClient = new QueryClient()
-  await queryClient.prefetchQuery('todoList', fetchTodoList)
-
-  const initialData = queryClient.getQueryData('todoList')
-
-  return {
-    props: {
-      initialData,
-      dehydratedState: dehydrate(queryClient),
-    },
-  }
-}
-
-export default function TodoList({ initialData }: TodoListProps) {
+export default function TodoList({ initialData }: InitialDataType) {
+  const [apiState, setApiState] = useRecoilState(apiStateSelector)
+  const [schemduleDate] = useRecoilState(schemduleDateState)
+  const [todoList, setTodoList] = useRecoilState(todoListStateSelector)
   const router = useRouter()
-  const {
-    data = initialData,
-    error,
-    isLoading,
-  } = useQuery('todoList', fetchTodoList, {
-    initialData,
-  })
+
+  const { error, isLoading } = useQuery(
+    'todoList',
+    () => fetchTodoList(schemduleDate.toUTCString()),
+    {
+      initialData,
+      enabled: apiState.needDate,
+      onSuccess: (addDate) => {
+        setTodoList(addDate)
+        setApiState((prev) => ({ ...prev, needDate: false }))
+      },
+    }
+  )
+
   if (isLoading) {
     return <div className="text-white">Loading..</div>
   }
@@ -42,22 +39,29 @@ export default function TodoList({ initialData }: TodoListProps) {
   const openDetailWithTask = (taskIconId: string) => {
     router.push(`/todo/taskEditor?taskIconId=${taskIconId}`)
   }
+
   return (
-    <div className="mt-16pxr flex w-full flex-col px-24pxr">
-      {data?.map(({ id, title, categoryId, isCompleted, priority }) => {
-        return (
-          <TodoListItem
-            key={id}
-            isComplated={isCompleted}
-            title={title}
-            startDay={'Today At 16:45'}
-            taskIconId={categoryId}
-            priority={priority}
-            onClickHandler={openDetailWithTask}
-          />
-        )
-      })}
-    </div>
+    <>
+      {todoList.length === 0 ? (
+        <EmptyTodoList />
+      ) : (
+        <div className="mb-100pxr mt-16pxr flex max-h-100vh w-full flex-col overflow-scroll px-24pxr">
+          {todoList.map(({ id, title, categoryId, isCompleted, priority }) => {
+            return (
+              <TodoListItem
+                key={id}
+                isCompleted={isCompleted}
+                title={title}
+                startDay={'Today At 16:45'}
+                taskIconId={categoryId}
+                priority={priority}
+                onClickHandler={openDetailWithTask}
+              />
+            )
+          })}
+        </div>
+      )}
+    </>
   )
 }
 

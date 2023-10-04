@@ -4,23 +4,22 @@ import { selector } from 'recoil'
 import { SchemduleState } from '@/atoms/scheduleAtom'
 
 export const schemduleDateState = selector({
-  key: 'ScheduleDateState',
+  key: 'ScheduleDateStateSelector',
   get: ({ get }) => {
     const { date, timeZone } = get(SchemduleState)
 
-    if (date !== null) {
-      const parseDate = moment({
-        year: date.year,
-        month: date.month - 1,
-        day: date.day,
-      })
-
-      return parseDate.toDate()
+    if (!date) {
+      const currentDate = moment().tz(timeZone)
+      return currentDate.toDate()
     }
 
-    const currentDate = moment().tz(timeZone)
+    const parseDate = moment({
+      year: date.year,
+      month: date.month - 1,
+      day: date.day,
+    })
 
-    return currentDate.toDate()
+    return parseDate.toDate()
   },
   set: ({ set }, newDate) => {
     if (newDate instanceof Date) {
