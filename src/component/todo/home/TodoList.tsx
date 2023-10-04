@@ -45,7 +45,7 @@ export default function TodoList({ initialData }: InitialDataType) {
       {todoList.length === 0 ? (
         <EmptyTodoList />
       ) : (
-        <div className="mb-100pxr mt-16pxr flex max-h-100vh w-full flex-col overflow-scroll px-24pxr">
+        <div className="mb-100pxr mt-16pxr flex max-h-100vh w-full flex-col overflow-y-scroll px-24pxr scrollbar-hide">
           {todoList.map(({ id, title, categoryId, isCompleted, priority }) => {
             return (
               <TodoListItem
