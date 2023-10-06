@@ -1,5 +1,6 @@
 const ErrorPage = (e: any) => {
   console.log(e)
+
   return <div>Error page!</div>
 }
 

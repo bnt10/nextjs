@@ -5,7 +5,7 @@ import type { LayoutProps } from './type'
 
 export default function HomeLayout({ children }: LayoutProps) {
   return (
-    <div className="relative flex h-screen flex-col items-center bg-app-bg ">
+    <div className="relative flex h-screen flex-col items-center bg-app-bg foldable:w-375pxr">
       <Header />
       {children}
       <Footer />

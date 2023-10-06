@@ -36,8 +36,8 @@ export default function TodoList({ initialData }: InitialDataType) {
   if (error) {
     return <div className="text-white">No data!</div>
   }
-  const openDetailWithTask = (taskIconId: string) => {
-    router.push(`/todo/taskEditor?taskIconId=${taskIconId}`)
+  const openDetailWithTask = (taskId: string) => {
+    router.push(`/todo/taskEditor?taskId=${taskId}`)
   }
 
   return (
@@ -50,6 +50,7 @@ export default function TodoList({ initialData }: InitialDataType) {
             return (
               <TodoListItem
                 key={id}
+                taskId={id}
                 isCompleted={isCompleted}
                 title={title}
                 startDay={'Today At 16:45'}

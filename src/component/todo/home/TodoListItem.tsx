@@ -12,6 +12,7 @@ interface Props {
   startDay: string
   taskIconId: string
   priority: string
+  taskId: string
   onClickHandler: (taskIconId: string) => void
 }
 
@@ -21,10 +22,11 @@ export default function TodoListItem({
   taskIconId,
   priority,
   onClickHandler,
+  taskId,
 }: Props) {
   const onClick: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault()
-    onClickHandler(taskIconId)
+    onClickHandler(taskId)
   }
   return (
     <div

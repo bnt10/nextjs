@@ -41,3 +41,22 @@ export const fetchTodoList = async (
 
   return todoList
 }
+export const getTodoTask = async (taskId: string): Promise<TodoItem> => {
+  const url = buildUrlWithParams('/api/todo', { id: taskId })
+  const { data } = await axiosInstance.get(url)
+  if (!data) {
+    throw new Error('No data available')
+  }
+
+  const todoList = {
+    id: data.id,
+    userId: data.userId,
+    title: data.title,
+    description: data.description,
+    categoryId: data.categoryId,
+    priority: data.priority,
+    isCompleted: data.isCompleted,
+    targetDay: convertFromUTC(moment(data.targetDay)),
+  }
+  return todoList
+}

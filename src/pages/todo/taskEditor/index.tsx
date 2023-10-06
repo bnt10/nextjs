@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router'
+import { useQuery } from 'react-query'
 
 import TaskItem from '@/component/todo/taskEditor/TaskItem'
+import TodoTask from '@/component/todo/taskEditor/TodoTask'
 import {
   ICON_PRIORITY,
   ICON_SUB,
@@ -9,6 +11,7 @@ import {
   ICON_TRASH,
 } from '@/config/icon'
 import TaskEditorPageLayout from '@/layouts/todo/TaskEditorPageLayout'
+import { getTodoTask } from '@/services/todoList/api'
 
 const TaskType = {
   Task: 'Timer',
@@ -57,14 +60,32 @@ const TaskDetailList = [
 ]
 export default function TaskEditor() {
   const router = useRouter()
-  const { taskIconId } = router.query
+  const { taskId } = router.query
 
+  const { data, isLoading, isError } = useQuery('todoTask', () =>
+    getTodoTask(taskId as string)
+  )
+  if (isLoading) {
+    return <div>is loading...</div>
+  }
+  if (isError) {
+    return <div>is Error Page</div>
+  }
+
+  
+  console.log(data)
   const onTaskDetailClickHandler = (taskType: TaskTypeKeys) => {
-    console.log(taskType, taskIconId)
+    console.log(taskType, taskId)
   }
   return (
     <TaskEditorPageLayout>
-      <div className="flex w-full flex-col items-center justify-center">
+      <section className="flex w-full flex-col items-center justify-center">
+        <TodoTask
+          description="ss"
+          onClick={() => {}}
+          taskId="1"
+          title="Do Math Homework"
+        />
         {TaskDetailList.map(
           ({
             id,
@@ -87,7 +108,7 @@ export default function TaskEditor() {
             />
           )
         )}
-      </div>
+      </section>
     </TaskEditorPageLayout>
   )
 }

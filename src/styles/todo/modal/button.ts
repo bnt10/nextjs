@@ -11,7 +11,7 @@ export const modalCancelButtonSt = {
 }
 
 export const modalEditSaveButtonSt = {
-  button: 'w-full bg-primary px-30pxr py-12pxr rounded absolute bottom-40pxr',
+  button: 'w-full bg-primary px-30pxr py-12pxr rounded  ',
   title: 'text-base text-white leading-6 ',
   icon: '',
 }

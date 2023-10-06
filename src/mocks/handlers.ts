@@ -21,19 +21,12 @@ export const handlers = [
 
   rest.get('/api/todo/:id', (req, res, ctx) => {
     const { id } = req.params
-    const currentDay = req.url.searchParams.get('currentDay')
-
-    return res(
-      ctx.status(200),
-      ctx.json({
-        todoList: {
-          id,
-          currentDay, // 추가한 필드
-          // other fields
-        },
-      })
-    )
+    const todoTask = MockTodoList.find((todo) => {
+      return todo.id === id
+    })
+    return res(ctx.status(200), ctx.json(todoTask))
   }),
+
   rest.get('/api/todo', (req, res, ctx) => {
     const startDateParam = req.url.searchParams.get('startDate')
     const endDateParam = req.url.searchParams.get('endDate')

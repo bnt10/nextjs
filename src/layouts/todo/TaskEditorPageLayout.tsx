@@ -6,14 +6,18 @@ import type { LayoutProps } from './type'
 
 export default function TaskEditorPageLayout({ children }: LayoutProps) {
   return (
-    <div className="relative flex h-screen flex-col items-center bg-app-bg px-24pxr pb-40pxr ">
-      <TaskEditorPageHeader />
-      {children}
-      <Button
-        style={modalEditSaveButtonSt}
-        title="Edit Task"
-        handler={() => {}}
-      />
+    <div className="flex justify-center">
+      <div className="relative flex h-screen flex-col items-center bg-app-bg px-24pxr pb-40pxr foldable:w-375pxr">
+        <TaskEditorPageHeader />
+        {children}
+        <footer className="absolute bottom-40pxr w-full">
+          <Button
+            style={modalEditSaveButtonSt}
+            title="Edit Task"
+            handler={() => {}}
+          />
+        </footer>
+      </div>
     </div>
   )
 }
