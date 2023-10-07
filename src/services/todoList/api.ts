@@ -3,7 +3,7 @@ import moment from 'moment-timezone'
 import type { TodoItem } from '@/types/todoList'
 import axiosInstance from '@/utils/axios'
 import { convertFromUTC } from '@/utils/convert'
-import { buildUrlWithParams } from '@/utils/url'
+import { buildUrlWithParams, buildUrlWithPathParams } from '@/utils/url'
 
 type ResponseTodoList = {
   id: string
@@ -42,8 +42,14 @@ export const fetchTodoList = async (
   return todoList
 }
 export const getTodoTask = async (taskId: string): Promise<TodoItem> => {
-  const url = buildUrlWithParams('/api/todo', { id: taskId })
+  const { url, error } = buildUrlWithPathParams('/api/todo/:id', { id: taskId })
+
+  if (error) {
+    throw error
+  }
+
   const { data } = await axiosInstance.get(url)
+
   if (!data) {
     throw new Error('No data available')
   }
@@ -58,5 +64,5 @@ export const getTodoTask = async (taskId: string): Promise<TodoItem> => {
     isCompleted: data.isCompleted,
     targetDay: convertFromUTC(moment(data.targetDay)),
   }
-  return todoList
+  return todoList as TodoItem
 }

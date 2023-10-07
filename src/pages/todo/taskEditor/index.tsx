@@ -12,6 +12,7 @@ import {
 } from '@/config/icon'
 import TaskEditorPageLayout from '@/layouts/todo/TaskEditorPageLayout'
 import { getTodoTask } from '@/services/todoList/api'
+import type { TodoItem } from '@/types/todoList'
 
 const TaskType = {
   Task: 'Timer',
@@ -62,8 +63,10 @@ export default function TaskEditor() {
   const router = useRouter()
   const { taskId } = router.query
 
-  const { data, isLoading, isError } = useQuery('todoTask', () =>
-    getTodoTask(taskId as string)
+  const { data, isLoading, isError } = useQuery<TodoItem>(
+    ['todoTask', taskId],
+    () => getTodoTask(taskId as string),
+    { enabled: router.isReady }
   )
   if (isLoading) {
     return <div>is loading...</div>
@@ -71,20 +74,28 @@ export default function TaskEditor() {
   if (isError) {
     return <div>is Error Page</div>
   }
+  if (!data) {
+    return <div>is Error Page</div>
+  }
 
-  
-  console.log(data)
+  const {
+    description,
+    id: todoId,
+
+    title: todoTitle,
+  } = data
   const onTaskDetailClickHandler = (taskType: TaskTypeKeys) => {
     console.log(taskType, taskId)
   }
+
   return (
     <TaskEditorPageLayout>
       <section className="flex w-full flex-col items-center justify-center">
         <TodoTask
-          description="ss"
+          description={description}
           onClick={() => {}}
-          taskId="1"
-          title="Do Math Homework"
+          taskId={todoId}
+          title={todoTitle}
         />
         {TaskDetailList.map(
           ({
