@@ -62,3 +62,20 @@ export const currentDate = () => {
 
   return momentObject.toDate()
 }
+
+export function combineDateAndTime(
+  date: DateData,
+  time: TimeData
+): moment.Moment {
+  let dateTime = moment(`${date.year}-${date.month}-${date.day}`, 'YYYY-MM-DD')
+
+  dateTime = dateTime.set({
+    hour:
+      time.amPm?.toUpperCase() === 'PM'
+        ? parseInt(time.hour ?? '0', 10) + 12
+        : parseInt(time.hour ?? '0', 10),
+    minute: parseInt(time.minute ?? '0', 10),
+  })
+
+  return dateTime
+}
