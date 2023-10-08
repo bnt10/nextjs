@@ -2,7 +2,8 @@ import DynamicIcon from '@/component/common/Icon'
 import ImageIcon from '@/component/common/ImageIcon'
 import type { CategoryListType } from '@/config/category'
 import { CategoryList } from '@/config/category'
-import type { TaskTypeKeys } from '@/pages/todo/taskEditor'
+import type { TaskTypeKeys } from '@/types/todoList'
+import { TaskType } from '@/types/todoList'
 
 const TaskItemIconStyle = 'relative w-24pxr h-24pxr mr-8pxr'
 
@@ -12,26 +13,26 @@ interface Props {
   TaskHandler: (taskType: TaskTypeKeys) => void
   icon: string
   content?: string
-  contentIconID?: string
+
   customClass?: string
 }
+
 export default function TaskItem({
   taskType,
   title,
   TaskHandler,
   icon,
   content,
-  contentIconID,
+
   customClass = '',
 }: Props) {
   const handler = () => {
     TaskHandler(taskType)
   }
-  const categoryInfo = contentIconID
-    ? (CategoryList.find(
-        (item) => item.id === contentIconID
-      ) as CategoryListType)
-    : false
+  const categoryInfo =
+    taskType === TaskType.Category
+      ? (CategoryList.find((item) => item.id === content) as CategoryListType)
+      : false
 
   return (
     <div
@@ -44,7 +45,7 @@ export default function TaskItem({
           {title}
         </span>
       </div>
-      {(content || contentIconID) && (
+      {content && (
         <div className="flex items-center justify-center rounded-md bg-white/[0.22] px-16pxr py-8pxr">
           {categoryInfo && (
             <>
@@ -55,11 +56,14 @@ export default function TaskItem({
                   luminance={30}
                 />
               </div>
+
               <span className="text-white/[0.87]">{categoryInfo.title}</span>
             </>
           )}
           {!categoryInfo && (
-            <span className="text-white/[0.87]"> {content}</span>
+            <>
+              <span className="text-white/[0.87]"> {content}</span>
+            </>
           )}
         </div>
       )}

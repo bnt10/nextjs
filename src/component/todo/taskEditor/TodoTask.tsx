@@ -7,6 +7,7 @@ type Props = {
   title: string
   taskId: string
   description: string
+  isCompleted: boolean
   onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 const buttonStyle: ButtonStyle = {

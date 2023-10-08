@@ -20,3 +20,16 @@ export type TodoItem = {
   isCompleted: boolean
   targetDay: TargetDay
 }
+
+export const TaskType = {
+  Timer: 'Timer',
+  Category: 'Category',
+  Priority: 'Priority',
+  Delete: 'Delete',
+} as const
+
+export type TaskTypeKeys = (typeof TaskType)[keyof typeof TaskType]
+
+export type TaskTypeToTodoItemKeyMapping = {
+  [key in TaskTypeKeys]?: string
+}
