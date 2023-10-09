@@ -1,6 +1,11 @@
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 import { useQuery } from 'react-query'
+import { useSetRecoilState } from 'recoil'
 
+import { modalContentState } from '@/atoms/modalAtom'
+import Loading from '@/component/common/Loading'
+import TaskPriority from '@/component/todo/modal/TaskPriority'
 import TaskItem from '@/component/todo/taskEditor/TaskItem'
 import TodoTask from '@/component/todo/taskEditor/TodoTask'
 import { ICON_PRIORITY, ICON_TAG, ICON_TIMER, ICON_TRASH } from '@/config/icon'
@@ -45,14 +50,15 @@ const TaskDetailList = [
 export default function TaskEditor() {
   const router = useRouter()
   const { taskId } = router.query
-
+  const [clicked, setClicked] = useState(false)
+  const setModalContent = useSetRecoilState(modalContentState)
   const { data, isLoading, isError } = useQuery<TodoItem>(
     ['todoTask', taskId],
     () => getTodoTask(taskId as string),
     { enabled: router.isReady }
   )
   if (isLoading) {
-    return <div>is loading...</div>
+    return <Loading />
   }
   if (isError) {
     return <div>is Error Page</div>
@@ -65,7 +71,6 @@ export default function TaskEditor() {
     description,
     id: todoId,
     categoryId,
-    isCompleted,
     priority,
     targetDay,
     title: todoTitle,
@@ -78,8 +83,14 @@ export default function TaskEditor() {
       'MM-DD HH:mm'
     ),
   }
+  const taskMappingFn = {
+    Category: () => {},
+    Priority: () => setModalContent(<TaskPriority />),
+    Timer: () => {},
+    Delete: () => {},
+  }
   const onTaskDetailClickHandler = (taskType: TaskTypeKeys) => {
-    console.log(taskType, taskId)
+    taskMappingFn[taskType]()
   }
 
   return (
@@ -87,8 +98,11 @@ export default function TaskEditor() {
       <section className="flex w-full flex-col items-center justify-center">
         <TodoTask
           description={description}
-          isCompleted={isCompleted}
-          onClick={() => {}}
+          isCompleted={clicked}
+          onClick={() => {
+            setClicked(!clicked)
+            console.log('clcik')
+          }}
           taskId={todoId}
           title={todoTitle}
         />

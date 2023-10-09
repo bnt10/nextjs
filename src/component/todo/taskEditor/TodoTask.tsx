@@ -1,7 +1,9 @@
-import type { ButtonStyle } from '@/component/common/Button'
+import React from 'react'
+
 import Button from '@/component/common/Button'
-import DynamicIcon from '@/component/common/Icon'
 import { ICON_DETAIL_EDIT } from '@/config/icon'
+import TodoCompletedLayout from '@/layouts/todo/taskEditor/TodoCompletedLayout'
+import type { ButtonStyle } from '@/types/style/common'
 
 type Props = {
   title: string
@@ -14,21 +16,25 @@ const buttonStyle: ButtonStyle = {
   button: 'w-24pxr h-24pxr',
   icon: 'w-full h-full relative',
 }
-function TodoTask({ title, taskId, description, onClick }: Props) {
+
+function TodoTask({ title, description, onClick, isCompleted }: Props) {
   return (
     <div className="mb-16pxr flex w-full cursor-pointer flex-col  rounded  py-12pxr">
       <div className="flex items-start justify-between">
-        <div className="mr-21pxr" data-task={taskId} onClick={onClick}>
-          <DynamicIcon size={16} iconName="FaRegCircle" color="#ffffff" />
-        </div>
-        <div className=" w-full">
-          <div className="mb-6pxr w-full text-left text-base leading-[1] text-white/[0.87]">
-            {title}
+        <TodoCompletedLayout
+          clicked={isCompleted}
+          onClick={onClick}
+          taskId={''}
+        >
+          <div className=" w-full">
+            <div className="mb-6pxr w-full text-left text-base leading-[1] text-white/[0.87]">
+              {title}
+            </div>
+            <div className="mb-6pxr w-full  text-base leading-[1] text-gray-800">
+              {description}
+            </div>
           </div>
-          <div className="mb-6pxr w-full  text-base leading-[1] text-gray-800">
-            {description}
-          </div>
-        </div>
+        </TodoCompletedLayout>
         <Button
           handler={() => {}}
           icon={ICON_DETAIL_EDIT}

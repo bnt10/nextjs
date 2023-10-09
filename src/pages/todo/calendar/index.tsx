@@ -20,15 +20,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     fetchTodoList(date as string)
   )
 
-  const initialData = queryClient.getQueryData('todoList'   ) ?? []
+  const initialData = queryClient.getQueryData('todoList') ?? []
 
-
-
-  
-  
-
-
-  
   return {
     props: {
       initialData,

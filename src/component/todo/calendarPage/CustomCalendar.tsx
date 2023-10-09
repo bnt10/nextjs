@@ -12,11 +12,11 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 
 import { TodoListState } from '@/atoms/todoLisAtom'
-import type { ButtonStyle } from '@/component/common/Button'
 import Button from '@/component/common/Button'
 import { LEFT_ARROW, RIGHT_ARROW } from '@/config/icon'
 import { apiStateSelector } from '@/selectors/apiSelector'
 import { schemduleDateState } from '@/selectors/dateSelector'
+import type { ButtonStyle } from '@/types/style/common'
 import type { InitialDataType, TodoItem } from '@/types/todoList'
 
 import { calendarConfig } from '../../../config/calendar'

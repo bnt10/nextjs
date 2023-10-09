@@ -43,8 +43,16 @@ const DynamicIcon: FC<DynamicIconProps> = ({
   }
 
   const iconColor = darkenColor(color, luminance)
+  const iconWrapStyle = `w-${size}pxr h-${size}pxr box-border`
   if (IconComponent) {
-    return <IconComponent fontSize={size} style={{ color: iconColor }} />
+    return (
+      <div className={iconWrapStyle}>
+        <IconComponent
+          className={`h-full w-full`}
+          style={{ color: iconColor }}
+        />
+      </div>
+    )
   }
 
   return null

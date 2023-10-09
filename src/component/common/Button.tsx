@@ -1,12 +1,7 @@
+import type { ButtonStyle } from '@/types/style/common'
 import tw from '@/utils/twMergeObjects'
 
 import ImageIcon from './ImageIcon'
-
-export type ButtonStyle = {
-  button?: string
-  icon?: string
-  title?: string
-}
 
 type ButtonProps = {
   title?: string
