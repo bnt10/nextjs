@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useQuery } from 'react-query'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
 import { modalContentState } from '@/atoms/modalAtom'
 import Loading from '@/component/common/Loading'
@@ -10,6 +10,7 @@ import TaskItem from '@/component/todo/taskEditor/TaskItem'
 import TodoTask from '@/component/todo/taskEditor/TodoTask'
 import { ICON_PRIORITY, ICON_TAG, ICON_TIMER, ICON_TRASH } from '@/config/icon'
 import TaskEditorPageLayout from '@/layouts/todo/TaskEditorPageLayout'
+import { selcetedTodoTaskSelector } from '@/selectors/selcetedTodoTaskSelector'
 import { getTodoTask } from '@/services/todoList/api'
 import type {
   TaskTypeKeys,
@@ -52,18 +53,48 @@ export default function TaskEditor() {
   const { taskId } = router.query
   const [clicked, setClicked] = useState(false)
   const setModalContent = useSetRecoilState(modalContentState)
-  const { data, isLoading, isError } = useQuery<TodoItem>(
+
+  const [selectedTask, setSelectedTask] = useRecoilState(
+    selcetedTodoTaskSelector
+  )
+  const { isLoading, isError } = useQuery<TodoItem>(
     ['todoTask', taskId],
     () => getTodoTask(taskId as string),
-    { enabled: router.isReady }
+    {
+      enabled: router.isReady,
+      onSuccess: (addDate) => {
+        const {
+          description,
+          id: todoId,
+          categoryId,
+          priority,
+          targetDay,
+          title: todoTitle,
+          userId,
+          isCompleted,
+        } = addDate
+        setSelectedTask({
+          title: todoTitle,
+          categoryId,
+          priority,
+          targetDay,
+          id: todoId,
+          isCompleted,
+          userId,
+          description,
+        })
+      },
+    }
   )
+
   if (isLoading) {
     return <Loading />
   }
   if (isError) {
     return <div>is Error Page</div>
   }
-  if (!data) {
+
+  if (!selectedTask) {
     return <div>is Error Page</div>
   }
 
@@ -74,7 +105,7 @@ export default function TaskEditor() {
     priority,
     targetDay,
     title: todoTitle,
-  } = data
+  } = selectedTask
 
   const taskMappingContent: TaskTypeToTodoItemKeyMapping = {
     Category: categoryId,
@@ -83,9 +114,18 @@ export default function TaskEditor() {
       'MM-DD HH:mm'
     ),
   }
+  const extraMethod = (state: any) => {
+    return state.priority
+  }
   const taskMappingFn = {
     Category: () => {},
-    Priority: () => setModalContent(<TaskPriority />),
+    Priority: () =>
+      setModalContent(
+        <TaskPriority
+          stateKey={selcetedTodoTaskSelector}
+          extraMethod={extraMethod}
+        />
+      ),
     Timer: () => {},
     Delete: () => {},
   }

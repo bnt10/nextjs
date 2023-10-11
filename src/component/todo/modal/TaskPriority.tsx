@@ -1,19 +1,32 @@
 import { useState } from 'react'
-import { useRecoilState } from 'recoil'
+import type { RecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 
 import { modalContentState } from '@/atoms/modalAtom'
+import { useDynamicRecoilState } from '@/hooks/useDynamicRecoilState'
 import { schedulePriorityState } from '@/selectors/prioritySelector'
 
 import ModalActionButtons from './ModalActionButtons'
 import TaskPriorityItem from './TaskPriorityItem'
 
 const PRIORITY_LEVEL = 9
-export default function TaskPriority() {
-  const [priorityState, setPriorityState] = useRecoilState(
-    schedulePriorityState
-  )
-  const [selectedButton, setSelectedButton] = useState<number>(priorityState)
-  const [, setModalContent] = useRecoilState(modalContentState)
+
+type TaskPriorityProps = {
+  stateKey?: RecoilState<any>
+  extraMethod?: any
+}
+export default function TaskPriority({
+  stateKey = schedulePriorityState,
+  extraMethod,
+}: TaskPriorityProps) {
+  const [priorityState, setPriorityState] = useDynamicRecoilState({
+    stateKey,
+    func: extraMethod,
+  })
+  console.log(priorityState)
+  const [selectedButton, setSelectedButton] = useState(priorityState)
+
+  const setModalContent = useSetRecoilState(modalContentState)
   const ClickHandler = (proirity: number) => {
     setSelectedButton(proirity)
   }
@@ -37,7 +50,7 @@ export default function TaskPriority() {
                 key={priority}
                 title={`${priority}`}
                 onClick={ClickHandler}
-                selectedPriority={selectedButton === priority}
+                selectedPriority={parseInt(selectedButton, 10) === priority}
               />
             )
           )}
