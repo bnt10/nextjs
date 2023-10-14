@@ -5,6 +5,8 @@ import { useRecoilState, useSetRecoilState } from 'recoil'
 
 import { modalContentState } from '@/atoms/modalAtom'
 import Loading from '@/component/common/Loading'
+import Calendar from '@/component/todo/modal/Calendar'
+import TaskCategory from '@/component/todo/modal/TaskCategory'
 import TaskPriority from '@/component/todo/modal/TaskPriority'
 import TaskItem from '@/component/todo/taskEditor/TaskItem'
 import TodoTask from '@/component/todo/taskEditor/TodoTask'
@@ -17,8 +19,9 @@ import type {
   TaskTypeToTodoItemKeyMapping,
   TodoItem,
 } from '@/types/todoList'
-import { TaskType } from '@/types/todoList'
+import { TaskType, TodoItemKey } from '@/types/todoList'
 import { combineDateAndTime } from '@/utils/convert'
+import { convertObjectToDate } from '@/utils/date'
 
 const TaskDetailList = [
   {
@@ -57,32 +60,15 @@ export default function TaskEditor() {
   const [selectedTask, setSelectedTask] = useRecoilState(
     selcetedTodoTaskSelector
   )
+
   const { isLoading, isError } = useQuery<TodoItem>(
     ['todoTask', taskId],
     () => getTodoTask(taskId as string),
     {
       enabled: router.isReady,
+      refetchOnWindowFocus: false,
       onSuccess: (addDate) => {
-        const {
-          description,
-          id: todoId,
-          categoryId,
-          priority,
-          targetDay,
-          title: todoTitle,
-          userId,
-          isCompleted,
-        } = addDate
-        setSelectedTask({
-          title: todoTitle,
-          categoryId,
-          priority,
-          targetDay,
-          id: todoId,
-          isCompleted,
-          userId,
-          description,
-        })
+        setSelectedTask(addDate)
       },
     }
   )
@@ -111,22 +97,54 @@ export default function TaskEditor() {
     Category: categoryId,
     Priority: priority,
     Timer: combineDateAndTime(targetDay.date, targetDay.time).format(
-      'MM-DD HH:mm'
+      'YYYY-MM-DD HH:mm'
     ),
   }
-  const extraMethod = (state: any) => {
-    return state.priority
+
+  const getTaskDetailData = (element: string) => (state: any) => {
+    if (element === TodoItemKey.targetDay) {
+      const { date, time } = state[element]
+      return {
+        date: convertObjectToDate(date),
+        time,
+      }
+    }
+    return state[element]
   }
+  const setTaskDetailData =
+    (element: string) => (newState: any, recoilSetState: any) => {
+      recoilSetState({
+        ...selectedTask,
+        [element]: newState,
+      })
+    }
   const taskMappingFn = {
-    Category: () => {},
+    Category: () => {
+      setModalContent(
+        <TaskCategory
+          stateKey={selcetedTodoTaskSelector}
+          getState={getTaskDetailData(TodoItemKey.categoryId)}
+          setState={setTaskDetailData(TodoItemKey.categoryId)}
+        />
+      )
+    },
     Priority: () =>
       setModalContent(
         <TaskPriority
           stateKey={selcetedTodoTaskSelector}
-          extraMethod={extraMethod}
+          getState={getTaskDetailData(TodoItemKey.priority)}
+          setState={setTaskDetailData(TodoItemKey.priority)}
         />
       ),
-    Timer: () => {},
+    Timer: () => {
+      setModalContent(
+        <Calendar
+          stateKey={selcetedTodoTaskSelector}
+          getState={getTaskDetailData(TodoItemKey.targetDay)}
+          setState={setTaskDetailData(TodoItemKey.targetDay)}
+        />
+      )
+    },
     Delete: () => {},
   }
   const onTaskDetailClickHandler = (taskType: TaskTypeKeys) => {
@@ -141,7 +159,6 @@ export default function TaskEditor() {
           isCompleted={clicked}
           onClick={() => {
             setClicked(!clicked)
-            console.log('clcik')
           }}
           taskId={todoId}
           title={todoTitle}

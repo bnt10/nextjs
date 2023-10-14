@@ -13,30 +13,31 @@ const PRIORITY_LEVEL = 9
 
 type TaskPriorityProps = {
   stateKey?: RecoilState<any>
-  extraMethod?: any
+  getState?: any
+  setState?: any
 }
 export default function TaskPriority({
   stateKey = schedulePriorityState,
-  extraMethod,
+  getState,
+  setState,
 }: TaskPriorityProps) {
   const [priorityState, setPriorityState] = useDynamicRecoilState({
     stateKey,
-    func: extraMethod,
+    getState,
+    setState,
   })
-  console.log(priorityState)
-  const [selectedButton, setSelectedButton] = useState(priorityState)
+
+  const [priorityId, setPrioirityId] = useState(priorityState)
 
   const setModalContent = useSetRecoilState(modalContentState)
   const ClickHandler = (proirity: number) => {
-    setSelectedButton(proirity)
+    setPrioirityId(proirity)
   }
   const saveHandler = () => {
-    setPriorityState(selectedButton)
+    setPriorityState(priorityId)
     setModalContent(null)
   }
-  const cancelHandler = () => {
-    setModalContent(null)
-  }
+
   return (
     <div className="absolute flex-col items-center justify-center ">
       <div className=" w-327pxr rounded bg-footer-gray px-8pxr pb-8pxr">
@@ -50,17 +51,12 @@ export default function TaskPriority({
                 key={priority}
                 title={`${priority}`}
                 onClick={ClickHandler}
-                selectedPriority={parseInt(selectedButton, 10) === priority}
+                selectedPriority={parseInt(priorityId, 10) === priority}
               />
             )
           )}
         </div>
-        <ModalActionButtons
-          saveTitle={'Save'}
-          saveHandler={saveHandler}
-          cancelTitle={'Cancel'}
-          cancelHandler={cancelHandler}
-        />
+        <ModalActionButtons saveTitle={'Save'} saveHandler={saveHandler} />
       </div>
     </div>
   )

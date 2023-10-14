@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
-import type { ButtonStyle } from '@/component/common/Button'
 import Button from '@/component/common/Button'
+import type { ButtonStyle } from '@/types/style/common'
 
 const buttonStyle: ButtonStyle = {
   button:

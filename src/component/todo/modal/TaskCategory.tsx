@@ -1,26 +1,42 @@
-import { useRecoilState } from 'recoil'
+import { useState } from 'react'
+import type { RecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 
 import { modalContentState } from '@/atoms/modalAtom'
 import { CategoryList } from '@/config/category'
-import { scheduleCategoryState } from '@/selectors/category'
+import { useDynamicRecoilState } from '@/hooks/useDynamicRecoilState'
+import { schedulePriorityState } from '@/selectors/prioritySelector'
 
 import CategoryItem from './CategoryItem'
 import ModalActionButtons from './ModalActionButtons'
 
-export default function Category() {
-  const [, setModalContent] = useRecoilState(modalContentState)
-  const [categoryState, setCategoryState] = useRecoilState(
-    scheduleCategoryState
-  )
+interface TaskCategoryProps {
+  stateKey?: RecoilState<any>
+  getState?: any
+  setState?: any
+}
+export default function TaskCategory({
+  stateKey = schedulePriorityState,
+  getState,
+  setState,
+}: TaskCategoryProps) {
+  const setModalContent = useSetRecoilState(modalContentState)
+
+  const [categoryState, setCategoryState] = useDynamicRecoilState({
+    stateKey,
+    getState,
+    setState,
+  })
+  const [categoryId, setCategoryId] = useState(categoryState)
   const saveHandler = () => {
+    setCategoryState(categoryId)
     setModalContent(null)
   }
-  const cancelHandler = () => {
-    setModalContent(null)
-  }
+
   const onCategoryClickHandler = (id: string) => {
-    setCategoryState(id)
+    setCategoryId(id)
   }
+
   return (
     <div className="absolute flex-col items-center justify-center ">
       <div className=" w-327pxr rounded bg-footer-gray px-8pxr pb-8pxr">
@@ -33,19 +49,14 @@ export default function Category() {
               id={id}
               key={id}
               onCategoryClickHandler={onCategoryClickHandler}
-              selected={categoryState === id}
+              selected={categoryId === id}
               icon={icon}
               title={title}
               color={color}
             />
           ))}
         </div>
-        <ModalActionButtons
-          saveTitle={'Save'}
-          saveHandler={saveHandler}
-          cancelTitle={'Cancel'}
-          cancelHandler={cancelHandler}
-        />
+        <ModalActionButtons saveTitle={'Save'} saveHandler={saveHandler} />
       </div>
     </div>
   )

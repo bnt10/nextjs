@@ -174,14 +174,13 @@ export default function TimeRoller({ timeType, value, onTimeChange }: Props) {
           setTimes(firstVisibleItemIndex.current)
         }
       }, 100),
-      onClick: ({ event }) => {
-        event.preventDefault()
-
+      onClick: () => {
         firstVisibleItemIndex.current += SCROLL_UP
         firstVisibleItemIndex.current =
           (firstVisibleItemIndex.current + rollerLength) % rollerLength
 
         runSprings(firstVisibleItemIndex.current, SCROLL_UP)
+        setTimes(firstVisibleItemIndex.current)
       },
     },
     { target, wheel: { eventOptions: { passive: false } } }

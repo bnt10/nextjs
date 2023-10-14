@@ -1,5 +1,5 @@
 export const modalSaveButtonSt = {
-  button: 'w-full bg-primary px-30pxr py-12pxr rounded absolute bottom-[0]',
+  button: 'w-full bg-primary px-30pxr py-12pxr rounded  bottom-[0]',
   title: 'text-base text-white leading-6 ',
   icon: '',
 }

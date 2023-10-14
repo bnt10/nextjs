@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import type { ButtonStyle } from '@/component/common/Button'
 import Button from '@/component/common/Button'
+import type { ButtonStyle } from '@/types/style/common'
 import tw from '@/utils/twMergeObjects'
 
 // Type

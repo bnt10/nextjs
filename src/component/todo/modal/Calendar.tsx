@@ -1,9 +1,11 @@
 import process from 'process'
 import { useState } from 'react'
 import type { Value } from 'react-calendar/dist/cjs/shared/types'
-import { useRecoilState } from 'recoil'
+import type { RecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 
 import { modalContentState } from '@/atoms/modalAtom'
+import { useDynamicRecoilState } from '@/hooks/useDynamicRecoilState'
 import { schemduleDateState } from '@/selectors/dateSelector'
 
 import CalendarNavigation from './CalendarNavigation'
@@ -11,18 +13,38 @@ import ModalActionButtons from './ModalActionButtons'
 import StyledCalendar from './StyledCalendar'
 import TimePicker from './TimePicker'
 
-export default function CalendarModal() {
-  const [schemduleDate, setSchemduleDate] = useRecoilState(schemduleDateState)
-  const [date, setDate] = useState<Value>(schemduleDate)
-  const [, setModalContent] = useRecoilState(modalContentState)
+type CalendarModalProps = {
+  stateKey?: RecoilState<any>
+  getState?: any
+  setState?: any
+}
+
+export default function CalendarModal({
+  stateKey = schemduleDateState,
+  getState,
+  setState,
+}: CalendarModalProps) {
+  const [schemduleDate] = useDynamicRecoilState({
+    stateKey,
+    getState,
+  })
+
+  const [date, setDate] = useState<Value>(schemduleDate.date)
+  const setModalContent = useSetRecoilState(modalContentState)
 
   const onDateChangeHandler = (value: Value) => {
     setDate(value)
   }
   const onSaveHandler = () => {
     if (date instanceof Date) {
-      setSchemduleDate(date)
-      setModalContent(<TimePicker />)
+      setModalContent(
+        <TimePicker
+          stateKey={stateKey}
+          currentDate={date}
+          getState={getState}
+          setState={setState}
+        />
+      )
     }
   }
 

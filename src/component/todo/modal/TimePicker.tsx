@@ -1,23 +1,56 @@
 import { useRef } from 'react'
-import { useRecoilState } from 'recoil'
+import type { RecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 
 import { modalContentState } from '@/atoms/modalAtom'
-import { scheduleTimeState } from '@/selectors/timeSelector'
+import { useDynamicRecoilState } from '@/hooks/useDynamicRecoilState'
+import { scheduleDateDataState } from '@/selectors/timeSelector'
 import type { TimeData } from '@/types/schedule'
+import { convertDateToObject } from '@/utils/date'
 
 import ModalActionButtons from './ModalActionButtons'
 import TimeRoller from './TimeRoller'
 
-export default function TimePicker() {
-  const timeRef = useRef<TimeData>({})
-  const [, setModalContent] = useRecoilState(modalContentState)
+type TimePickerProps = {
+  currentDate: Date
+  stateKey?: RecoilState<any>
+  getState?: any
+  setState?: any
+}
 
-  const [schemduleState, setSchemduleState] = useRecoilState(scheduleTimeState)
+export default function TimePicker({
+  currentDate,
+  stateKey = scheduleDateDataState,
+  getState,
+  setState,
+}: TimePickerProps) {
+  const [schemduleState, setSchemduleState] = useDynamicRecoilState({
+    stateKey,
+    getState,
+    setState,
+  })
+
+  const timeRef = useRef<TimeData>({})
+  const setModalContent = useSetRecoilState(modalContentState)
+
+  const { hour, minute, amPm } = schemduleState.time
   const onChange = (time: TimeData) => {
     timeRef.current = {
       ...timeRef.current,
       ...time,
     }
+  }
+
+  const onSaveHandler = () => {
+    setSchemduleState({
+      date: convertDateToObject(currentDate),
+      time: timeRef.current,
+    })
+    setModalContent(null)
+  }
+
+  const onCancleHandler = () => {
+    setModalContent(null)
   }
 
   return (
@@ -31,7 +64,7 @@ export default function TimePicker() {
             <TimeRoller
               timeType={'hour'}
               onTimeChange={onChange}
-              value={schemduleState.hour}
+              value={hour}
             />
           </div>
           <div className="mr-14pxr">:</div>
@@ -39,27 +72,22 @@ export default function TimePicker() {
             <TimeRoller
               timeType={'minute'}
               onTimeChange={onChange}
-              value={schemduleState.minute}
+              value={minute}
             />
           </div>
           <div>
             <TimeRoller
               timeType={'amPm'}
               onTimeChange={onChange}
-              value={schemduleState.amPm}
+              value={amPm}
             />
           </div>
         </div>
         <ModalActionButtons
           saveTitle={'Save'}
-          saveHandler={() => {
-            setSchemduleState(timeRef.current)
-            setModalContent(null)
-          }}
+          saveHandler={onSaveHandler}
           cancelTitle={'Cancel'}
-          cancelHandler={() => {
-            setModalContent(null)
-          }}
+          cancelHandler={onCancleHandler}
         />
       </div>
     </div>

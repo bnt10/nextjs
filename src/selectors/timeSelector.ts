@@ -1,22 +1,25 @@
 import { selector } from 'recoil'
 
 import { SchemduleState } from '@/atoms/scheduleAtom'
+import type { TargetDay } from '@/types/todoList'
 
-export const scheduleTimeState = selector({
-  key: 'ScheduletTimeState',
+export const scheduleDateDataState = selector({
+  key: 'ScheduleDateDataState',
   get: ({ get }) => {
-    const schemduleState = get(SchemduleState)
-    return schemduleState.time
+    const { date, time } = get(SchemduleState)
+    return { date, time }
   },
-  set: ({ set }, newTime) => {
-    set(SchemduleState, (preState) => {
-      return {
-        ...preState,
-        time: {
-          ...preState.time,
-          ...newTime,
-        },
-      }
-    })
+  set: ({ set }, newDateData) => {
+    const { date, time } = newDateData as TargetDay
+
+    if (date && time) {
+      set(SchemduleState, (preState) => {
+        return {
+          ...preState,
+          time,
+          date,
+        }
+      })
+    }
   },
 })

@@ -1,32 +1,31 @@
 import type { RecoilState } from 'recoil'
 import { useRecoilState } from 'recoil'
 
-import type { TodoItem } from '@/types/todoList'
-
 type UseDynamicRecoilStateProps = {
   stateKey: RecoilState<any>
-  func?: any
+  getState?: any
+  setState?: any
 }
 export const useDynamicRecoilState = ({
   stateKey,
-  func,
+  getState,
+  setState,
 }: UseDynamicRecoilStateProps) => {
-  const [state, setState] = useRecoilState(stateKey)
+  const [recoilState, recoilSetState] = useRecoilState(stateKey)
 
   const getExtendedState = () => {
-    if (func) {
-      return func(state)
+    if (getState) {
+      return getState(recoilState)
     }
-    return state
+    return recoilState
   }
 
-  const setExtendedState = (newState: TodoItem) => {
-    setState((prevState: any) => {
-      return {
-        ...newState,
-        ...prevState,
-      }
-    })
+  const setExtendedState = (newState: any) => {
+    if (setState) {
+      setState(newState, recoilSetState)
+      return
+    }
+    recoilSetState(newState)
   }
 
   return [getExtendedState(), setExtendedState]

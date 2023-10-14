@@ -62,7 +62,9 @@ export default function Footer() {
     {
       title: 'index',
       icon: ICON_HOME,
-      handler: () => {},
+      handler: () => {
+        router.push('/todo/home/')
+      },
       style: textWithIconBtnStyle,
     },
     {

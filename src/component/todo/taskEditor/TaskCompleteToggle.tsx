@@ -1,7 +1,7 @@
-import type { ButtonStyle } from '@/component/common/Button'
 import Button from '@/component/common/Button'
 import DynamicIcon from '@/component/common/Icon'
 import { ICON_DETAIL_EDIT } from '@/config/icon'
+import type { ButtonStyle } from '@/types/style/common'
 
 const buttonStyle: ButtonStyle = {
   button: 'w-48pxr h-48pxr flex justify-center items-center',

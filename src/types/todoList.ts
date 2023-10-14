@@ -10,7 +10,20 @@ export type TodoListType = {
 }
 export type InitialDataType = Pick<TodoListType, 'initialData'>
 
+export const TodoItemKey = {
+  todoTitle: 'todoTitle',
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  description: 'description',
+  categoryId: 'categoryId',
+  priority: 'priority',
+  isCompleted: 'isCompleted',
+  targetDay: 'targetDay',
+} as const
+
 export type TodoItem = {
+  todoTitle: string
   id: string
   userId: string
   title: string

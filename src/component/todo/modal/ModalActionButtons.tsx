@@ -6,9 +6,9 @@ import {
 
 interface Props {
   saveTitle: string
-  saveHandler: () => void
-  cancelTitle: string
-  cancelHandler: () => void
+  saveHandler?: () => void
+  cancelTitle?: string
+  cancelHandler?: () => void
 }
 export default function ModalActionButtons({
   saveTitle,
@@ -18,16 +18,20 @@ export default function ModalActionButtons({
 }: Props) {
   return (
     <div className="flex items-center justify-center  px-8pxr pb-8pxr  ">
-      <Button
-        title={cancelTitle}
-        style={modalCancelButtonSt}
-        handler={cancelHandler}
-      />
-      <Button
-        title={saveTitle}
-        style={modalSaveButtonSt}
-        handler={saveHandler}
-      />
+      {cancelHandler && (
+        <Button
+          title={cancelTitle}
+          style={modalCancelButtonSt}
+          handler={cancelHandler}
+        />
+      )}
+      {saveHandler && (
+        <Button
+          title={saveTitle}
+          style={modalSaveButtonSt}
+          handler={saveHandler}
+        />
+      )}
     </div>
   )
 }
