@@ -113,21 +113,9 @@ const useForm = <T extends keyof FormKeys>(
   const handleOnSubmit =
     (onSubmit: { (e: FormEvent<HTMLFormElement>): Promise<void> }) =>
     async (formSubmit: FormEvent<HTMLFormElement>) => {
-      if (isFormValid) {
-        formSubmit.preventDefault()
-        // const uncontrolledValues = Object.entries(formSchema)
-        //   .filter(([_, schema]) => schema.isControlled)
-        //   .reduce(
-        //     (values: Record<string, string | undefined>, [key, schema]) => {
-        //       return {
-        //         ...values,
-        //         [key]: schema.ref?.current?.value,
-        //       }
-        //     },
-        //     {}
-        //   )
-        // const finalFormValues = { ...form, ...uncontrolledValues }
+      formSubmit.preventDefault()
 
+      if (isFormValid) {
         onSubmit(formSubmit)
       }
       // Todo inValidate form error handle
@@ -138,7 +126,6 @@ const useForm = <T extends keyof FormKeys>(
     handleOnChange,
     isFormValid,
     handleOnSubmit,
-
     getFormFields,
   }
 }

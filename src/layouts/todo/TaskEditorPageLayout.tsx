@@ -9,7 +9,9 @@ export default function TaskEditorPageLayout({ children }: LayoutProps) {
     <div className="flex justify-center">
       <div className="relative flex h-screen flex-col items-center bg-app-bg px-24pxr pb-40pxr foldable:w-375pxr">
         <TaskEditorPageHeader />
-        {children}
+        <section className="flex w-full flex-col items-center justify-center">
+          {children}
+        </section>
         <footer className="absolute bottom-40pxr w-full">
           <Button
             style={modalEditSaveButtonSt}

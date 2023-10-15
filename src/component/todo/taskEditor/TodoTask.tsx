@@ -10,20 +10,31 @@ type Props = {
   taskId: string
   description: string
   isCompleted: boolean
-  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  handleTaskToggleComplete: (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => void
+  handleTitleEditorOpen: (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => void
 }
 const buttonStyle: ButtonStyle = {
   button: 'w-24pxr h-24pxr',
   icon: 'w-full h-full relative',
 }
 
-function TodoTask({ title, description, onClick, isCompleted }: Props) {
+function TodoTask({
+  title,
+  description,
+  isCompleted,
+  handleTaskToggleComplete,
+  handleTitleEditorOpen,
+}: Props) {
   return (
     <div className="mb-16pxr flex w-full cursor-pointer flex-col  rounded  py-12pxr">
       <div className="flex items-start justify-between">
         <TodoCompletedLayout
           clicked={isCompleted}
-          onClick={onClick}
+          onClick={handleTaskToggleComplete}
           taskId={''}
         >
           <div className=" w-full">
@@ -36,7 +47,7 @@ function TodoTask({ title, description, onClick, isCompleted }: Props) {
           </div>
         </TodoCompletedLayout>
         <Button
-          handler={() => {}}
+          handler={handleTitleEditorOpen}
           icon={ICON_DETAIL_EDIT}
           style={buttonStyle}
         />

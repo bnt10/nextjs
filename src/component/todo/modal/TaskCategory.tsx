@@ -8,6 +8,7 @@ import { useDynamicRecoilState } from '@/hooks/useDynamicRecoilState'
 import { schedulePriorityState } from '@/selectors/prioritySelector'
 
 import CategoryItem from './CategoryItem'
+import ModalLayout from './common/ModalLayout'
 import ModalActionButtons from './ModalActionButtons'
 
 interface TaskCategoryProps {
@@ -38,26 +39,24 @@ export default function TaskCategory({
   }
 
   return (
-    <div className="absolute flex-col items-center justify-center ">
-      <div className=" w-327pxr rounded bg-footer-gray px-8pxr pb-8pxr">
-        <div className="flex items-center justify-center border-b border-gray-900 py-10pxr">
-          <span className="text-white">Choose Category</span>
-        </div>
-        <div className="flex flex-wrap items-center px-4pxr pt-22pxr">
-          {CategoryList.map(({ id, icon, title, color }) => (
-            <CategoryItem
-              id={id}
-              key={id}
-              onCategoryClickHandler={onCategoryClickHandler}
-              selected={categoryId === id}
-              icon={icon}
-              title={title}
-              color={color}
-            />
-          ))}
-        </div>
-        <ModalActionButtons saveTitle={'Save'} saveHandler={saveHandler} />
+    <ModalLayout>
+      <div className="flex items-center justify-center border-b border-gray-900 py-10pxr">
+        <span className="text-white">Choose Category</span>
       </div>
-    </div>
+      <div className="flex flex-wrap items-center px-4pxr pt-22pxr">
+        {CategoryList.map(({ id, icon, title, color }) => (
+          <CategoryItem
+            id={id}
+            key={id}
+            onCategoryClickHandler={onCategoryClickHandler}
+            selected={categoryId === id}
+            icon={icon}
+            title={title}
+            color={color}
+          />
+        ))}
+      </div>
+      <ModalActionButtons saveTitle={'Save'} saveHandler={saveHandler} />
+    </ModalLayout>
   )
 }

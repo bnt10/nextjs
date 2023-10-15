@@ -6,10 +6,11 @@ import ImageIcon from './ImageIcon'
 type ButtonProps = {
   title?: string
   icon?: string
-  handler: (value?: any) => void
+  handler?: (value?: any) => void
   style?: ButtonStyle
   disabled?: boolean
   dataType?: string | number
+  buttonType?: 'submit' | 'reset' | 'button' | undefined
 }
 
 const twButtonStyles = {
@@ -25,14 +26,15 @@ const Button = ({
   icon,
   disabled = false,
   dataType = '',
+  buttonType = 'button',
 }: ButtonProps) => {
   const st = tw<ButtonStyle>(twButtonStyles, style)
   return (
     <button
-      type="button"
+      type={buttonType}
       disabled={disabled}
       className={st.button}
-      onClick={handler}
+      onClick={handler && handler}
       data-type={`${dataType}`}
     >
       {icon && <ImageIcon iconSrc={icon} style={st.icon} />}

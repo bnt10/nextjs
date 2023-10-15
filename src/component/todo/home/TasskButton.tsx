@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 
 import { modalContentState } from '@/atoms/modalAtom'
 import Button from '@/component/common/Button'
@@ -11,7 +11,7 @@ import TaskCategory from '../modal/TaskCategory'
 import TaskPriority from '../modal/TaskPriority'
 
 export default function TaskButton() {
-  const [, setModalContent] = useRecoilState(modalContentState)
+  const setModalContent = useSetRecoilState(modalContentState)
 
   const TaskWithButton: Record<string, Component> = {
     timer: {
@@ -46,6 +46,7 @@ export default function TaskButton() {
           icon: 'absolute right-26pxr bottom-17pxr w-24pxr h-24pxr flex-shrink-0',
         },
         icon: ICON_SEND,
+        buttonType: 'submit',
       },
       handler: async () => {},
     },

@@ -17,7 +17,7 @@ export default function ModalActionButtons({
   cancelTitle,
 }: Props) {
   return (
-    <div className="flex items-center justify-center  px-8pxr pb-8pxr  ">
+    <div className="flex items-center justify-center px-8pxr pb-8pxr">
       {cancelHandler && (
         <Button
           title={cancelTitle}

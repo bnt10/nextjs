@@ -6,6 +6,9 @@ import { modalContentState } from '@/atoms/modalAtom'
 import { useDynamicRecoilState } from '@/hooks/useDynamicRecoilState'
 import { schedulePriorityState } from '@/selectors/prioritySelector'
 
+import ModalHeader from './common/ModalHeader'
+import ModalLayout from './common/ModalLayout'
+import { MODAL_FOOTER_SAVE_BUTTON, MODAL_HEADER_TITLE } from './constants'
 import ModalActionButtons from './ModalActionButtons'
 import TaskPriorityItem from './TaskPriorityItem'
 
@@ -39,25 +42,24 @@ export default function TaskPriority({
   }
 
   return (
-    <div className="absolute flex-col items-center justify-center ">
-      <div className=" w-327pxr rounded bg-footer-gray px-8pxr pb-8pxr">
-        <div className="flex items-center justify-center border-b border-gray-900 py-10pxr">
-          <span className="text-white">Task Proirity</span>
-        </div>
-        <div className="flex flex-wrap items-center px-4pxr pt-22pxr">
-          {Array.from({ length: PRIORITY_LEVEL }, (_, index) => index + 1).map(
-            (priority) => (
-              <TaskPriorityItem
-                key={priority}
-                title={`${priority}`}
-                onClick={ClickHandler}
-                selectedPriority={parseInt(priorityId, 10) === priority}
-              />
-            )
-          )}
-        </div>
-        <ModalActionButtons saveTitle={'Save'} saveHandler={saveHandler} />
+    <ModalLayout>
+      <ModalHeader title={MODAL_HEADER_TITLE.Priority} />
+      <div className="flex flex-wrap items-center px-4pxr pt-22pxr">
+        {Array.from({ length: PRIORITY_LEVEL }, (_, index) => index + 1).map(
+          (priority) => (
+            <TaskPriorityItem
+              key={priority}
+              title={`${priority}`}
+              onClick={ClickHandler}
+              selectedPriority={parseInt(priorityId, 10) === priority}
+            />
+          )
+        )}
       </div>
-    </div>
+      <ModalActionButtons
+        saveTitle={MODAL_FOOTER_SAVE_BUTTON}
+        saveHandler={saveHandler}
+      />
+    </ModalLayout>
   )
 }
