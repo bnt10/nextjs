@@ -10,7 +10,6 @@ interface Props {
 }
 export default function TaksTitle({ handleOnChange, getFormFields }: Props) {
   const { title, description } = getFormFields()
-  console.log(title, description)
   const { openModal } = useModal()
   useEffect(() => {
     if (openModal) {

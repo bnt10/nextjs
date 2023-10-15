@@ -10,6 +10,7 @@ import { modalCancelButtonSt } from '@/styles/todo/modal/button'
 
 import ModalHeader from './common/ModalHeader'
 import ModalLayout from './common/ModalLayout'
+import type { TaskFormElements } from './constants'
 import {
   addTaskShcema,
   MODAL_FOOTER_SAVE_BUTTON,
@@ -22,39 +23,49 @@ type TaskPriorityProps = {
   getState?: any
   setState?: any
 }
-// type TaskTitleType = Record<string, any>
+type TaskTitleType = Record<string, any>
 
 export default function TaskTitleEditor({
   stateKey = schedulePriorityState,
   getState,
   setState,
 }: TaskPriorityProps) {
-  const [, setTaskTitle] = useDynamicRecoilState({
+  const [taskTitle, setTaskTitle] = useDynamicRecoilState({
     stateKey,
     getState,
     setState,
   })
 
-  // const formattedObject = Object.keys(taskTitle).reduce(
-  //   (acc: TaskTitleType, key: string) => {
-  //     acc[key] = { value: taskTitle[key] }
-  //     return acc
-  //   },
-  //   {}
-  // )
+  const formattedObject = Object.keys(taskTitle).reduce(
+    (acc: TaskTitleType, key: string) => {
+      acc[key] = { value: taskTitle[key] }
+      return acc
+    },
+    {}
+  )
 
   const setModalContent = useSetRecoilState(modalContentState)
 
-  // Object.keys(addTaskShcema).forEach((key) => {
-  //   combinedObject[key] = { ...addTaskShcema[key], ...formattedObject[key] }
-  // })
-  // console.log(combinedObject)
+  const combimeObject = Object.keys(addTaskShcema).reduce(
+    (acc, inputElement) => {
+      const { value } = formattedObject[inputElement]
+      return {
+        ...acc,
+        [inputElement]: {
+          ...addTaskShcema[inputElement as TaskFormElements],
+          value,
+        },
+      }
+    },
+    {}
+  )
+
   const { handleOnChange, handleOnSubmit, getFormFields, form } =
-    useForm(addTaskShcema)
+    useForm(combimeObject)
 
   const addTaskSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log('asdas')
+
     setTaskTitle(form)
     setModalContent(null)
   }

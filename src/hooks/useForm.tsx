@@ -1,5 +1,5 @@
-import type { FormEvent } from 'react'
-import { createRef, useRef, useState } from 'react'
+import type { Dispatch, FormEvent, SetStateAction } from 'react'
+import { createRef, useEffect, useRef, useState } from 'react'
 
 import type {
   FormFields,
@@ -66,6 +66,14 @@ const generateInitFormState = <T extends keyof FormKeys>(
     }
   }, {} as FormSchema<T>)
 }
+const checkFormValid = <T extends keyof FormKeys>(
+  nextForm: FormState<T>,
+  updateFormVaild: Dispatch<SetStateAction<boolean>>
+): void => {
+  const formValues = Object.values(nextForm) as FormValidateFields[]
+  const hasErrors = formValues.some((data) => data && data.error !== null)
+  updateFormVaild(!hasErrors)
+}
 
 const useForm = <T extends keyof FormKeys>(
   formSchema: FormSchema<T>,
@@ -77,23 +85,22 @@ const useForm = <T extends keyof FormKeys>(
   const preprocessedFormState = generateInitFormState(initFormState, formRefs)
   const keys = Object.keys(preprocessedFormState) as T[]
   const initForm = keys.reduce<FormState<T>>((acc, input: T) => {
+    const { value, validate } = formSchema[input]
     return {
       ...acc,
       [input]: {
-        value: formSchema[input]?.value,
-        error: formSchema[input]?.error,
+        value,
+        error: validate(value), // todo optional state check
       },
     }
   }, {})
 
   const [form, setForm] = useState<FormState<T>>(initForm)
-  const [isFormValid, setIsFormValid] = useState(false)
+  const [isFormValid, setIsFormValid] = useState(true)
 
-  const checkFormValid = (nextForm: FormState<T>): void => {
-    const formValues = Object.values(nextForm) as FormValidateFields[]
-    const hasErrors = formValues.some((data) => data && data.error !== null)
-    setIsFormValid(!hasErrors)
-  }
+  useEffect(() => {
+    checkFormValid(form, setIsFormValid)
+  }, [])
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -102,10 +109,9 @@ const useForm = <T extends keyof FormKeys>(
     const changedForm = {
       ...form,
       [name]: { value, error: errorMessage },
-    }
-
+    } as FormState<T>
     setForm(changedForm)
-    checkFormValid(changedForm)
+    checkFormValid(changedForm, setIsFormValid)
   }
   const getFormFields = () => {
     return generateFormFields(preprocessedFormState)

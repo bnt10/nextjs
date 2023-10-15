@@ -108,8 +108,23 @@ export default function TaskEditor() {
                 description,
               }
             }}
-            setState={(form: any) => {
-              console.log(form)
+            setState={(form: any, recoilSetState: any) => {
+              const { title, description: todoDescription } = Object.keys(
+                form
+              ).reduce(
+                (acc, element) => {
+                  return {
+                    ...acc,
+                    [element]: form[element].value,
+                  }
+                },
+                { title: '', description: '' }
+              )
+              recoilSetState({
+                ...selectedTask,
+                title,
+                description: todoDescription,
+              })
             }}
           />
         )
