@@ -4,7 +4,10 @@ import { modalEditSaveButtonSt } from '@/styles/todo/modal/button'
 
 import type { LayoutProps } from './type'
 
-export default function TaskEditorPageLayout({ children }: LayoutProps) {
+export default function TaskEditorPageLayout({
+  handleSave,
+  children,
+}: LayoutProps) {
   return (
     <div className="flex justify-center">
       <div className="relative flex h-screen flex-col items-center bg-app-bg px-24pxr pb-40pxr foldable:w-375pxr">
@@ -16,7 +19,7 @@ export default function TaskEditorPageLayout({ children }: LayoutProps) {
           <Button
             style={modalEditSaveButtonSt}
             title="Edit Task"
-            handler={() => {}}
+            handler={handleSave}
           />
         </footer>
       </div>

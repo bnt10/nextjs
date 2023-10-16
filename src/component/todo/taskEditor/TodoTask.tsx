@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import Button from '@/component/common/Button'
 import { ICON_DETAIL_EDIT } from '@/config/icon'
@@ -10,9 +10,7 @@ type Props = {
   taskId: string
   description: string
   isCompleted: boolean
-  handleTaskToggleComplete: (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => void
+  handleTaskToggleComplete: (isCompleted: boolean) => void
   handleTitleEditorOpen: (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => void
@@ -26,16 +24,23 @@ function TodoTask({
   title,
   description,
   isCompleted,
+  taskId,
   handleTaskToggleComplete,
   handleTitleEditorOpen,
 }: Props) {
+  const [clicked, setClicked] = useState(isCompleted)
+
+  const handleTaskComplete = () => {
+    setClicked(!clicked)
+    handleTaskToggleComplete(!clicked)
+  }
   return (
     <div className="mb-16pxr flex w-full cursor-pointer flex-col  rounded  py-12pxr">
       <div className="flex items-start justify-between">
         <TodoCompletedLayout
-          clicked={isCompleted}
-          onClick={handleTaskToggleComplete}
-          taskId={''}
+          clicked={clicked}
+          onClick={handleTaskComplete}
+          taskId={taskId}
         >
           <div className=" w-full">
             <div className="mb-6pxr w-full text-left text-base leading-[1] text-white/[0.87]">

@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 
@@ -27,7 +26,7 @@ import { convertObjectToDate } from '@/utils/date'
 export default function TaskEditor() {
   const router = useRouter()
   const { taskId } = router.query
-  const [clicked, setClicked] = useState(false)
+
   const setModalContent = useSetRecoilState(modalContentState)
 
   const [selectedTask, setSelectedTask] = useRecoilState(
@@ -64,6 +63,7 @@ export default function TaskEditor() {
     priority,
     targetDay,
     title: todoTitle,
+    isCompleted,
   } = selectedTask
 
   const taskMappingContent: TaskTypeToTodoItemKeyMapping = {
@@ -95,8 +95,12 @@ export default function TaskEditor() {
 
   const taskHandler = {
     Task: {
-      handleTaskToggleComplete: () => {
-        setClicked(!clicked)
+      handleTaskToggleComplete: (isTaskCompleted: boolean) => {
+        console.log(isTaskCompleted)
+        setSelectedTask({
+          ...selectedTask,
+          isCompleted: isTaskCompleted,
+        })
       },
       handleTitleEditorOpen: () => {
         setModalContent(
@@ -156,18 +160,25 @@ export default function TaskEditor() {
         />
       )
     },
-    Delete: () => {},
+    Delete: () => {
+      if (confirm('Would you like to delete this task?')) {
+        // todo delete
+      }
+    },
   }
 
   const onTaskDetailClickHandler = (taskType: TaskTypeKeys) => {
     taskHandler[taskType]()
   }
-
+  const handlEditorSave = () => {
+    console.log(selectedTask)
+    router.replace('/todo/calendar')
+  }
   return (
-    <TaskEditorPageLayout>
+    <TaskEditorPageLayout handleSave={handlEditorSave}>
       <TodoTask
         description={description}
-        isCompleted={clicked}
+        isCompleted={isCompleted}
         handleTaskToggleComplete={taskHandler.Task.handleTaskToggleComplete}
         handleTitleEditorOpen={taskHandler.Task.handleTitleEditorOpen}
         taskId={todoId}
