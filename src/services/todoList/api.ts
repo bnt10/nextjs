@@ -1,3 +1,4 @@
+import axios from 'axios'
 import moment from 'moment-timezone'
 
 import type { TodoItem } from '@/types/todoList'
@@ -31,6 +32,7 @@ export const fetchTodoList = async (
       id: item.id,
       userId: item.userId,
       title: item.title,
+      todoTitle: item.title,
       description: item.description,
       categoryId: item.categoryId,
       priority: item.priority,
@@ -65,4 +67,18 @@ export const getTodoTask = async (taskId: string): Promise<TodoItem> => {
     targetDay: convertFromUTC(moment(data.targetDay)),
   }
   return todoList as TodoItem
+}
+
+export const getTaskFromEtcd = async () => {
+  try {
+    const response = await axios.get('/api/getToEtcd')
+    if (response.status === 200) {
+      const { task } = response.data
+      console.log('Task from etcd:', task)
+      return task
+    }
+  } catch (error) {
+    console.error('Failed to get task from etcd:', error)
+  }
+  return null
 }

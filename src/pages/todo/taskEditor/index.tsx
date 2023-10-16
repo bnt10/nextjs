@@ -1,4 +1,6 @@
+import axios from 'axios'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { useQuery } from 'react-query'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 
@@ -13,7 +15,7 @@ import TaskItem from '@/component/todo/taskEditor/TaskItem'
 import TodoTask from '@/component/todo/taskEditor/TodoTask'
 import TaskEditorPageLayout from '@/layouts/todo/TaskEditorPageLayout'
 import { selcetedTodoTaskSelector } from '@/selectors/selcetedTodoTaskSelector'
-import { getTodoTask } from '@/services/todoList/api'
+import { getTaskFromEtcd, getTodoTask } from '@/services/todoList/api'
 import type {
   TaskTypeKeys,
   TaskTypeToTodoItemKeyMapping,
@@ -44,7 +46,15 @@ export default function TaskEditor() {
       },
     }
   )
+  useEffect(() => {
+    console.log('ccc')
+    const fetchTask = async () => {
+      console.log('aa')
+      await getTaskFromEtcd()
+    }
 
+    fetchTask()
+  }, [])
   if (isLoading) {
     return <Loading />
   }
@@ -170,8 +180,19 @@ export default function TaskEditor() {
   const onTaskDetailClickHandler = (taskType: TaskTypeKeys) => {
     taskHandler[taskType]()
   }
-  const handlEditorSave = () => {
+
+  const handlEditorSave = async () => {
     console.log(selectedTask)
+    try {
+      const response = await axios.post('/api/saveToEtcd', {
+        task: selectedTask,
+      })
+      if (response.status === 200) {
+        console.log('Successfully saved to etcd')
+      }
+    } catch (error) {
+      console.error('Failed to save to etcd:', error)
+    }
     router.replace('/todo/calendar')
   }
   return (
