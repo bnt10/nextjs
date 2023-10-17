@@ -19,7 +19,7 @@ export default function TodoList({ initialData }: InitialDataType) {
 
   const { error, isLoading } = useQuery(
     'todoList',
-    () => fetchTodoList(schemduleDate.toUTCString()),
+    () => fetchTodoList(schemduleDate.toString()),
     {
       initialData,
       enabled: apiState.needDate,

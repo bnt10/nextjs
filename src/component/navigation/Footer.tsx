@@ -1,5 +1,7 @@
 import { useRouter } from 'next/router'
+import { useRecoilValue } from 'recoil'
 
+import { SchemduleState } from '@/atoms/scheduleAtom'
 import {
   ICON_ADD,
   ICON_CALENDAR,
@@ -19,6 +21,7 @@ import { textWithIconBtnStyle } from './style/navigationFooter'
 
 export default function Footer() {
   const { openModal, setOpenModal } = useModal()
+  const schemduleState = useRecoilValue(SchemduleState)
   const router = useRouter()
 
   const footerItem = [
@@ -68,6 +71,7 @@ export default function Footer() {
     useForm(addTaskShcema)
 
   const addTaskSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    console.log('aaa', schemduleState)
     event.preventDefault()
   }
 

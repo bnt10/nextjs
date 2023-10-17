@@ -6,12 +6,7 @@ import { SchemduleState } from '@/atoms/scheduleAtom'
 export const schemduleDateState = selector({
   key: 'ScheduleDateStateSelector',
   get: ({ get }) => {
-    const { date, timeZone } = get(SchemduleState)
-
-    if (!date) {
-      const currentDate = moment().tz(timeZone)
-      return currentDate.toDate()
-    }
+    const { date } = get(SchemduleState)
 
     const parseDate = moment({
       year: date.year,

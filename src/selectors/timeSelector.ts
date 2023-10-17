@@ -4,7 +4,7 @@ import { selector } from 'recoil'
 import { SchemduleState } from '@/atoms/scheduleAtom'
 import type { DateData, DateWidthTimeType } from '@/types/schedule'
 import { currentDate } from '@/utils/convert'
-import { convertObjectToDate } from '@/utils/date'
+import { convertDateToObject, convertObjectToDate } from '@/utils/date'
 
 export const scheduleDateDataState = selector({
   key: 'ScheduleDateDataState',
@@ -22,7 +22,7 @@ export const scheduleDateDataState = selector({
         return {
           ...preState,
           time,
-          date,
+          date: convertDateToObject(date as Date),
         }
       })
     }

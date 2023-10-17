@@ -41,8 +41,9 @@ export default function TodoCalendar({ initialData, isLoading }: TodoListType) {
   if (isLoading) {
     return <>is Loading..</>
   }
+
   return (
-    <CalendarPageLayout handleSave={() => {}}>
+    <CalendarPageLayout>
       <CustomCalendar initialData={initialData} />
       <section className="w-full shrink-0 px-24pxr">
         <TaskControlPanel onCheckedHandler={() => {}} />
