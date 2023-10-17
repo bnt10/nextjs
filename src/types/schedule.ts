@@ -9,8 +9,13 @@ export type DateData = {
 export type TimeZone = string
 export type SchemduleStateType = {
   time: TimeData
-  date: DateData | null
+  date: DateData | null | Date
   timeZone: TimeZone
   priority: number
   category: string | null
+}
+
+export type DateWidthTimeType = {
+  time: TimeData
+  date: DateData | null | Date
 }

@@ -19,7 +19,7 @@ export const schemduleDateState = selector({
       day: date.day,
     })
 
-    return parseDate.toDate()
+    return parseDate
   },
   set: ({ set }, newDate) => {
     if (newDate instanceof Date) {

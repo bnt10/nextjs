@@ -6,7 +6,7 @@ import { useSetRecoilState } from 'recoil'
 
 import { modalContentState } from '@/atoms/modalAtom'
 import { useDynamicRecoilState } from '@/hooks/useDynamicRecoilState'
-import { schemduleDateState } from '@/selectors/dateSelector'
+import { scheduleDateDataState } from '@/selectors/timeSelector'
 
 import CalendarNavigation from './CalendarNavigation'
 import ModalActionButtons from './ModalActionButtons'
@@ -20,7 +20,7 @@ type CalendarModalProps = {
 }
 
 export default function CalendarModal({
-  stateKey = schemduleDateState,
+  stateKey = scheduleDateDataState,
   getState,
   setState,
 }: CalendarModalProps) {
@@ -29,7 +29,8 @@ export default function CalendarModal({
     getState,
   })
 
-  const [date, setDate] = useState<Value>(schemduleDate.date)
+  const [date, setDate] = useState(schemduleDate.date)
+
   const setModalContent = useSetRecoilState(modalContentState)
 
   const onDateChangeHandler = (value: Value) => {

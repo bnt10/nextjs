@@ -29,7 +29,6 @@ export default function TimePicker({
     getState,
     setState,
   })
-
   const timeRef = useRef<TimeData>({})
   const setModalContent = useSetRecoilState(modalContentState)
 

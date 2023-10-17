@@ -55,7 +55,7 @@ export const newDate = (dateTimeString: string) => {
     .utc()
   return utcDateTime.toDate()
 }
-export const currentDate = () => {
+export function currentDate() {
   const currentTime = moment.tz(process.env.TIMEZONE || 'Asia/Seoul')
 
   const momentObject = moment(currentTime, 'YYYY-MM-DD hh:mm A')
