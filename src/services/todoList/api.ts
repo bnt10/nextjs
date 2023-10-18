@@ -1,7 +1,7 @@
 import axios from 'axios'
 import moment from 'moment-timezone'
 
-import type { TodoItem } from '@/types/todoList'
+import type { CreateTodoItemType, TodoItem } from '@/types/todoList'
 import axiosInstance from '@/utils/axios'
 import { convertFromUTC } from '@/utils/convert'
 import { buildUrlWithParams, buildUrlWithPathParams } from '@/utils/url'
@@ -32,7 +32,7 @@ export const fetchTodoList = async (
       id: item.id,
       userId: item.userId,
       title: item.title,
-      todoTitle: item.title,
+
       description: item.description,
       categoryId: item.categoryId,
       priority: item.priority,
@@ -74,11 +74,34 @@ export const getTaskFromEtcd = async () => {
     const response = await axios.get('/api/getToEtcd')
     if (response.status === 200) {
       const { task } = response.data
-      console.log('Task from etcd:', task)
+
       return task
     }
   } catch (error) {
-    console.error('Failed to get task from etcd:', error)
+    return error
   }
   return null
+}
+
+export const createTodoTask = async (task: CreateTodoItemType) => {
+  try {
+    const response = await axios.post('/api/saveToEtcd', {
+      task,
+    })
+    if (response.status === 200) {
+      return response
+    }
+    return {
+      status: 500,
+      data: 'Internal Server Error',
+    }
+  } catch (error: any) {
+    if (error.response) {
+      return error.response
+    }
+    return {
+      status: 500,
+      data: 'Internal Server Error',
+    }
+  }
 }

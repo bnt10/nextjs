@@ -47,9 +47,7 @@ export default function TaskEditor() {
     }
   )
   useEffect(() => {
-    console.log('ccc')
     const fetchTask = async () => {
-      console.log('aa')
       await getTaskFromEtcd()
     }
 

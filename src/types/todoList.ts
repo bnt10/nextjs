@@ -11,7 +11,6 @@ export type TodoListType = {
 export type InitialDataType = Pick<TodoListType, 'initialData'>
 
 export const TodoItemKey = {
-  todoTitle: 'todoTitle',
   id: 'id',
   userId: 'userId',
   title: 'title',
@@ -23,7 +22,6 @@ export const TodoItemKey = {
 } as const
 
 export type TodoItem = {
-  todoTitle: string
   id: string
   userId: string
   title: string
@@ -33,7 +31,14 @@ export type TodoItem = {
   isCompleted: boolean
   targetDay: TargetDay
 }
-
+export type CreateTodoItemType = {
+  title: string
+  description: string
+  categoryId: string
+  priority: string
+  isCompleted: boolean
+  targetDay: Date
+}
 export const TaskType = {
   Timer: 'Timer',
   Category: 'Category',

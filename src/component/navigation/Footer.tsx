@@ -11,6 +11,9 @@ import {
 } from '@/config/icon'
 import { useForm } from '@/hooks/useForm'
 import useModal from '@/hooks/useModal'
+import { createTodoTask } from '@/services/todoList/api'
+import type { CreateTodoItemType } from '@/types/todoList'
+import { combineDateAndTime } from '@/utils/convert'
 
 import Button from '../common/Button'
 import Modal from '../common/Modal'
@@ -67,11 +70,23 @@ export default function Footer() {
     },
   ]
 
-  const { handleOnChange, handleOnSubmit, getFormFields } =
+  const { handleOnChange, handleOnSubmit, getFormFields, form } =
     useForm(addTaskShcema)
 
   const addTaskSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log('aaa', schemduleState)
+    const { title, description } = form
+    const { category, date, time, priority } = schemduleState
+    const todoTask: CreateTodoItemType = {
+      title: title?.value ?? '',
+      description: description?.value ?? '',
+      isCompleted: false,
+      categoryId: category,
+      targetDay: combineDateAndTime(date, time).toDate(),
+      priority: priority.toString(),
+    }
+
+    const result = await createTodoTask(todoTask)
+
     event.preventDefault()
   }
 

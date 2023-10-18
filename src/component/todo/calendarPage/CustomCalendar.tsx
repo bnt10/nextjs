@@ -246,7 +246,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
   const updateDays = () => {
     runSprings()
     checkUpdateMonthAndYear()
-    setSchemduleDate(dateRef.current.toDate())
+    setSchemduleDate(dateRef.current)
   }
 
   const wheelOffset = useRef(0)

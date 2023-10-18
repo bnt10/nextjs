@@ -12,7 +12,7 @@ export type SchemduleStateType = {
   date: DateData
   timeZone: TimeZone
   priority: number
-  category: string | null
+  category: string
 }
 
 export type DateWidthTimeType = {
