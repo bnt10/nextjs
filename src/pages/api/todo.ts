@@ -4,7 +4,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { v4 as uuidv4 } from 'uuid'
 
 import { calendarConfig } from '@/config/calendar'
-import { MockTodoList } from '@/mocks/data/MockTodoList'
 
 const { SIDE_DAY_COUNT } = calendarConfig
 
@@ -19,13 +18,13 @@ async function handleGetRequest(req: NextApiRequest, res: NextApiResponse) {
   const currentDate = moment()
 
   // 필터링 조건
-  const filteredTodoList = MockTodoList.filter((todoItem) => {
+  const filteredTodoList = db.data.tasks.filter((todoItem) => {
     const targetDate = moment(todoItem.targetDay, 'YYYY-MM-DD hh:mm A')
     const daysDifference = targetDate.diff(currentDate, 'days')
     return daysDifference >= -SIDE_DAY_COUNT && daysDifference <= SIDE_DAY_COUNT
   })
-
-  return res.status(200).json(filteredTodoList)
+  console.log(db.data.tasks)
+  return res.status(200).json(filteredTodoList ?? db.data.tasks)
 }
 
 // POST 요청을 처리하는 함수
@@ -49,7 +48,7 @@ async function handlePostRequest(req: NextApiRequest, res: NextApiResponse) {
 
     // tasks 배열에 새로운 task 추가
     if (db.data) {
-      db.data.tasks.push({ ...task, id: uniqueId })
+      db.data.tasks.push({ ...task, id: uniqueId, userId: 3 })
       await db.write()
     }
 

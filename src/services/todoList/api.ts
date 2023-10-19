@@ -75,7 +75,7 @@ export const getTask = async () => {
 
     if (response.status === 200) {
       // const { tasks } = response.data
-      // console.log(response)
+      console.log(response)
       return response.data
     }
   } catch (error) {
