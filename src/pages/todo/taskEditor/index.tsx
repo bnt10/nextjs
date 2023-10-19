@@ -15,7 +15,7 @@ import TaskItem from '@/component/todo/taskEditor/TaskItem'
 import TodoTask from '@/component/todo/taskEditor/TodoTask'
 import TaskEditorPageLayout from '@/layouts/todo/TaskEditorPageLayout'
 import { selcetedTodoTaskSelector } from '@/selectors/selcetedTodoTaskSelector'
-import { getTaskFromEtcd, getTodoTask } from '@/services/todoList/api'
+import { getTask, getTodoTask } from '@/services/todoList/api'
 import type {
   TaskTypeKeys,
   TaskTypeToTodoItemKeyMapping,
@@ -48,7 +48,7 @@ export default function TaskEditor() {
   )
   useEffect(() => {
     const fetchTask = async () => {
-      await getTaskFromEtcd()
+      await getTask()
     }
 
     fetchTask()
@@ -104,7 +104,6 @@ export default function TaskEditor() {
   const taskHandler = {
     Task: {
       handleTaskToggleComplete: (isTaskCompleted: boolean) => {
-        console.log(isTaskCompleted)
         setSelectedTask({
           ...selectedTask,
           isCompleted: isTaskCompleted,
@@ -168,11 +167,7 @@ export default function TaskEditor() {
         />
       )
     },
-    Delete: () => {
-      if (confirm('Would you like to delete this task?')) {
-        // todo delete
-      }
-    },
+    Delete: () => {},
   }
 
   const onTaskDetailClickHandler = (taskType: TaskTypeKeys) => {
@@ -180,9 +175,8 @@ export default function TaskEditor() {
   }
 
   const handlEditorSave = async () => {
-    console.log(selectedTask)
     try {
-      const response = await axios.post('/api/saveToEtcd', {
+      const response = await axios.post('/api/todo', {
         task: selectedTask,
       })
       if (response.status === 200) {

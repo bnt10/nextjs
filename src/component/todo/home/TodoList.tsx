@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { useQuery } from 'react-query'
 import { useRecoilState } from 'recoil'
 
 import { apiStateSelector } from '@/selectors/apiSelector'
 import { schemduleDateState } from '@/selectors/dateSelector'
 import { todoListStateSelector } from '@/selectors/todoListSelector'
-import { fetchTodoList } from '@/services/todoList/api'
+import { fetchTodoList, getTask } from '@/services/todoList/api'
 import type { InitialDataType } from '@/types/todoList'
 
 import EmptyTodoList from './EmptyTodoList'
@@ -30,6 +31,13 @@ export default function TodoList({ initialData }: InitialDataType) {
     }
   )
 
+  useEffect(() => {
+    const fetchTask = async () => {
+      console.log(await getTask())
+    }
+
+    fetchTask()
+  }, [])
   if (isLoading) {
     return <div className="text-white">Loading..</div>
   }

@@ -69,13 +69,14 @@ export const getTodoTask = async (taskId: string): Promise<TodoItem> => {
   return todoList as TodoItem
 }
 
-export const getTaskFromEtcd = async () => {
+export const getTask = async () => {
   try {
-    const response = await axios.get('/api/getToEtcd')
-    if (response.status === 200) {
-      const { task } = response.data
+    const response = await axios.get('/api/todo')
 
-      return task
+    if (response.status === 200) {
+      // const { tasks } = response.data
+      // console.log(response)
+      return response.data
     }
   } catch (error) {
     return error
@@ -85,7 +86,7 @@ export const getTaskFromEtcd = async () => {
 
 export const createTodoTask = async (task: CreateTodoItemType) => {
   try {
-    const response = await axios.post('/api/saveToEtcd', {
+    const response = await axios.post('/api/todo', {
       task,
     })
     if (response.status === 200) {

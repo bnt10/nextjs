@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useMutation } from 'react-query'
 import { useRecoilValue } from 'recoil'
 
 import { SchemduleState } from '@/atoms/scheduleAtom'
@@ -16,6 +17,7 @@ import type { CreateTodoItemType } from '@/types/todoList'
 import { combineDateAndTime } from '@/utils/convert'
 
 import Button from '../common/Button'
+import Loading from '../common/Loading'
 import Modal from '../common/Modal'
 import TaskButton from '../todo/home/TasskButton'
 import { addTaskShcema } from '../todo/modal/constants'
@@ -72,8 +74,10 @@ export default function Footer() {
 
   const { handleOnChange, handleOnSubmit, getFormFields, form } =
     useForm(addTaskShcema)
+  const mutation = useMutation(createTodoTask)
 
   const addTaskSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     const { title, description } = form
     const { category, date, time, priority } = schemduleState
     const todoTask: CreateTodoItemType = {
@@ -85,9 +89,7 @@ export default function Footer() {
       priority: priority.toString(),
     }
 
-    const result = await createTodoTask(todoTask)
-
-    event.preventDefault()
+    mutation.mutateAsync(todoTask)
   }
 
   return (
@@ -117,6 +119,7 @@ export default function Footer() {
               <TaskButton />
             </form>
           </div>
+          {mutation.isLoading ? <Loading /> : null}
         </Modal>
       )}
     </div>
