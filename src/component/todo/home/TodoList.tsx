@@ -33,7 +33,7 @@ export default function TodoList({ initialData }: InitialDataType) {
 
   useEffect(() => {
     const fetchTask = async () => {
-      console.log(await getTask())
+      await getTask()
     }
 
     fetchTask()

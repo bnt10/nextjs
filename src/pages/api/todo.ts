@@ -24,7 +24,7 @@ async function handleGetRequest(req: NextApiRequest, res: NextApiResponse) {
     const daysDifference = targetDate.diff(currentDate, 'days')
     return daysDifference >= -SIDE_DAY_COUNT && daysDifference <= SIDE_DAY_COUNT
   })
-  console.log('filteredTodoList: ', filteredTodoList)
+
   return res.status(200).json(filteredTodoList)
 }
 
