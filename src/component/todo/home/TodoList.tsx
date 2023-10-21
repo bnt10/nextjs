@@ -6,7 +6,7 @@ import { useRecoilState } from 'recoil'
 import { apiStateSelector } from '@/selectors/apiSelector'
 import { schemduleDateState } from '@/selectors/dateSelector'
 import { todoListStateSelector } from '@/selectors/todoListSelector'
-import { fetchTodoList, getTask } from '@/services/todoList/api'
+import { fetchTodoList, getTasks } from '@/services/todoList/api'
 import type { InitialDataType } from '@/types/todoList'
 
 import EmptyTodoList from './EmptyTodoList'
@@ -33,7 +33,7 @@ export default function TodoList({ initialData }: InitialDataType) {
 
   useEffect(() => {
     const fetchTask = async () => {
-      await getTask()
+      await getTasks()
     }
 
     fetchTask()

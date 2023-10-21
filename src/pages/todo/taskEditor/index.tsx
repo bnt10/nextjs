@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useQuery } from 'react-query'
@@ -15,7 +14,7 @@ import TaskItem from '@/component/todo/taskEditor/TaskItem'
 import TodoTask from '@/component/todo/taskEditor/TodoTask'
 import TaskEditorPageLayout from '@/layouts/todo/TaskEditorPageLayout'
 import { selcetedTodoTaskSelector } from '@/selectors/selcetedTodoTaskSelector'
-import { getTask, getTodoTask } from '@/services/todoList/api'
+import { getTasks, getTodoTask, updateTodoTask } from '@/services/todoList/api'
 import type {
   TaskTypeKeys,
   TaskTypeToTodoItemKeyMapping,
@@ -48,7 +47,7 @@ export default function TaskEditor() {
   )
   useEffect(() => {
     const fetchTask = async () => {
-      await getTask()
+      await getTasks()
     }
 
     fetchTask()
@@ -175,16 +174,8 @@ export default function TaskEditor() {
   }
 
   const handlEditorSave = async () => {
-    try {
-      const response = await axios.post('/api/todo', {
-        task: selectedTask,
-      })
-      if (response.status === 200) {
-        console.log('Successfully saved to etcd')
-      }
-    } catch (error) {
-      console.error('Failed to save to etcd:', error)
-    }
+    updateTodoTask(selectedTask)
+
     router.replace('/todo/calendar')
   }
   return (

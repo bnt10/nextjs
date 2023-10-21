@@ -1,4 +1,4 @@
-import moment from 'moment'
+import moment from 'moment-timezone'
 import { atom } from 'recoil'
 
 import type { SchemduleStateType } from '@/types/schedule'

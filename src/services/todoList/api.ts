@@ -3,7 +3,7 @@ import moment from 'moment-timezone'
 
 import type { CreateTodoItemType, TodoItem } from '@/types/todoList'
 import axiosInstance from '@/utils/axios'
-import { convertFromUTC } from '@/utils/convert'
+import { combineDateAndTime, convertFromUTC } from '@/utils/convert'
 import { buildUrlWithParams, buildUrlWithPathParams } from '@/utils/url'
 
 type ResponseTodoList = {
@@ -68,14 +68,27 @@ export const getTodoTask = async (taskId: string): Promise<TodoItem> => {
   }
   return todoList as TodoItem
 }
+export const updateTodoTask = async (task: TodoItem) => {
+  const { url, error } = buildUrlWithPathParams('/api/todo/:id', {
+    id: task.id,
+  })
+  if (error) {
+    throw error
+  }
 
-export const getTask = async () => {
+  await axiosInstance.patch(url, {
+    data: {
+      ...task,
+      targetDay: combineDateAndTime(task.targetDay.date, task.targetDay.time),
+    },
+  })
+}
+
+export const getTasks = async () => {
   try {
     const response = await axios.get('/api/todo')
 
     if (response.status === 200) {
-      // const { tasks } = response.data
-      console.log(response)
       return response.data
     }
   } catch (error) {

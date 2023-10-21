@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
-import { useMutation } from 'react-query'
-import { useRecoilValue } from 'recoil'
+import { useMutation, useQueryClient } from 'react-query'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import { SchemduleState } from '@/atoms/scheduleAtom'
 import {
@@ -12,6 +12,7 @@ import {
 } from '@/config/icon'
 import { useForm } from '@/hooks/useForm'
 import useModal from '@/hooks/useModal'
+import { apiStateSelector } from '@/selectors/apiSelector'
 import { createTodoTask } from '@/services/todoList/api'
 import type { CreateTodoItemType } from '@/types/todoList'
 import { combineDateAndTime } from '@/utils/convert'
@@ -71,10 +72,17 @@ export default function Footer() {
       style: textWithIconBtnStyle,
     },
   ]
-
+  const queryClient = useQueryClient()
+  const setApiState = useSetRecoilState(apiStateSelector)
   const { handleOnChange, handleOnSubmit, getFormFields, form } =
     useForm(addTaskShcema)
-  const mutation = useMutation(createTodoTask)
+  const mutation = useMutation(createTodoTask, {
+    onSuccess: () => {
+      setOpenModal(!openModal)
+      setApiState((prev) => ({ ...prev, needDate: true }))
+      queryClient.invalidateQueries('todoList')
+    },
+  })
 
   const addTaskSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
