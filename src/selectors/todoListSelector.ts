@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { DefaultValue, selector } from 'recoil'
 
-import { TodoListState } from '@/atoms/todoLisAtom'
+import { TodoListState } from '@/atoms/todoListAtom'
 import type { TodoItem } from '@/types/todoList'
 
 import { schemduleDateState } from './dateSelector'

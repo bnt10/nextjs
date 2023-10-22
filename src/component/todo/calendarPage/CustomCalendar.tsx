@@ -11,7 +11,7 @@ import type { SyntheticEvent } from 'react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 
-import { TodoListState } from '@/atoms/todoLisAtom'
+import { TodoListState } from '@/atoms/todoListAtom'
 import Button from '@/component/common/Button'
 import { LEFT_ARROW, RIGHT_ARROW } from '@/config/icon'
 import { apiStateSelector } from '@/selectors/apiSelector'
@@ -109,7 +109,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
   const [hasCheckTodoList, setHasCheckTodoList] = useState(() =>
     hasTodoItemsOnDate(initialData)
   )
-
+  console.log(hasCheckTodoList, 'hasCheckTodoList')
   const [visibleDays, setVisibleDays] = useState(() => {
     return Array.from({ length: SIDE_DAY_COUNT * 2 + 1 }, (_, i) => {
       const currentDay = date

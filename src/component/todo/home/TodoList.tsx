@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useQuery } from 'react-query'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 
 import { apiStateSelector } from '@/selectors/apiSelector'
 import { schemduleDateState } from '@/selectors/dateSelector'
@@ -14,7 +14,7 @@ import TodoListItem from './TodoListItem'
 
 export default function TodoList({ initialData }: InitialDataType) {
   const [apiState, setApiState] = useRecoilState(apiStateSelector)
-  const [schemduleDate] = useRecoilState(schemduleDateState)
+  const schemduleDate = useRecoilValue(schemduleDateState)
   const [todoList, setTodoList] = useRecoilState(todoListStateSelector)
   const router = useRouter()
 
