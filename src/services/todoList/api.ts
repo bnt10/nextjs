@@ -24,7 +24,7 @@ export const fetchTodoList = async (
   const { data } = await axiosInstance.get(url)
 
   if (!data) {
-    throw new Error('No data available')
+    return []
   }
 
   const todoList = data.map(
@@ -84,6 +84,23 @@ export const updateTodoTask = async (task: TodoItem) => {
   })
 }
 
+export const deleteTodoTask = async (taskId: TodoItem['id']) => {
+  const { url, error } = buildUrlWithPathParams('/api/todo/:id', {
+    id: taskId,
+  })
+  if (error) {
+    throw error
+  }
+
+  const response = await axiosInstance.delete(url)
+  if (response.status === 200) {
+    return response.data
+  }
+  return {
+    status: 500,
+    data: 'Internal Server Error',
+  }
+}
 export const getTasks = async () => {
   try {
     const response = await axios.get('/api/todo')

@@ -1,9 +1,11 @@
+import _ from 'lodash'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 
 import { modalContentState } from '@/atoms/modalAtom'
+import { TodoListState } from '@/atoms/todoListAtom'
 import Loading from '@/component/common/Loading'
 import Calendar from '@/component/todo/modal/Calendar'
 import TaskCategory from '@/component/todo/modal/TaskCategory'
@@ -14,7 +16,12 @@ import TaskItem from '@/component/todo/taskEditor/TaskItem'
 import TodoTask from '@/component/todo/taskEditor/TodoTask'
 import TaskEditorPageLayout from '@/layouts/todo/TaskEditorPageLayout'
 import { selcetedTodoTaskSelector } from '@/selectors/selcetedTodoTaskSelector'
-import { getTasks, getTodoTask, updateTodoTask } from '@/services/todoList/api'
+import {
+  deleteTodoTask,
+  getTasks,
+  getTodoTask,
+  updateTodoTask,
+} from '@/services/todoList/api'
 import type {
   TaskTypeKeys,
   TaskTypeToTodoItemKeyMapping,
@@ -27,12 +34,20 @@ import { convertObjectToDate } from '@/utils/date'
 export default function TaskEditor() {
   const router = useRouter()
   const { taskId } = router.query
-
+  const updateTodoList = useSetRecoilState(TodoListState)
   const setModalContent = useSetRecoilState(modalContentState)
 
   const [selectedTask, setSelectedTask] = useRecoilState(
     selcetedTodoTaskSelector
   )
+  const todoTaskMutation = useMutation(deleteTodoTask, {
+    onSuccess: () => {
+      updateTodoList((todoList) => {
+        return _.filter(todoList, (todo) => todo.id !== (taskId as string))
+      })
+      router.replace('/todo/calendar')
+    },
+  })
 
   const { isLoading, isError } = useQuery<TodoItem>(
     ['todoTask', taskId],
@@ -49,9 +64,9 @@ export default function TaskEditor() {
     const fetchTask = async () => {
       await getTasks()
     }
-
     fetchTask()
   }, [])
+
   if (isLoading) {
     return <Loading />
   }
@@ -166,7 +181,9 @@ export default function TaskEditor() {
         />
       )
     },
-    Delete: () => {},
+    Delete: async () => {
+      todoTaskMutation.mutate(todoId)
+    },
   }
 
   const onTaskDetailClickHandler = (taskType: TaskTypeKeys) => {

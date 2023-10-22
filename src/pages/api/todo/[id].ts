@@ -37,9 +37,27 @@ async function handlePatchRequest(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
+async function handleDeleteRequest(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'DELETE') {
+    return res.status(405).end()
+  }
+  try {
+    const { id } = req.query
+    const updateTaskId = id as string
+
+    db.chain.get('tasks').remove({ id: updateTaskId }).value()
+
+    await db.write()
+
+    return res.status(200).json({ message: 'Saved to LowDB' })
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal Server Error' })
+  }
+}
 const requestHandlers = {
   GET: handleGetRequest,
   PATCH: handlePatchRequest,
+  DELETE: handleDeleteRequest,
 } as const
 
 type requestHandlersKeys = keyof typeof requestHandlers
