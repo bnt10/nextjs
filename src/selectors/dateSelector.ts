@@ -17,8 +17,8 @@ export const schemduleDateState = selector({
     return parseDate
   },
   set: ({ set }, newDate) => {
-    if (newDate instanceof Date) {
-      const momentDate = moment(newDate)
+    if (moment.isMoment(newDate)) {
+      const momentDate = newDate as moment.Moment
       const year = momentDate.year()
       const month = momentDate.month() + 1
       const day = momentDate.date()
