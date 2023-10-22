@@ -31,6 +31,16 @@ export type TodoItem = {
   isCompleted: boolean
   targetDay: TargetDay
 }
+export type TodoItemServer = {
+  id: string
+  userId: string
+  title: string
+  description: string
+  categoryId: string
+  priority: string
+  isCompleted: boolean
+  targetDay: Date
+}
 export type CreateTodoItemType = {
   title: string
   description: string
