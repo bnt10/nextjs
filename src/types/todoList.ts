@@ -5,7 +5,7 @@ export type TargetDay = {
   date: DateData
 }
 export type TodoListType = {
-  initialData: TodoItem[]
+  initialData: TodoItemClient[]
   isLoading: boolean
 }
 export type InitialDataType = Pick<TodoListType, 'initialData'>
@@ -21,7 +21,7 @@ export const TodoItemKey = {
   targetDay: 'targetDay',
 } as const
 
-export type TodoItem = {
+export type TodoItemClient = {
   id: string
   userId: string
   title: string
