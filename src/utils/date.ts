@@ -24,3 +24,17 @@ export const convertDateToObject = (newDate: Date) => {
     day,
   }
 }
+
+export const toShortDate = (date: Date): string => {
+  const targetDate = moment(date)
+  const now = moment().format('YYYY-MM-DD')
+
+  return targetDate.calendar(now, {
+    sameDay: '[Today At] h:mm A',
+    nextDay: '[Tomorrow At] h:mm A',
+    nextWeek: 'dddd [At] h:mm A',
+    lastDay: '[Yesterday At] h:mm A',
+    lastWeek: '[Last] dddd [At] h:mm A',
+    sameElse: 'YYYY-MM-DD [At] h:mm A',
+  })
+}

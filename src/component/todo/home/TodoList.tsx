@@ -8,6 +8,8 @@ import { schemduleDateState } from '@/selectors/dateSelector'
 import { todoListStateSelector } from '@/selectors/todoListSelector'
 import { fetchTodoList, getTasks } from '@/services/todoList/api'
 import type { InitialDataType } from '@/types/todoList'
+import { toShortDate } from '@/utils/date'
+import { toServerDate } from '@/utils/mapper'
 
 import EmptyTodoList from './EmptyTodoList'
 import TodoListItem from './TodoListItem'
@@ -57,20 +59,22 @@ export default function TodoList({ initialData }: InitialDataType) {
         <EmptyTodoList />
       ) : (
         <div className="mb-100pxr mt-16pxr flex max-h-100vh w-full flex-col overflow-y-scroll px-24pxr scrollbar-hide">
-          {todoList.map(({ id, title, categoryId, isCompleted, priority }) => {
-            return (
-              <TodoListItem
-                key={id}
-                taskId={id}
-                isCompleted={isCompleted}
-                title={title}
-                startDay={'Today At 16:45'}
-                taskIconId={categoryId}
-                priority={priority}
-                onClickHandler={openDetailWithTask}
-              />
-            )
-          })}
+          {todoList.map(
+            ({ id, title, categoryId, isCompleted, priority, targetDay }) => {
+              return (
+                <TodoListItem
+                  key={id}
+                  taskId={id}
+                  isCompleted={isCompleted}
+                  title={title}
+                  startDay={toShortDate(toServerDate(targetDay))}
+                  taskIconId={categoryId}
+                  priority={priority}
+                  onClickHandler={openDetailWithTask}
+                />
+              )
+            }
+          )}
         </div>
       )}
     </>

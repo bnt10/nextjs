@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useMutation, useQuery } from 'react-query'
@@ -30,7 +29,7 @@ import type {
   TodoItemServer,
 } from '@/types/todoList'
 import { TodoItemKey } from '@/types/todoList'
-import { convertObjectToDate } from '@/utils/date'
+import { convertObjectToDate, toShortDate } from '@/utils/date'
 import { toClientDate, toServerDate } from '@/utils/mapper'
 import { updateArrayInObjectByCriteria } from '@/utils/selector'
 
@@ -108,7 +107,7 @@ export default function TaskEditor() {
   const taskMappingContent: TaskTypeToTodoItemKeyMapping = {
     Category: categoryId,
     Priority: priority,
-    Timer: moment(toServerDate(targetDay)).format('YYYY-MM-DD HH:mm'),
+    Timer: toShortDate(toServerDate(targetDay)),
   }
 
   const getTaskDetailData = (element: string) => (state: any) => {
