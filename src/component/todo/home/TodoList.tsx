@@ -13,10 +13,11 @@ import EmptyTodoList from './EmptyTodoList'
 import TodoListItem from './TodoListItem'
 
 export default function TodoList({ initialData }: InitialDataType) {
-  const [apiState, setApiState] = useRecoilState(apiStateSelector)
-  const schemduleDate = useRecoilValue(schemduleDateState)
-  const [todoList, setTodoList] = useRecoilState(todoListStateSelector)
   const router = useRouter()
+  const schemduleDate = useRecoilValue(schemduleDateState)
+
+  const [apiState, setApiState] = useRecoilState(apiStateSelector)
+  const [todoList, setTodoList] = useRecoilState(todoListStateSelector)
 
   const { error, isLoading } = useQuery(
     'todoList',
@@ -38,12 +39,14 @@ export default function TodoList({ initialData }: InitialDataType) {
 
     fetchTask()
   }, [])
+
   if (isLoading) {
     return <div className="text-white">Loading..</div>
   }
   if (error) {
     return <div className="text-white">No data!</div>
   }
+
   const openDetailWithTask = (taskId: string) => {
     router.push(`/todo/taskEditor?taskId=${taskId}`)
   }

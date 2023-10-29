@@ -1,25 +1,18 @@
 import axios from 'axios'
-import moment from 'moment-timezone'
 
-import type { CreateTodoItemType, TodoItem } from '@/types/todoList'
+import type {
+  CreateTodoItemType,
+  TodoItemClient,
+  TodoItemServer,
+} from '@/types/todoList'
 import axiosInstance from '@/utils/axios'
-import { combineDateAndTime, convertFromUTC } from '@/utils/convert'
+import { toClientDate, toServerDate } from '@/utils/mapper'
 import { buildUrlWithParams, buildUrlWithPathParams } from '@/utils/url'
 
-type ResponseTodoList = {
-  id: string
-  userId: string
-  title: string
-  description: string
-  categoryId: string
-  priority: string
-  isCompleted: boolean
-  targetDay: Date
-}
 export const fetchTodoList = async (
   startDate?: string,
   endDate?: string
-): Promise<TodoItem[]> => {
+): Promise<TodoItemClient[]> => {
   const url = buildUrlWithParams('/api/todo', { startDate, endDate })
   const { data } = await axiosInstance.get(url)
 
@@ -27,23 +20,22 @@ export const fetchTodoList = async (
     return []
   }
 
-  const todoList = data.map(
-    (item: ResponseTodoList): TodoItem => ({
+  const todoList: TodoItemClient[] = data.map(
+    (item: TodoItemServer): TodoItemClient => ({
       id: item.id,
       userId: item.userId,
       title: item.title,
-
       description: item.description,
       categoryId: item.categoryId,
       priority: item.priority,
       isCompleted: item.isCompleted,
-      targetDay: convertFromUTC(moment(item.targetDay)),
+      targetDay: toClientDate(item.targetDay),
     })
   )
 
   return todoList
 }
-export const getTodoTask = async (taskId: string): Promise<TodoItem> => {
+export const getTodoTask = async (taskId: string): Promise<TodoItemClient> => {
   const { url, error } = buildUrlWithPathParams('/api/todo/:id', { id: taskId })
 
   if (error) {
@@ -64,11 +56,11 @@ export const getTodoTask = async (taskId: string): Promise<TodoItem> => {
     categoryId: data.categoryId,
     priority: data.priority,
     isCompleted: data.isCompleted,
-    targetDay: convertFromUTC(moment(data.targetDay)),
+    targetDay: toClientDate(data.targetDay),
   }
-  return todoList as TodoItem
+  return todoList as TodoItemClient
 }
-export const updateTodoTask = async (task: TodoItem) => {
+export const updateTodoTask = async (task: TodoItemClient) => {
   const { url, error } = buildUrlWithPathParams('/api/todo/:id', {
     id: task.id,
   })
@@ -76,15 +68,22 @@ export const updateTodoTask = async (task: TodoItem) => {
     throw error
   }
 
-  await axiosInstance.patch(url, {
+  const response = await axiosInstance.patch(url, {
     data: {
       ...task,
-      targetDay: combineDateAndTime(task.targetDay.date, task.targetDay.time),
+      targetDay: toServerDate(task.targetDay),
     },
   })
+  if (response.status === 200) {
+    return response.data
+  }
+  return {
+    status: 500,
+    data: 'Internal Server Error',
+  }
 }
 
-export const deleteTodoTask = async (taskId: TodoItem['id']) => {
+export const deleteTodoTask = async (taskId: TodoItemClient['id']) => {
   const { url, error } = buildUrlWithPathParams('/api/todo/:id', {
     id: taskId,
   })

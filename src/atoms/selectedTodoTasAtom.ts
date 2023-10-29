@@ -1,8 +1,8 @@
 import { atom } from 'recoil'
 
-import type { TodoItem } from '@/types/todoList'
+import type { TodoItemClient } from '@/types/todoList'
 
-type SelectedTodoTaskStateType = TodoItem | null
+type SelectedTodoTaskStateType = TodoItemClient | null
 
 export const selectedTodoTaskState = atom<SelectedTodoTaskStateType>({
   key: 'SelectedTodoTaskState',

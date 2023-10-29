@@ -1,17 +1,7 @@
+import type { TodoItemServer } from '@/types/todoList'
 import { currentDate, newDate } from '@/utils/convert'
 
-type TodoItem = {
-  id: string
-  userId: string
-  title: string
-  description: string
-  categoryId: string
-  priority: string
-  isCompleted: boolean
-  targetDay: Date
-}
-
-export const MockTodoList: TodoItem[] = [
+export const MockTodoList: TodoItemServer[] = [
   {
     userId: '1',
     id: '1',

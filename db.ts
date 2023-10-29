@@ -4,10 +4,10 @@ import { Low } from 'lowdb'
 import { JSONFile } from 'lowdb/node'
 import path from 'path'
 
-import type { TodoItem } from '@/types/todoList'
+import type { TodoItemServer } from '@/types/todoList'
 
 type Data = {
-  tasks: TodoItem[]
+  tasks: TodoItemServer[]
 }
 
 const rootDir = process.cwd()

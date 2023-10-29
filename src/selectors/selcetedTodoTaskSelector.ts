@@ -1,7 +1,7 @@
 import { selector } from 'recoil'
 
 import { selectedTodoTaskState } from '@/atoms/selectedTodoTasAtom'
-import type { TodoItem } from '@/types/todoList'
+import type { TodoItemClient } from '@/types/todoList'
 
 export const selcetedTodoTaskSelector = selector({
   key: 'selcetedTodoTaskSelector',
@@ -13,8 +13,9 @@ export const selcetedTodoTaskSelector = selector({
       if (!preState) {
         return {
           ...newState,
-        } as TodoItem
+        } as TodoItemClient
       }
+
       return {
         ...preState,
         ...newState,

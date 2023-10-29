@@ -15,7 +15,7 @@ import useModal from '@/hooks/useModal'
 import { apiStateSelector } from '@/selectors/apiSelector'
 import { createTodoTask } from '@/services/todoList/api'
 import type { CreateTodoItemType } from '@/types/todoList'
-import { combineDateAndTime } from '@/utils/convert'
+import { toServerDate } from '@/utils/mapper'
 
 import Button from '../common/Button'
 import Loading from '../common/Loading'
@@ -93,7 +93,7 @@ export default function Footer() {
       description: description?.value ?? '',
       isCompleted: false,
       categoryId: category,
-      targetDay: combineDateAndTime(date, time).toDate(),
+      targetDay: toServerDate({ date, time }),
       priority: priority.toString(),
     }
 

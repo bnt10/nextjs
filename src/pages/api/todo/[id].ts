@@ -27,11 +27,15 @@ async function handlePatchRequest(req: NextApiRequest, res: NextApiResponse) {
     const updateTaskId = id as string
     const { data: updateTask } = req.body
 
-    db.chain.get('tasks').find({ id: updateTaskId }).assign(updateTask).value()
+    const data = db.chain
+      .get('tasks')
+      .find({ id: updateTaskId })
+      .assign(updateTask)
+      .value()
 
     await db.write()
 
-    return res.status(200).json({ message: 'Saved to LowDB' })
+    return res.status(200).json({ message: 'Success update Todo Task', data })
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error' })
   }

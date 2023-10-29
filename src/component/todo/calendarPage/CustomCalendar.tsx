@@ -17,7 +17,7 @@ import { LEFT_ARROW, RIGHT_ARROW } from '@/config/icon'
 import { apiStateSelector } from '@/selectors/apiSelector'
 import { schemduleDateState } from '@/selectors/dateSelector'
 import type { ButtonStyle } from '@/types/style/common'
-import type { InitialDataType, TodoItem } from '@/types/todoList'
+import type { InitialDataType, TodoItemClient } from '@/types/todoList'
 
 import { calendarConfig } from '../../../config/calendar'
 import { throttle } from '../../../utils/timing'
@@ -54,7 +54,7 @@ const needsMoreData = (
     ]?.key === currentDay.format('YYYY-MM-DD')
   )
 }
-const hasTodoItemsOnDate = (todoList: TodoItem[]) => {
+const hasTodoItemsOnDate = (todoList: TodoItemClient[]) => {
   const idSet = new Set(
     todoList?.map((item) =>
       moment(item.targetDay.date).subtract(1, 'month').format('YYYY-MM-DD')
@@ -109,7 +109,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
   const [hasCheckTodoList, setHasCheckTodoList] = useState(() =>
     hasTodoItemsOnDate(initialData)
   )
-  console.log(hasCheckTodoList, 'hasCheckTodoList')
+
   const [visibleDays, setVisibleDays] = useState(() => {
     return Array.from({ length: SIDE_DAY_COUNT * 2 + 1 }, (_, i) => {
       const currentDay = date

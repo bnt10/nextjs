@@ -25,22 +25,26 @@ import {
 import type {
   TaskTypeKeys,
   TaskTypeToTodoItemKeyMapping,
-  TodoItem,
+  TodoItemClient,
+  TodoItemServer,
 } from '@/types/todoList'
 import { TodoItemKey } from '@/types/todoList'
 import { combineDateAndTime } from '@/utils/convert'
 import { convertObjectToDate } from '@/utils/date'
+import { toClientDate } from '@/utils/mapper'
+import { updateArrayInObjectByCriteria } from '@/utils/selector'
 
 export default function TaskEditor() {
   const router = useRouter()
   const { taskId } = router.query
-  const updateTodoList = useSetRecoilState(TodoListState)
-  const setModalContent = useSetRecoilState(modalContentState)
 
   const [selectedTask, setSelectedTask] = useRecoilState(
     selcetedTodoTaskSelector
   )
-  const todoTaskMutation = useMutation(deleteTodoTask, {
+  const updateTodoList = useSetRecoilState(TodoListState)
+  const setModalContent = useSetRecoilState(modalContentState)
+
+  const deleteTaskMutation = useMutation(deleteTodoTask, {
     onSuccess: () => {
       updateTodoList((todoList) => {
         return _.filter(todoList, (todo) => todo.id !== (taskId as string))
@@ -49,7 +53,20 @@ export default function TaskEditor() {
     },
   })
 
-  const { isLoading, isError } = useQuery<TodoItem>(
+  const updateTaskMutation = useMutation(updateTodoTask, {
+    onSuccess: ({ data }: { data: TodoItemServer }) => {
+      updateTodoList((todoList) => {
+        return updateArrayInObjectByCriteria(
+          todoList,
+          { id: taskId as string },
+          { ...data, targetDay: toClientDate(data.targetDay) }
+        )
+      })
+      router.replace('/todo/calendar')
+    },
+  })
+
+  const { isLoading, isError } = useQuery<TodoItemClient>(
     ['todoTask', taskId],
     () => getTodoTask(taskId as string),
     {
@@ -99,6 +116,7 @@ export default function TaskEditor() {
   const getTaskDetailData = (element: string) => (state: any) => {
     if (element === TodoItemKey.targetDay) {
       const { date, time } = state[element]
+
       return {
         date: convertObjectToDate(date),
         time,
@@ -182,7 +200,7 @@ export default function TaskEditor() {
       )
     },
     Delete: async () => {
-      todoTaskMutation.mutate(todoId)
+      deleteTaskMutation.mutate(todoId)
     },
   }
 
@@ -191,9 +209,7 @@ export default function TaskEditor() {
   }
 
   const handlEditorSave = async () => {
-    updateTodoTask(selectedTask)
-
-    router.replace('/todo/calendar')
+    updateTaskMutation.mutate(selectedTask)
   }
   return (
     <TaskEditorPageLayout handleSave={handlEditorSave}>

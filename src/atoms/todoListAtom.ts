@@ -1,8 +1,8 @@
 import { atom } from 'recoil'
 
-import type { TodoItem } from '@/types/todoList'
+import type { TodoItemClient } from '@/types/todoList'
 
-export const TodoListState = atom<TodoItem[]>({
+export const TodoListState = atom<TodoItemClient[]>({
   key: 'TodoListStateKey',
   default: [],
 })

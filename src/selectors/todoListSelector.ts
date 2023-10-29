@@ -2,7 +2,7 @@ import moment from 'moment'
 import { DefaultValue, selector } from 'recoil'
 
 import { TodoListState } from '@/atoms/todoListAtom'
-import type { TodoItem } from '@/types/todoList'
+import type { TodoItemClient } from '@/types/todoList'
 
 import { schemduleDateState } from './dateSelector'
 
@@ -22,7 +22,7 @@ export const todoListStateSelector = selector({
     })
   },
   set: ({ set }, newState) => {
-    set(TodoListState, (prevState: TodoItem[]) => {
+    set(TodoListState, (prevState: TodoItemClient[]) => {
       if (newState instanceof DefaultValue) {
         return newState
       }
