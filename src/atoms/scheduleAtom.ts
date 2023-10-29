@@ -8,7 +8,7 @@ export const timezone = process.env.TIMEZONE || 'Asia/Seoul'
 export const SchemduleState = atom<SchemduleStateType>({
   key: 'SchemduleStateKey',
   default: {
-    time: { hour: '00', minute: '00', amPm: 'AM' },
+    time: { hour: '12', minute: '00', amPm: 'AM' },
     date: convertDateToObject(moment().tz(timezone).toDate()),
     priority: 1,
     category: '1',

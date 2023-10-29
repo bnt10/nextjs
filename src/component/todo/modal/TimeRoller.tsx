@@ -15,7 +15,7 @@ interface Props {
 }
 
 const timeItems: TimeItems = {
-  hour: Array.from({ length: 13 }, (_, index) =>
+  hour: Array.from({ length: 12 }, (_, index) =>
     (index + 1).toString().padStart(2, '0')
   ),
   minute: Array.from({ length: 60 }, (_, index) =>
