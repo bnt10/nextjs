@@ -6,7 +6,6 @@ import { modalContentState } from '@/atoms/modalAtom'
 import { useDynamicRecoilState } from '@/hooks/useDynamicRecoilState'
 import { scheduleDateDataState } from '@/selectors/timeSelector'
 import type { TimeData } from '@/types/schedule'
-import { convertDateToObject } from '@/utils/date'
 
 import ModalActionButtons from './ModalActionButtons'
 import TimeRoller from './TimeRoller'
@@ -42,7 +41,7 @@ export default function TimePicker({
 
   const onSaveHandler = () => {
     setSchemduleState({
-      date: convertDateToObject(currentDate),
+      date: currentDate,
       time: timeRef.current,
     })
     setModalContent(null)

@@ -124,10 +124,24 @@ export default function TaskEditor() {
 
   const setTaskDetailData =
     (element: string) => (newState: any, recoilSetState: any) => {
-      recoilSetState({
-        ...selectedTask,
-        [element]: newState,
-      })
+      switch (element) {
+        case TodoItemKey.targetDay: {
+          recoilSetState({
+            ...selectedTask,
+            [element]: {
+              date: toClientDate(newState.date).date,
+              time: newState.time,
+            },
+          })
+          return
+        }
+        default: {
+          recoilSetState({
+            ...selectedTask,
+            [element]: newState,
+          })
+        }
+      }
     }
 
   const taskHandler = {
