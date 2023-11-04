@@ -1,14 +1,13 @@
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import { useQuery } from 'react-query'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 import { apiStateSelector } from '@/selectors/apiSelector'
 import { schemduleDateState } from '@/selectors/dateSelector'
 import { todoListStateSelector } from '@/selectors/todoListSelector'
-import { fetchTodoList, getTasks } from '@/services/todoList/api'
+import { fetchTodoList } from '@/services/todoList/api'
 import type { InitialDataType } from '@/types/todoList'
-import { toShortDate } from '@/utils/date'
+import { toRelatvieDay } from '@/utils/date'
 import { toServerDate } from '@/utils/mapper'
 
 import EmptyTodoList from './EmptyTodoList'
@@ -33,14 +32,6 @@ export default function TodoList({ initialData }: InitialDataType) {
       },
     }
   )
-
-  useEffect(() => {
-    const fetchTask = async () => {
-      await getTasks()
-    }
-
-    fetchTask()
-  }, [])
 
   if (isLoading) {
     return <div className="text-white">Loading..</div>
@@ -67,7 +58,7 @@ export default function TodoList({ initialData }: InitialDataType) {
                   taskId={id}
                   isCompleted={isCompleted}
                   title={title}
-                  startDay={toShortDate(toServerDate(targetDay))}
+                  startDay={toRelatvieDay(toServerDate(targetDay))}
                   taskIconId={categoryId}
                   priority={priority}
                   onClickHandler={openDetailWithTask}

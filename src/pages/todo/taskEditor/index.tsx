@@ -29,7 +29,7 @@ import type {
   TodoItemServer,
 } from '@/types/todoList'
 import { TodoItemKey } from '@/types/todoList'
-import { convertObjectToDate, toShortDate } from '@/utils/date'
+import { convertObjectToDate, toRelatvieDay } from '@/utils/date'
 import { toClientDate, toServerDate } from '@/utils/mapper'
 import { updateArrayInObjectByCriteria } from '@/utils/selector'
 
@@ -107,7 +107,7 @@ export default function TaskEditor() {
   const taskMappingContent: TaskTypeToTodoItemKeyMapping = {
     Category: categoryId,
     Priority: priority,
-    Timer: toShortDate(toServerDate(targetDay)),
+    Timer: toRelatvieDay(toServerDate(targetDay)),
   }
 
   const getTaskDetailData = (element: string) => (state: any) => {
