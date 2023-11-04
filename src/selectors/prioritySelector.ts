@@ -1,16 +1,16 @@
 import { DefaultValue, selector } from 'recoil'
 
-import { SchemduleState } from '@/atoms/scheduleAtom'
+import { tempScheduleState } from '@/atoms/tempscheduleAtom'
 
 export const schedulePriorityState = selector({
   key: 'ScheduletPriorityState',
   get: ({ get }) => {
-    const { priority } = get(SchemduleState)
+    const { priority } = get(tempScheduleState)
 
     return priority
   },
   set: ({ set }, newPriority) => {
-    set(SchemduleState, (preState) => {
+    set(tempScheduleState, (preState) => {
       return {
         ...preState,
         priority:

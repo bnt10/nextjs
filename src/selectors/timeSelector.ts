@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { selector } from 'recoil'
 
-import { SchemduleState } from '@/atoms/scheduleAtom'
+import { tempScheduleState } from '@/atoms/tempscheduleAtom'
 import type { DateData, DateWidthTimeType } from '@/types/schedule'
 import { currentDate } from '@/utils/convert'
 import { convertDateToObject, convertObjectToDate } from '@/utils/date'
@@ -9,7 +9,7 @@ import { convertDateToObject, convertObjectToDate } from '@/utils/date'
 export const scheduleDateDataState = selector({
   key: 'ScheduleDateDataState',
   get: ({ get }) => {
-    const { date, time } = get(SchemduleState)
+    const { date, time } = get(tempScheduleState)
     const convertDate = date
       ? convertObjectToDate(date as DateData)
       : moment(currentDate()).toDate()
@@ -18,7 +18,7 @@ export const scheduleDateDataState = selector({
   set: ({ set }, newState) => {
     const { date, time } = newState as DateWidthTimeType
     if (date && time) {
-      set(SchemduleState, (preState) => {
+      set(tempScheduleState, (preState) => {
         return {
           ...preState,
           time,

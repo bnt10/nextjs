@@ -9,15 +9,18 @@ import { useGesture } from '@use-gesture/react'
 import moment from 'moment'
 import type { SyntheticEvent } from 'react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { Set } from 'typescript'
 
 import { TodoListState } from '@/atoms/todoListAtom'
 import Button from '@/component/common/Button'
 import { LEFT_ARROW, RIGHT_ARROW } from '@/config/icon'
+import useEffectAfterMount from '@/hooks/useEffectAfterMount'
 import { apiStateSelector } from '@/selectors/apiSelector'
 import { schemduleDateState } from '@/selectors/dateSelector'
 import type { ButtonStyle } from '@/types/style/common'
 import type { InitialDataType, TodoItemClient } from '@/types/todoList'
+import { toServerDate } from '@/utils/mapper'
 
 import { calendarConfig } from '../../../config/calendar'
 import { throttle } from '../../../utils/timing'
@@ -41,6 +44,12 @@ type DayItem = {
   key: string
 }
 
+const isDateInTodoSet = (
+  targetDay: string,
+  todoDateSet: Set<string>
+): boolean => {
+  return todoDateSet.has(targetDay)
+}
 const needsMoreData = (
   visibleDays: DayItem[],
   currentDay: moment.Moment,
@@ -51,14 +60,12 @@ const needsMoreData = (
       direction === PRIOUS_DAY
         ? DAYS_FETCH_START
         : visibleDays.length - DAYS_FETCH_START
-    ]?.key === currentDay.format('YYYY-MM-DD')
+    ]?.key === currentDay.toDate().toString()
   )
 }
 const hasTodoItemsOnDate = (todoList: TodoItemClient[]) => {
   const idSet = new Set(
-    todoList?.map((item) =>
-      moment(item.targetDay.date).subtract(1, 'month').format('YYYY-MM-DD')
-    )
+    todoList?.map((item) => toServerDate(item.targetDay).toString())
   )
   return idSet
 }
@@ -67,7 +74,7 @@ function generateDayObject(currentDay: moment.Moment): DayItem {
   return {
     day: currentDay.format('D'),
     weekDay: currentDay.format('ddd'),
-    key: `${currentDay.format('YYYY-MM-DD')}`,
+    key: currentDay.toDate().toString(),
   }
 }
 
@@ -75,7 +82,7 @@ function getSelectedDay(
   selectedDay: moment.Moment,
   currentDay: string | undefined
 ) {
-  return selectedDay.format('YYYY-MM-DD') === currentDay ? '#8687E7' : '#363636'
+  return selectedDay.toDate().toString() === currentDay ? '#8687E7' : '#363636'
 }
 const calculateDay = (startDay: string, i: number, isAppending: boolean) => {
   const day = moment(startDay).clone()
@@ -90,26 +97,14 @@ const CalendarButtonStyle: ButtonStyle = {
 }
 
 function CustomCalendar({ initialData }: InitialDataType) {
-  const [date, setDate] = useState(() => moment())
-  const setSchemduleDate = useSetRecoilState(schemduleDateState)
+  const [schemduleDate, setSchemduleDate] = useRecoilState(schemduleDateState)
+
+  const [date, setDate] = useState(() => moment(schemduleDate))
   const setApiState = useSetRecoilState(apiStateSelector)
-  const dateRef = useRef(date)
-  const target = useRef(null)
-
-  const isNeedsMoreData = useRef(false)
-  const containerX = useRef(
-    -(VISIBLE_DAY_COUNT * DAY_WIDTH) - START_DAYS_OFFSET_X
-  )
-  const eventDirection = useRef<number>(0)
-  const containerSpringRef = useSpringRef()
-  const daysSpringRef = useSpringRef()
-
-  const [todoList] = useRecoilState(TodoListState)
-
-  const [hasCheckTodoList, setHasCheckTodoList] = useState(() =>
+  const todoList = useRecoilValue(TodoListState)
+  const [todoDateSet, setTodoDateSet] = useState(() =>
     hasTodoItemsOnDate(initialData)
   )
-
   const [visibleDays, setVisibleDays] = useState(() => {
     return Array.from({ length: SIDE_DAY_COUNT * 2 + 1 }, (_, i) => {
       const currentDay = date
@@ -120,6 +115,16 @@ function CustomCalendar({ initialData }: InitialDataType) {
       return generateDayObject(currentDay)
     })
   })
+
+  const dateRef = useRef(schemduleDate)
+  const target = useRef(null)
+  const isNeedsMoreData = useRef(false)
+  const containerX = useRef(
+    -(VISIBLE_DAY_COUNT * DAY_WIDTH) - START_DAYS_OFFSET_X
+  )
+  const eventDirection = useRef<number>(0)
+  const containerSpringRef = useSpringRef()
+  const daysSpringRef = useSpringRef()
 
   const [containerSpring, setContainerSpring] = useSpring(() => {
     return {
@@ -175,6 +180,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
   }
   useEffect(() => {
     if (isNeedsMoreData.current) {
+      console.count('moreDate')
       const direction = eventDirection.current
 
       if (direction === PRIOUS_DAY) {
@@ -201,11 +207,12 @@ function CustomCalendar({ initialData }: InitialDataType) {
       setApiState((prevState) => ({ ...prevState, needDate: true }))
       isNeedsMoreData.current = false
     }
-  }, [visibleDays])
+  }, [visibleDays.length])
 
   useEffect(() => {
-    if (!isNeedsMoreData.current) {
-      setHasCheckTodoList(hasTodoItemsOnDate(todoList))
+    // false에서 true변경함 확인 필요
+    if (isNeedsMoreData.current) {
+      setTodoDateSet(hasTodoItemsOnDate(todoList))
     }
   }, [todoList])
 
@@ -225,6 +232,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
 
   const runSprings = useCallback(() => {
     const direction = eventDirection.current
+
     dateRef.current = dateRef.current.clone().add(-direction, 'days')
     containerX.current += DAY_WIDTH * direction
 
@@ -241,13 +249,34 @@ function CustomCalendar({ initialData }: InitialDataType) {
 
     setContainerSpring({ x: containerX.current })
     startDaysAnimataion()
-  }, [visibleDays, date])
+  }, [visibleDays.length])
 
   const updateDays = () => {
     runSprings()
     checkUpdateMonthAndYear()
     setSchemduleDate(dateRef.current)
   }
+  const timeRef = useRef(schemduleDate)
+
+  useEffectAfterMount(() => {
+    console.log(timeRef.current.valueOf() === schemduleDate.valueOf())
+    if (todoDateSet && timeRef.current.toDate() === schemduleDate.toDate()) {
+      isDateInTodoSet(schemduleDate.toDate().toString(), todoDateSet)
+      const getDiffdays = (
+        currentDay: moment.Moment,
+        targetDay: moment.Moment
+      ) => {
+        return currentDay.diff(targetDay, 'days')
+      }
+      const move = getDiffdays(dateRef.current, schemduleDate)
+
+      eventDirection.current = move
+      dateRef.current = schemduleDate
+      runSprings()
+      checkUpdateMonthAndYear()
+      console.log('useEffect가 실행됩니다. 값:')
+    }
+  }, [schemduleDate.valueOf()])
 
   const wheelOffset = useRef(0)
 
@@ -321,7 +350,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
               >
                 <p className="text-xs">{weekDay}</p>
                 <p className="text-xs">{day}</p>
-                {hasCheckTodoList.has(key) && (
+                {todoDateSet.has(key) && (
                   <div className="h-4pxr w-4pxr rounded-full bg-primary" />
                 )}
               </a.div>

@@ -2,19 +2,15 @@ import moment from 'moment-timezone'
 import { selector } from 'recoil'
 
 import { SchemduleState } from '@/atoms/scheduleAtom'
+import { toServerDate } from '@/utils/mapper'
 
 export const schemduleDateState = selector({
   key: 'ScheduleDateStateSelector',
   get: ({ get }) => {
-    const { date } = get(SchemduleState)
+    const { date, time } = get(SchemduleState)
+    const serverDate = toServerDate({ date, time })
 
-    const parseDate = moment({
-      year: date.year,
-      month: date.month - 1,
-      day: date.day,
-    })
-
-    return parseDate
+    return moment(serverDate)
   },
   set: ({ set }, newDate) => {
     if (moment.isMoment(newDate)) {

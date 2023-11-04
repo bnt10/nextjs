@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import { SchemduleState } from '@/atoms/scheduleAtom'
+import { tempScheduleState } from '@/atoms/tempscheduleAtom'
 import {
   ICON_ADD,
   ICON_CALENDAR,
@@ -27,7 +28,8 @@ import { textWithIconBtnStyle } from './style/navigationFooter'
 
 export default function Footer() {
   const { openModal, setOpenModal } = useModal()
-  const schemduleState = useRecoilValue(SchemduleState)
+  const schemduleState = useRecoilValue(tempScheduleState)
+  const setSchemduleState = useSetRecoilState(SchemduleState)
   const router = useRouter()
 
   const footerItem = [
@@ -81,6 +83,7 @@ export default function Footer() {
       setOpenModal(!openModal)
       setApiState((prev) => ({ ...prev, needDate: true }))
       queryClient.invalidateQueries('todoList')
+      setSchemduleState(schemduleState)
     },
   })
 

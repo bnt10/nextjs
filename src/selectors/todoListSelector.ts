@@ -14,6 +14,7 @@ export const todoListStateSelector = selector({
     return todoList?.filter((targetDay) => {
       const { year, month, day } = targetDay.targetDay.date
       const schemduleDate = get(schemduleDateState)
+
       const targetDate = moment(schemduleDate).format('YYYY-MM-DD')
       return (
         targetDate ===

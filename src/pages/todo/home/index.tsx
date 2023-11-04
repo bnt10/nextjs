@@ -6,6 +6,7 @@ import HomeLayout from '@/layouts/todo/HomeLayout'
 
 export default function TodoHome() {
   const isEmptyTodoList = false
+
   return (
     <>
       <HomeLayout>
