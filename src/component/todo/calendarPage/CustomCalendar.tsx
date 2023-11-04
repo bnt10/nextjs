@@ -6,12 +6,13 @@ import {
   useSprings,
 } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
-import moment from 'moment'
+import moment from 'moment-timezone'
 import type { SyntheticEvent } from 'react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { Set } from 'typescript'
 
+import { timezone } from '@/atoms/scheduleAtom'
 import { TodoListState } from '@/atoms/todoListAtom'
 import Button from '@/component/common/Button'
 import { LEFT_ARROW, RIGHT_ARROW } from '@/config/icon'
@@ -20,6 +21,7 @@ import { apiStateSelector } from '@/selectors/apiSelector'
 import { schemduleDateState } from '@/selectors/dateSelector'
 import type { ButtonStyle } from '@/types/style/common'
 import type { InitialDataType, TodoItemClient } from '@/types/todoList'
+import { toShortDate } from '@/utils/date'
 import { toServerDate } from '@/utils/mapper'
 
 import { calendarConfig } from '../../../config/calendar'
@@ -60,13 +62,17 @@ const needsMoreData = (
       direction === PRIOUS_DAY
         ? DAYS_FETCH_START
         : visibleDays.length - DAYS_FETCH_START
-    ]?.key === currentDay.toDate().toString()
+    ]?.key === toShortDate(currentDay.toDate())
   )
 }
 const hasTodoItemsOnDate = (todoList: TodoItemClient[]) => {
   const idSet = new Set(
-    todoList?.map((item) => toServerDate(item.targetDay).toString())
+    todoList?.map((item) => toShortDate(toServerDate(item.targetDay)))
   )
+  return idSet
+}
+const visiableDaysSet = (DaysList: DayItem[]) => {
+  const idSet = new Set(DaysList?.map((item) => item.key))
   return idSet
 }
 
@@ -74,7 +80,7 @@ function generateDayObject(currentDay: moment.Moment): DayItem {
   return {
     day: currentDay.format('D'),
     weekDay: currentDay.format('ddd'),
-    key: currentDay.toDate().toString(),
+    key: toShortDate(currentDay.toDate()),
   }
 }
 
@@ -82,10 +88,12 @@ function getSelectedDay(
   selectedDay: moment.Moment,
   currentDay: string | undefined
 ) {
-  return selectedDay.toDate().toString() === currentDay ? '#8687E7' : '#363636'
+  return toShortDate(selectedDay.toDate()) === currentDay
+    ? '#8687E7'
+    : '#363636'
 }
 const calculateDay = (startDay: string, i: number, isAppending: boolean) => {
-  const day = moment(startDay).clone()
+  const day = moment(new Date(startDay)).clone()
   return isAppending
     ? day.add(i + 1, 'days')
     : day.subtract(ADD_DATE - i, 'days')
@@ -95,34 +103,39 @@ const CalendarButtonStyle: ButtonStyle = {
   button: 'px-24pxr py-12pxr ',
   icon: 'w-16pxr h-16pxr relative',
 }
-
-function CustomCalendar({ initialData }: InitialDataType) {
+interface Props extends InitialDataType {
+  startDay?: moment.Moment
+}
+function CustomCalendar({
+  initialData,
+  startDay = moment().tz(timezone),
+}: Props) {
   const [schemduleDate, setSchemduleDate] = useRecoilState(schemduleDateState)
 
-  const [date, setDate] = useState(() => moment(schemduleDate))
   const setApiState = useSetRecoilState(apiStateSelector)
   const todoList = useRecoilValue(TodoListState)
   const [todoDateSet, setTodoDateSet] = useState(() =>
     hasTodoItemsOnDate(initialData)
   )
+
   const [visibleDays, setVisibleDays] = useState(() => {
     return Array.from({ length: SIDE_DAY_COUNT * 2 + 1 }, (_, i) => {
-      const currentDay = date
+      const currentDay = startDay
         .clone()
         .subtract(SIDE_DAY_COUNT + PRELOAD_DAY_COUNT, 'days')
-        .add(i, 'days')
+        .add(i, 'days') as moment.Moment
 
       return generateDayObject(currentDay)
     })
   })
-
+  const currentDaysSet = useRef(visiableDaysSet(visibleDays))
   const dateRef = useRef(schemduleDate)
   const target = useRef(null)
   const isNeedsMoreData = useRef(false)
   const containerX = useRef(
     -(VISIBLE_DAY_COUNT * DAY_WIDTH) - START_DAYS_OFFSET_X
   )
-  const eventDirection = useRef<number>(0)
+  const dayPosition = useRef<number>(0)
   const containerSpringRef = useSpringRef()
   const daysSpringRef = useSpringRef()
 
@@ -145,14 +158,14 @@ function CustomCalendar({ initialData }: InitialDataType) {
 
   const addDate = (direction: number) => {
     const isAppending = direction === NEXT_DAY
-    const startDay = (
+    const currentStartDay = (
       isAppending
         ? visibleDays[visibleDays.length - 1]?.key
         : visibleDays[0]?.key
     ) as string
 
     const extraDays = Array.from({ length: ADD_DATE }, (_, i) =>
-      generateDayObject(calculateDay(startDay as string, i, isAppending))
+      generateDayObject(calculateDay(currentStartDay as string, i, isAppending))
     )
 
     setVisibleDays((prev) =>
@@ -179,9 +192,15 @@ function CustomCalendar({ initialData }: InitialDataType) {
     })
   }
   useEffect(() => {
+    const isMoreDatesRequired = isDateInTodoSet(
+      toShortDate(schemduleDate.toDate()),
+      currentDaysSet.current
+    )
+    console.log(isMoreDatesRequired)
+  }, [])
+  useEffect(() => {
     if (isNeedsMoreData.current) {
-      console.count('moreDate')
-      const direction = eventDirection.current
+      const direction = dayPosition.current
 
       if (direction === PRIOUS_DAY) {
         containerX.current += DAY_WIDTH * (ADD_DATE + 1) * -direction
@@ -219,66 +238,54 @@ function CustomCalendar({ initialData }: InitialDataType) {
   useChain([containerSpringRef, daysSpringRef])
 
   const checkUpdateMonthAndYear = () => {
-    const checkYear = date.year()
-    const checkMonth = date.month() + 1
+    const checkYear = schemduleDate.year()
+    const checkMonth = schemduleDate.month() + 1
 
     const currentYear = dateRef.current.year()
     const currentMonth = dateRef.current.month() + 1
 
     if (checkYear !== currentYear || checkMonth !== currentMonth) {
-      setDate(dateRef.current)
+      setSchemduleDate(dateRef.current)
     }
   }
 
-  const runSprings = useCallback(() => {
-    const direction = eventDirection.current
+  const runSprings = useCallback(
+    (move: number) => {
+      dateRef.current = dateRef.current.clone().add(-move, 'days')
+      containerX.current += DAY_WIDTH * move
+      isNeedsMoreData.current = needsMoreData(
+        visibleDays,
+        dateRef.current,
+        move
+      )
 
-    dateRef.current = dateRef.current.clone().add(-direction, 'days')
-    containerX.current += DAY_WIDTH * direction
+      if (isNeedsMoreData.current) {
+        addDate(move)
+        return
+      }
 
-    isNeedsMoreData.current = needsMoreData(
-      visibleDays,
-      dateRef.current,
-      direction
-    )
-
-    if (isNeedsMoreData.current) {
-      addDate(direction)
-      return
-    }
-
-    setContainerSpring({ x: containerX.current })
-    startDaysAnimataion()
-  }, [visibleDays.length])
+      setContainerSpring({ x: containerX.current })
+      startDaysAnimataion()
+    },
+    [visibleDays.length]
+  )
 
   const updateDays = () => {
-    runSprings()
+    runSprings(dayPosition.current)
     checkUpdateMonthAndYear()
-    setSchemduleDate(dateRef.current)
   }
-  const timeRef = useRef(schemduleDate)
-
+  const getDiffdays = (currentDay: moment.Moment, targetDay: moment.Moment) => {
+    return currentDay.diff(targetDay, 'days')
+  }
   useEffectAfterMount(() => {
-    console.log(timeRef.current.valueOf() === schemduleDate.valueOf())
-    if (todoDateSet && timeRef.current.toDate() === schemduleDate.toDate()) {
-      isDateInTodoSet(schemduleDate.toDate().toString(), todoDateSet)
-      const getDiffdays = (
-        currentDay: moment.Moment,
-        targetDay: moment.Moment
-      ) => {
-        return currentDay.diff(targetDay, 'days')
-      }
-      const move = getDiffdays(dateRef.current, schemduleDate)
+    const move = getDiffdays(dateRef.current, schemduleDate)
 
-      eventDirection.current = move
-      dateRef.current = schemduleDate
-      runSprings()
-      checkUpdateMonthAndYear()
-      console.log('useEffect가 실행됩니다. 값:')
+    if (move !== 0) {
+      dayPosition.current = move
+
+      updateDays()
     }
-  }, [schemduleDate.valueOf()])
-
-  const wheelOffset = useRef(0)
+  }, [currentDaysSet.current])
 
   useGesture(
     {
@@ -287,12 +294,12 @@ function CustomCalendar({ initialData }: InitialDataType) {
 
         if (dx > 0) {
           // 오른쪽으로 드래그
-          wheelOffset.current = x
-          runSprings() // 오른쪽으로 드래그할 경우 실행할 함수
+          dayPosition.current += x
+          runSprings(dayPosition.current) // 오른쪽으로 드래그할 경우 실행할 함수
         } else if (dx < 0) {
           // 왼쪽으로 드래그
-          wheelOffset.current = x
-          runSprings() // 왼쪽으로 드래그할 경우 실행할 함수
+          dayPosition.current -= x
+          runSprings(dayPosition.current) // 왼쪽으로 드래그할 경우 실행할 함수
         }
       }, 1000),
     },
@@ -307,9 +314,10 @@ function CustomCalendar({ initialData }: InitialDataType) {
       'data-type'
     ) as string
 
-    eventDirection.current = parseInt(dataType, 10)
+    dayPosition.current = parseInt(dataType, 10)
 
     updateDays()
+    setSchemduleDate(dateRef.current)
   }
 
   return (
@@ -322,8 +330,12 @@ function CustomCalendar({ initialData }: InitialDataType) {
           icon={LEFT_ARROW}
         />
         <button className="flex flex-col items-center">
-          <span className="text-white/[0.87]">{date.format('MMM')}</span>
-          <span className="text-xsm text-gray-800">{date.format('YYYY')}</span>
+          <span className="text-white/[0.87]">
+            {schemduleDate.format('MMM')}
+          </span>
+          <span className="text-xsm text-gray-800">
+            {schemduleDate.format('YYYY')}
+          </span>
         </button>
         <Button
           dataType={NEXT_DAY}
