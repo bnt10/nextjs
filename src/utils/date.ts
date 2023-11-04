@@ -24,8 +24,10 @@ export const convertDateToObject = (newDate: Date) => {
     day,
   }
 }
-
 export const toShortDate = (date: Date): string => {
+  return moment(date).format('YYYY-MM-DD')
+}
+export const toRelatvieDay = (date: Date): string => {
   const targetDate = moment(date)
   const now = moment().format('YYYY-MM-DD')
 
