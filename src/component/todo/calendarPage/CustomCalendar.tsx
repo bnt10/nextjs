@@ -92,13 +92,68 @@ function getSelectedDay(
     ? '#8687E7'
     : '#363636'
 }
-const calculateDay = (startDay: string, i: number, isAppending: boolean) => {
+const calculateDay = (
+  startDay: string,
+  addIndex: number,
+  skippedDaysCount: number,
+  isAppending: boolean
+) => {
   const day = moment(new Date(startDay)).clone()
+
   return isAppending
-    ? day.add(i + 1, 'days')
-    : day.subtract(ADD_DATE - i, 'days')
+    ? day.add(addIndex + 1, 'days')
+    : day.subtract(addIndex + skippedDaysCount, 'days')
 }
 
+const createNewDays = (
+  dateList: DayItem[],
+  givenDate: string,
+  addDirection: boolean
+): DayItem[] => {
+  const newDays: DayItem[] = []
+  const existingKeys = new Set(dateList.map((day) => day.key))
+
+  let addIndex = 0
+  let skippedDaysCount = 0
+
+  while (newDays.length < ADD_DATE) {
+    const newDay = generateDayObject(
+      calculateDay(givenDate, addIndex, skippedDaysCount, addDirection)
+    )
+
+    if (existingKeys.has(newDay.key)) {
+      skippedDaysCount += 1
+    } else {
+      newDays.push(newDay)
+    }
+    addIndex += 1
+  }
+
+  return addDirection ? newDays : newDays.reverse()
+}
+const updateDateList = (
+  dateList: DayItem[],
+  givenDate: string,
+  addDirection: boolean
+): DayItem[] => {
+  const insertIndex = dateList.findIndex((x) =>
+    addDirection ? x.key > givenDate : x.key < givenDate
+  )
+
+  const newDays = createNewDays(dateList, givenDate, addDirection)
+
+  if (insertIndex === -1) {
+    return addDirection ? [...dateList, ...newDays] : [...newDays, ...dateList]
+  }
+
+  const filteredDateList = addDirection
+    ? dateList.slice(0, insertIndex)
+    : dateList.slice(insertIndex)
+
+  return addDirection
+    ? [...filteredDateList, ...newDays]
+    : [...newDays, ...filteredDateList]
+}
 const CalendarButtonStyle: ButtonStyle = {
   button: 'px-24pxr py-12pxr ',
   icon: 'w-16pxr h-16pxr relative',
@@ -156,21 +211,9 @@ function CustomCalendar({
     }
   })
 
-  const addDate = (direction: number) => {
-    const isAppending = direction === NEXT_DAY
-    const currentStartDay = (
-      isAppending
-        ? visibleDays[visibleDays.length - 1]?.key
-        : visibleDays[0]?.key
-    ) as string
-
-    const extraDays = Array.from({ length: ADD_DATE }, (_, i) =>
-      generateDayObject(calculateDay(currentStartDay as string, i, isAppending))
-    )
-
-    setVisibleDays((prev) =>
-      isAppending ? [...prev, ...extraDays] : [...extraDays, ...prev]
-    )
+  const addDate = (direction: number, currentStartDay: string) => {
+    const isAppending = direction <= NEXT_DAY
+    setVisibleDays((prev) => updateDateList(prev, currentStartDay, isAppending))
   }
 
   const startDaysAnimataion = () => {
@@ -192,18 +235,17 @@ function CustomCalendar({
     })
   }
   useEffect(() => {
-    const isMoreDatesRequired = isDateInTodoSet(
-      toShortDate(schemduleDate.toDate()),
-      currentDaysSet.current
-    )
-    console.log(isMoreDatesRequired)
+    // const isMoreDatesRequired = isDateInTodoSet(
+    //   toShortDate(schemduleDate.toDate()),
+    //   currentDaysSet.current
+    // )
   }, [])
   useEffect(() => {
     if (isNeedsMoreData.current) {
       const direction = dayPosition.current
 
-      if (direction === PRIOUS_DAY) {
-        containerX.current += DAY_WIDTH * (ADD_DATE + 1) * -direction
+      if (direction >= PRIOUS_DAY) {
+        containerX.current += DAY_WIDTH * ADD_DATE * -direction
         setContainerSpring(() => {
           return {
             x: containerX.current,
@@ -251,19 +293,7 @@ function CustomCalendar({
 
   const runSprings = useCallback(
     (move: number) => {
-      dateRef.current = dateRef.current.clone().add(-move, 'days')
       containerX.current += DAY_WIDTH * move
-      isNeedsMoreData.current = needsMoreData(
-        visibleDays,
-        dateRef.current,
-        move
-      )
-
-      if (isNeedsMoreData.current) {
-        addDate(move)
-        return
-      }
-
       setContainerSpring({ x: containerX.current })
       startDaysAnimataion()
     },
@@ -271,7 +301,16 @@ function CustomCalendar({
   )
 
   const updateDays = () => {
-    runSprings(dayPosition.current)
+    const move = dayPosition.current
+    dateRef.current = dateRef.current.clone().add(-move, 'days')
+    isNeedsMoreData.current = needsMoreData(visibleDays, dateRef.current, move)
+
+    if (isNeedsMoreData.current) {
+      addDate(move, toShortDate(dateRef.current.toDate()))
+      return
+    }
+
+    runSprings(move)
     checkUpdateMonthAndYear()
   }
   const getDiffdays = (currentDay: moment.Moment, targetDay: moment.Moment) => {
@@ -295,11 +334,11 @@ function CustomCalendar({
         if (dx > 0) {
           // 오른쪽으로 드래그
           dayPosition.current += x
-          runSprings(dayPosition.current) // 오른쪽으로 드래그할 경우 실행할 함수
+          updateDays() // 오른쪽으로 드래그할 경우 실행할 함수
         } else if (dx < 0) {
           // 왼쪽으로 드래그
           dayPosition.current -= x
-          runSprings(dayPosition.current) // 왼쪽으로 드래그할 경우 실행할 함수
+          updateDays() // 왼쪽으로 드래그할 경우 실행할 함수
         }
       }, 1000),
     },
