@@ -10,9 +10,7 @@ import moment from 'moment-timezone'
 import type { SyntheticEvent } from 'react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { Set } from 'typescript'
 
-import { timezone } from '@/atoms/scheduleAtom'
 import { TodoListState } from '@/atoms/todoListAtom'
 import Button from '@/component/common/Button'
 import { LEFT_ARROW, RIGHT_ARROW } from '@/config/icon'
@@ -46,12 +44,6 @@ type DayItem = {
   key: string
 }
 
-const isDateInTodoSet = (
-  targetDay: string,
-  todoDateSet: Set<string>
-): boolean => {
-  return todoDateSet.has(targetDay)
-}
 const needsMoreData = (
   visibleDays: DayItem[],
   currentDay: moment.Moment,
@@ -116,20 +108,24 @@ const createNewDays = (
   let addIndex = 0
   let skippedDaysCount = 0
 
-  while (newDays.length < ADD_DATE) {
-    const newDay = generateDayObject(
-      calculateDay(givenDate, addIndex, skippedDaysCount, addDirection)
-    )
+  try {
+    while (newDays.length < ADD_DATE) {
+      const newDay = generateDayObject(
+        calculateDay(givenDate, addIndex, skippedDaysCount, addDirection)
+      )
 
-    if (existingKeys.has(newDay.key)) {
-      skippedDaysCount += 1
-    } else {
-      newDays.push(newDay)
+      if (existingKeys.has(newDay.key)) {
+        skippedDaysCount += 1
+      } else {
+        newDays.push(newDay)
+      }
+      addIndex += 1
     }
-    addIndex += 1
-  }
 
-  return addDirection ? newDays : newDays.reverse()
+    return addDirection ? newDays : newDays.reverse()
+  } catch (error) {
+    return [] as DayItem[]
+  }
 }
 const updateDateList = (
   dateList: DayItem[],
@@ -140,31 +136,42 @@ const updateDateList = (
     addDirection ? x.key > givenDate : x.key < givenDate
   )
 
-  const newDays = createNewDays(dateList, givenDate, addDirection)
+  try {
+    const newDays = createNewDays(dateList, givenDate, addDirection)
 
-  if (insertIndex === -1) {
-    return addDirection ? [...dateList, ...newDays] : [...newDays, ...dateList]
+    if (insertIndex === -1) {
+      return addDirection
+        ? [...dateList, ...newDays]
+        : [...newDays, ...dateList]
+    }
+
+    const filteredDateList = addDirection
+      ? dateList.slice(0, insertIndex)
+      : dateList.slice(insertIndex)
+
+    return addDirection
+      ? [...filteredDateList, ...newDays]
+      : [...newDays, ...filteredDateList]
+  } catch (error) {
+    return [] as DayItem[]
   }
+}
+const createDate = (startDay: moment.Moment) => {
+  return Array.from({ length: SIDE_DAY_COUNT * 2 + 1 }, (_, i) => {
+    const currentDay = startDay
+      .clone()
+      .subtract(SIDE_DAY_COUNT + PRELOAD_DAY_COUNT, 'days')
+      .add(i, 'days') as moment.Moment
 
-  const filteredDateList = addDirection
-    ? dateList.slice(0, insertIndex)
-    : dateList.slice(insertIndex)
-
-  return addDirection
-    ? [...filteredDateList, ...newDays]
-    : [...newDays, ...filteredDateList]
+    return generateDayObject(currentDay)
+  })
 }
 const CalendarButtonStyle: ButtonStyle = {
   button: 'px-24pxr py-12pxr ',
   icon: 'w-16pxr h-16pxr relative',
 }
-interface Props extends InitialDataType {
-  startDay?: moment.Moment
-}
-function CustomCalendar({
-  initialData,
-  startDay = moment().tz(timezone),
-}: Props) {
+
+function CustomCalendar({ initialData }: InitialDataType) {
   const [schemduleDate, setSchemduleDate] = useRecoilState(schemduleDateState)
 
   const setApiState = useSetRecoilState(apiStateSelector)
@@ -173,17 +180,10 @@ function CustomCalendar({
     hasTodoItemsOnDate(initialData)
   )
 
-  const [visibleDays, setVisibleDays] = useState(() => {
-    return Array.from({ length: SIDE_DAY_COUNT * 2 + 1 }, (_, i) => {
-      const currentDay = startDay
-        .clone()
-        .subtract(SIDE_DAY_COUNT + PRELOAD_DAY_COUNT, 'days')
-        .add(i, 'days') as moment.Moment
+  const [visibleDays, setVisibleDays] = useState(() =>
+    createDate(schemduleDate)
+  )
 
-      return generateDayObject(currentDay)
-    })
-  })
-  const currentDaysSet = useRef(visiableDaysSet(visibleDays))
   const dateRef = useRef(schemduleDate)
   const target = useRef(null)
   const isNeedsMoreData = useRef(false)
@@ -213,6 +213,7 @@ function CustomCalendar({
 
   const addDate = (direction: number, currentStartDay: string) => {
     const isAppending = direction <= NEXT_DAY
+
     setVisibleDays((prev) => updateDateList(prev, currentStartDay, isAppending))
   }
 
@@ -234,39 +235,41 @@ function CustomCalendar({
       }
     })
   }
-  useEffect(() => {
-    // const isMoreDatesRequired = isDateInTodoSet(
-    //   toShortDate(schemduleDate.toDate()),
-    //   currentDaysSet.current
-    // )
-  }, [])
+  const addDateAfterAnimation = () => {
+    const direction = dayPosition.current
+
+    if (direction >= PRIOUS_DAY) {
+      const effectiveDate = visibleDays.findIndex(
+        (day) => day.key === toShortDate(schemduleDate.toDate())
+      )
+
+      containerX.current += DAY_WIDTH * (effectiveDate - 3) * -direction
+      setContainerSpring(() => {
+        return {
+          x: containerX.current,
+          immediate: true,
+          onRest: () => {
+            startDaysAnimataion()
+            startScrollAnimation(direction)
+          },
+        }
+      })
+    } else {
+      setContainerSpring(() => {
+        return {
+          x: containerX.current,
+        }
+      })
+      startDaysAnimataion()
+    }
+
+    setApiState((prevState) => ({ ...prevState, needDate: true }))
+    isNeedsMoreData.current = false
+  }
+
   useEffect(() => {
     if (isNeedsMoreData.current) {
-      const direction = dayPosition.current
-
-      if (direction >= PRIOUS_DAY) {
-        containerX.current += DAY_WIDTH * ADD_DATE * -direction
-        setContainerSpring(() => {
-          return {
-            x: containerX.current,
-            immediate: true,
-            onRest: () => {
-              startDaysAnimataion()
-              startScrollAnimation(direction)
-            },
-          }
-        })
-      } else {
-        setContainerSpring(() => {
-          return {
-            x: containerX.current,
-          }
-        })
-        startDaysAnimataion()
-      }
-
-      setApiState((prevState) => ({ ...prevState, needDate: true }))
-      isNeedsMoreData.current = false
+      addDateAfterAnimation()
     }
   }, [visibleDays.length])
 
@@ -303,6 +306,15 @@ function CustomCalendar({
   const updateDays = () => {
     const move = dayPosition.current
     dateRef.current = dateRef.current.clone().add(-move, 'days')
+    const isDateInvisiableDays = visiableDaysSet(visibleDays).has(
+      toShortDate(schemduleDate.toDate())
+    )
+
+    if (!isDateInvisiableDays) {
+      addDate(move, toShortDate(dateRef.current.toDate()))
+      isNeedsMoreData.current = true
+      return
+    }
     isNeedsMoreData.current = needsMoreData(visibleDays, dateRef.current, move)
 
     if (isNeedsMoreData.current) {
@@ -324,7 +336,7 @@ function CustomCalendar({
 
       updateDays()
     }
-  }, [currentDaysSet.current])
+  }, [schemduleDate.valueOf()])
 
   useGesture(
     {
