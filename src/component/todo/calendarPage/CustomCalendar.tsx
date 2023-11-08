@@ -217,7 +217,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
     setVisibleDays((prev) => updateDateList(prev, currentStartDay, isAppending))
   }
 
-  const startDaysAnimataion = () => {
+  const startDaysAnimataion = useCallback(() => {
     api.start((i) => {
       return {
         backgroundColor: getSelectedDay(
@@ -226,7 +226,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
         ),
       }
     })
-  }
+  }, [visibleDays])
   const startScrollAnimation = (direction: number) => {
     containerX.current += DAY_WIDTH * direction
     setContainerSpring(() => {
@@ -300,21 +300,13 @@ function CustomCalendar({ initialData }: InitialDataType) {
       setContainerSpring({ x: containerX.current })
       startDaysAnimataion()
     },
-    [visibleDays.length]
+    [visibleDays]
   )
 
   const updateDays = () => {
     const move = dayPosition.current
     dateRef.current = dateRef.current.clone().add(-move, 'days')
-    const isDateInvisiableDays = visiableDaysSet(visibleDays).has(
-      toShortDate(schemduleDate.toDate())
-    )
 
-    if (!isDateInvisiableDays) {
-      addDate(move, toShortDate(dateRef.current.toDate()))
-      isNeedsMoreData.current = true
-      return
-    }
     isNeedsMoreData.current = needsMoreData(visibleDays, dateRef.current, move)
 
     if (isNeedsMoreData.current) {
@@ -332,6 +324,17 @@ function CustomCalendar({ initialData }: InitialDataType) {
     const move = getDiffdays(dateRef.current, schemduleDate)
 
     if (move !== 0) {
+      const isDateInvisiableDays = visiableDaysSet(visibleDays).has(
+        toShortDate(schemduleDate.toDate())
+      )
+
+      if (!isDateInvisiableDays) {
+        dateRef.current = schemduleDate
+        setTodoDateSet(hasTodoItemsOnDate(todoList))
+        setVisibleDays(createDate(schemduleDate))
+        return
+      }
+
       dayPosition.current = move
 
       updateDays()

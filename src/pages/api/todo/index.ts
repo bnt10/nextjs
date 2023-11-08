@@ -1,11 +1,6 @@
 import db from 'db'
-import moment from 'moment'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { v4 as uuidv4 } from 'uuid'
-
-import { calendarConfig } from '@/config/calendar'
-
-const { SIDE_DAY_COUNT } = calendarConfig
 
 // GET 요청을 처리하는 함수
 async function handleGetRequest(req: NextApiRequest, res: NextApiResponse) {
@@ -14,16 +9,18 @@ async function handleGetRequest(req: NextApiRequest, res: NextApiResponse) {
   }
 
   await db.read()
+  // Todo when startDay
+  // const currentDate = moment()
 
-  const currentDate = moment()
+  // const filteredTodoList = db.data.tasks.filter((todoItem) => {
+  //   const targetDate = moment(todoItem.targetDay, 'YYYY-MM-DD hh:mm A')
 
-  const filteredTodoList = db.data.tasks.filter((todoItem) => {
-    const targetDate = moment(todoItem.targetDay, 'YYYY-MM-DD hh:mm A')
-    const daysDifference = targetDate.diff(currentDate, 'days')
-    return daysDifference >= -SIDE_DAY_COUNT && daysDifference <= SIDE_DAY_COUNT
-  })
+  //   const daysDifference = targetDate.diff(currentDate, 'days')
+  //   console.log(targetDate, 'targetDate', daysDifference)
+  //   return daysDifference >= -SIDE_DAY_COUNT && daysDifference <= SIDE_DAY_COUNT
+  // })
 
-  return res.status(200).json(filteredTodoList ?? db.data.tasks)
+  return res.status(200).json(db.data.tasks)
 }
 
 // POST 요청을 처리하는 함수
