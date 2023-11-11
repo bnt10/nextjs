@@ -7,7 +7,7 @@ type Props = {
 const Layout = ({ children }: Props) => {
   return (
     <div className="flex justify-center">
-      <div className="relative flex h-screen flex-col items-center bg-app-bg px-24pxr pb-40pxr foldable:w-375pxr">
+      <div className="relative box-border flex h-screen flex-col items-center overflow-hidden bg-app-bg px-24pxr foldable:w-375pxr">
         {children}
       </div>
     </div>

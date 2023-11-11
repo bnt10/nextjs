@@ -104,7 +104,7 @@ export default function Footer() {
   }
 
   return (
-    <div className="absolute bottom-0pxr box-border flex h-100pxr  w-full justify-between bg-footer-gray px-20pxr pt-12pxr">
+    <div className="box-border flex h-100pxr w-full  shrink-0 justify-between bg-footer-gray px-20pxr pt-12pxr">
       {footerItem.map(({ title: footerItemTitle, icon, style, handler }) => {
         return (
           <Button

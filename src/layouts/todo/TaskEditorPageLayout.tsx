@@ -2,6 +2,7 @@ import Button from '@/component/common/Button'
 import TaskEditorPageHeader from '@/component/todo/taskEditor/Header'
 import { modalEditSaveButtonSt } from '@/styles/todo/modal/button'
 
+import Layout from '..'
 import type { LayoutProps } from './type'
 
 export default function TaskEditorPageLayout({
@@ -10,7 +11,7 @@ export default function TaskEditorPageLayout({
 }: LayoutProps) {
   return (
     <div className="flex justify-center">
-      <div className="relative flex h-screen flex-col items-center bg-app-bg px-24pxr pb-40pxr foldable:w-375pxr">
+      <Layout>
         <TaskEditorPageHeader />
         <section className="flex w-full flex-col items-center justify-center">
           {children}
@@ -22,7 +23,7 @@ export default function TaskEditorPageLayout({
             handler={handleSave}
           />
         </footer>
-      </div>
+      </Layout>
     </div>
   )
 }

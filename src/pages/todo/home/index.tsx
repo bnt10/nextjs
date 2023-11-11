@@ -12,26 +12,27 @@ export default function TodoHome() {
   return (
     <>
       <HomeLayout>
-        <div className="flex w-full flex-col items-center justify-center overflow-y-scroll px-24pxr scrollbar-hide">
+        <div className="mt-16pxr flex w-full flex-col items-center justify-center overflow-y-scroll px-24pxr scrollbar-hide">
           <TodoSearchBar />
-
-          {todolist.length < 1 ? (
-            <EmptyTodoList />
-          ) : (
-            <section className="flex w-full flex-col items-center justify-center">
-              <section className="w-full">
-                <SortButton title={'Today'} />
-                <TodoList renderType={false} />
-              </section>
-              {todolist.findIndex((task) => task.isCompleted === true) !==
-                -1 && (
+          <div className="flex grow flex-col overflow-y-scroll scrollbar-hide">
+            {todolist.length < 1 ? (
+              <EmptyTodoList />
+            ) : (
+              <section className="flex w-full flex-col items-center justify-center">
                 <section className="w-full">
-                  <SortButton title={'Completed'} />
-                  <TodoList renderType={true} />
+                  <SortButton title={'Today'} />
+                  <TodoList renderType={false} />
                 </section>
-              )}
-            </section>
-          )}
+                {todolist.findIndex((task) => task.isCompleted === true) !==
+                  -1 && (
+                  <section className="w-full">
+                    <SortButton title={'Completed'} />
+                    <TodoList renderType={true} />
+                  </section>
+                )}
+              </section>
+            )}
+          </div>
         </div>
       </HomeLayout>
     </>

@@ -52,7 +52,7 @@ export default function TodoList({ initialData, renderType }: Props) {
       {todoList.length === 0 ? (
         <EmptyTodoList />
       ) : (
-        <div className="mb-100pxr mt-16pxr flex max-h-100vh w-full flex-col overflow-y-scroll px-24pxr scrollbar-hide">
+        <div className="mt-16pxr flex w-full flex-col ">
           {todoList
             .filter((item) => item.isCompleted === renderType)
             .map(

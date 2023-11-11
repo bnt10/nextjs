@@ -48,11 +48,12 @@ export default function TodoCalendar({ initialData, isLoading }: TodoListType) {
   return (
     <CalendarPageLayout>
       <CustomCalendar initialData={initialData} />
-      <section className="w-full shrink-0 px-24pxr">
+      <section className="flex w-full grow flex-col overflow-hidden px-24pxr">
         <TaskControlPanel onCheckedHandler={TaskCompletionHandler} />
+        <div className="mb-16pxr overflow-y-scroll scrollbar-hide">
+          <TodoList renderType={isTaskCompleted} initialData={initialData} />
+        </div>
       </section>
-
-      <TodoList renderType={isTaskCompleted} initialData={initialData} />
     </CalendarPageLayout>
   )
 }
