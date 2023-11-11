@@ -1,6 +1,6 @@
 import type { MouseEventHandler } from 'react'
 
-import DynamicIcon from '@/component/common/Icon'
+import CircleButton from '@/component/common/CircleCheckBox'
 import ImageIcon from '@/component/common/ImageIcon'
 import { ICON_PRIORITY } from '@/config/icon'
 
@@ -23,6 +23,7 @@ export default function TodoListItem({
   priority,
   onClickHandler,
   taskId,
+  isCompleted,
 }: Props) {
   const onClick: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault()
@@ -34,10 +35,10 @@ export default function TodoListItem({
       className="mb-16pxr flex h-72pxr w-full cursor-pointer items-center rounded bg-footer-gray px-10pxr py-12pxr"
     >
       <div className="mr-12pxr">
-        <DynamicIcon iconName="FaRegCircle" color="#ffffff" />
+        <CircleButton clicked={isCompleted} isReadOnly />
       </div>
       <div className="flex w-full flex-col">
-        <div className=" ">
+        <div>
           <div className="mb-6pxr text-base text-white/[0.87]">{title}</div>
         </div>
         <div className="flex justify-between">

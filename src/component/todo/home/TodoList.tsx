@@ -13,7 +13,10 @@ import { toServerDate } from '@/utils/mapper'
 import EmptyTodoList from './EmptyTodoList'
 import TodoListItem from './TodoListItem'
 
-export default function TodoList({ initialData }: InitialDataType) {
+interface Props extends InitialDataType {
+  renderType: boolean
+}
+export default function TodoList({ initialData, renderType }: Props) {
   const router = useRouter()
   const schemduleDate = useRecoilValue(schemduleDateState)
 
@@ -27,7 +30,7 @@ export default function TodoList({ initialData }: InitialDataType) {
       initialData,
       enabled: apiState.needDate,
       onSuccess: (addDate) => {
-        setTodoList(addDate)
+        setTodoList(addDate.filter((task) => task.isCompleted === renderType))
         setApiState((prev) => ({ ...prev, needDate: false }))
       },
     }
@@ -50,22 +53,24 @@ export default function TodoList({ initialData }: InitialDataType) {
         <EmptyTodoList />
       ) : (
         <div className="mb-100pxr mt-16pxr flex max-h-100vh w-full flex-col overflow-y-scroll px-24pxr scrollbar-hide">
-          {todoList.map(
-            ({ id, title, categoryId, isCompleted, priority, targetDay }) => {
-              return (
-                <TodoListItem
-                  key={id}
-                  taskId={id}
-                  isCompleted={isCompleted}
-                  title={title}
-                  startDay={toRelatvieDay(toServerDate(targetDay))}
-                  taskIconId={categoryId}
-                  priority={priority}
-                  onClickHandler={openDetailWithTask}
-                />
-              )
-            }
-          )}
+          {todoList
+            .filter((item) => item.isCompleted === renderType)
+            .map(
+              ({ id, title, categoryId, isCompleted, priority, targetDay }) => {
+                return (
+                  <TodoListItem
+                    key={id}
+                    taskId={id}
+                    isCompleted={isCompleted}
+                    title={title}
+                    startDay={toRelatvieDay(toServerDate(targetDay))}
+                    taskIconId={categoryId}
+                    priority={priority}
+                    onClickHandler={openDetailWithTask}
+                  />
+                )
+              }
+            )}
         </div>
       )}
     </>

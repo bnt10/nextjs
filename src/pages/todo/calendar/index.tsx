@@ -1,5 +1,5 @@
 import type { GetServerSidePropsContext } from 'next'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { dehydrate, QueryClient } from 'react-query'
 import { useSetRecoilState } from 'recoil'
 
@@ -30,9 +30,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     },
   }
 }
+
 export default function TodoCalendar({ initialData, isLoading }: TodoListType) {
   const setTodoList = useSetRecoilState(todoListStateSelector)
-
+  const [isTaskCompleted, setIsTaskCompleted] = useState<boolean>(false)
   useEffect(() => {
     if (initialData.length > 0) {
       setTodoList(initialData)
@@ -41,15 +42,17 @@ export default function TodoCalendar({ initialData, isLoading }: TodoListType) {
   if (isLoading) {
     return <>is Loading..</>
   }
-
+  const TaskCompletionHandler = (taskState: boolean) => {
+    setIsTaskCompleted(taskState)
+  }
   return (
     <CalendarPageLayout>
       <CustomCalendar initialData={initialData} />
       <section className="w-full shrink-0 px-24pxr">
-        <TaskControlPanel onCheckedHandler={() => {}} />
+        <TaskControlPanel onCheckedHandler={TaskCompletionHandler} />
       </section>
 
-      <TodoList initialData={initialData} />
+      <TodoList renderType={isTaskCompleted} initialData={initialData} />
     </CalendarPageLayout>
   )
 }

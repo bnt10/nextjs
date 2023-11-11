@@ -9,16 +9,17 @@ import {
 
 interface Props {
   clicked: boolean
-  pressed: boolean
+  pressed?: boolean
+  isReadOnly?: boolean
 }
-const CircleButton = ({ clicked, pressed }: Props) => {
+const CircleButton = ({ clicked, pressed, isReadOnly = false }: Props) => {
   const scaleSpringRef = useSpringRef()
   const circleSpringRef = useSpringRef()
 
   const scaleSpring = useSpring({
     ref: scaleSpringRef,
     from: { scale: 1 },
-    to: { scale: pressed ? 0.9 : 1 },
+    to: { scale: pressed && isReadOnly ? 0.9 : 1 },
     config: { ...config.wobbly, easing: easings.steps(5), duration: 100 },
   })
 

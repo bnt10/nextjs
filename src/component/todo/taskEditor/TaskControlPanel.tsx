@@ -6,7 +6,7 @@ import tw from '@/utils/twMergeObjects'
 
 // Type
 interface Props {
-  onCheckedHandler: (renderType: string) => void
+  onCheckedHandler: (renderType: boolean) => void
 }
 
 // Constants
@@ -29,7 +29,7 @@ export default function TaskControlPanel({ onCheckedHandler }: Props) {
     title,
     handler: () => {
       setIsCheckedButton(index)
-      onCheckedHandler(ButtonList[index] ?? '')
+      onCheckedHandler(index !== 0)
     },
   }))
 
