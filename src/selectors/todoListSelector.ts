@@ -7,7 +7,7 @@ import type { TodoItemClient } from '@/types/todoList'
 import { schemduleDateState } from './dateSelector'
 
 export const todoListStateSelector = selector({
-  key: 'todoListStateSelector',
+  key: 'TodoListStateSelector',
   get: ({ get }) => {
     const todoList = get(TodoListState)
 

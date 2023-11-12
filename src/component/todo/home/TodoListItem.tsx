@@ -43,7 +43,9 @@ export default function TodoListItem({
         </div>
         <div className="flex justify-between">
           <div className="mr-12pxr flex flex-1 justify-between">
-            <div className="text-sm text-gray-800">{startDay}</div>
+            <div className="mr-5pxr flex-1 text-sm text-gray-800">
+              {startDay}
+            </div>
             <div>
               <CategoryListIcon categoryId={taskIconId} />
             </div>

@@ -61,7 +61,7 @@ export default function TaskEditor() {
           { ...data, targetDay: toClientDate(data.targetDay) }
         )
       })
-      router.replace('/todo/calendar')
+      router.back()
     },
   })
 
