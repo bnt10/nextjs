@@ -9,8 +9,8 @@ interface Props {
 
 const buttonStyles = {
   button:
-    'flex h-48pxr w-314pxr bg-gray-900 justify-center mb-15pxr relative overflow-hidden rounded-2xl  text-neutral-900 items-center',
-  icon: 'left-24pxr top-10pxr h-30pxr w-30pxr ',
+    'flex h-48pxr w-full justify-center mb-15pxr relative overflow-hidden rounded bg-tr text-white/[0.87] items-center border-primary border',
+  icon: 'relative right-10pxr h-24pxr w-24pxr ',
 }
 
 const GithubLoginButton = ({ st, handler }: Props) => {
@@ -21,7 +21,7 @@ const GithubLoginButton = ({ st, handler }: Props) => {
       <Button
         icon={'/assets/icons/github-login-icon.svg'}
         style={buttonStyles}
-        title={'Github Login'}
+        title={'Login with Appe'}
         handler={handler}
       />
     </li>

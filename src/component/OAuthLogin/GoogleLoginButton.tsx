@@ -8,8 +8,8 @@ interface Props {
 }
 const buttonStyles = {
   button:
-    'flex h-48pxr w-314pxrjustify-center mb-15pxr relative overflow-hidden rounded-2xl bg-[#153e6d] text-white items-center',
-  icon: 'left-24pxr top-10pxr h-30pxr w-30pxr ',
+    'flex h-48pxr w-full justify-center mb-15pxr relative overflow-hidden rounded bg-tr text-white/[0.87] items-center border-primary border',
+  icon: 'relative right-10pxr h-24pxr w-24pxr ',
 }
 
 const GoogleLoginButton = ({ st, handler }: Props) => {
@@ -20,7 +20,7 @@ const GoogleLoginButton = ({ st, handler }: Props) => {
       <Button
         icon={'/assets/icons/google-login-Icon.svg'}
         style={buttonStyles}
-        title={'Google Login'}
+        title={'Login with Google'}
         handler={handler}
       />
     </li>
