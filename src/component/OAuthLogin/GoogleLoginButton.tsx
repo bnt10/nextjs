@@ -4,7 +4,8 @@ import Button from '@/component/common/Button'
 
 interface Props {
   st?: string
-  handler: () => void
+  title?: string
+  handler?: () => void
 }
 const buttonStyles = {
   button:
@@ -12,7 +13,7 @@ const buttonStyles = {
   icon: 'relative right-10pxr h-24pxr w-24pxr ',
 }
 
-const GoogleLoginButton = ({ st, handler }: Props) => {
+const GoogleLoginButton = ({ st, handler, title }: Props) => {
   const containerStyles = twMerge('my-3pxr flex list-none justify-center', st)
 
   return (
@@ -20,7 +21,7 @@ const GoogleLoginButton = ({ st, handler }: Props) => {
       <Button
         icon={'/assets/icons/google-login-Icon.svg'}
         style={buttonStyles}
-        title={'Login with Google'}
+        title={title}
         handler={handler}
       />
     </li>

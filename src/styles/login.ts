@@ -4,7 +4,7 @@ export const LoginInputBtStyle = {
 }
 export const LoginButtonStyle = {
   button:
-    'w-full h-48pxr rounded bg-primary flex items-center justify-center relative mt-69pxr disabled:opacity-25 disabled:cursor-not-allowed',
+    'w-full h-48pxr rounded bg-primary flex items-center justify-center relative mt-40pxr disabled:opacity-25 disabled:cursor-not-allowed',
   icon: '',
   title: 'text-white/[0.87]',
 }

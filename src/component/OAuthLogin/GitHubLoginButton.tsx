@@ -5,6 +5,7 @@ import Button from '@/component/common/Button'
 interface Props {
   st?: string
   handler: () => void
+  title?: string
 }
 
 const buttonStyles = {
@@ -13,7 +14,7 @@ const buttonStyles = {
   icon: 'relative right-10pxr h-24pxr w-24pxr ',
 }
 
-const GithubLoginButton = ({ st, handler }: Props) => {
+const GithubLoginButton = ({ st, handler, title }: Props) => {
   const containerStyles = twMerge('my-3pxr flex list-none justify-center', st)
 
   return (
@@ -21,7 +22,7 @@ const GithubLoginButton = ({ st, handler }: Props) => {
       <Button
         icon={'/assets/icons/github-login-icon.svg'}
         style={buttonStyles}
-        title={'Login with Appe'}
+        title={title}
         handler={handler}
       />
     </li>
