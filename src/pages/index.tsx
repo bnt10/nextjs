@@ -1,9 +1,9 @@
-import OAuthLogin from '@/component/OAuthLogin'
+import { Login } from '@/component/OAuthLogin/Login'
 
 const Index = () => {
   return (
     <div>
-      <OAuthLogin />
+      <Login />
     </div>
   )
 }
