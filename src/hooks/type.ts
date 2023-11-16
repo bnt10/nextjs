@@ -16,30 +16,25 @@ export type FormState<T extends keyof FormKeys> = Partial<{
   [K in T]: FormValidateFields
 }>
 
-export type FormSchema<T extends keyof FormKeys> = {
-  [K in T]: {
-    value: string
-    error?: FormError
-    isControlled?: boolean
-    ref?: RefObject<HTMLInputElement>
-    name: string
-    type: string
-    placeholder?: string
-    validate: (value: string, formState?: FormState<T> | undefined) => FormError
-    onChange?: () => void
-  }
-}
-export type FormFieldValue = {
+export type FormFieldValue<T extends keyof FormKeys> = {
   value: string
+  error?: FormError
+  isControlled?: boolean
   ref?: RefObject<HTMLInputElement>
   name: string
-  placeholder?: string
   type: string
+  placeholder?: string
+  label?: string
+  key?: string
+  validate: (value: string, formState?: FormState<T> | undefined) => FormError
   onChange?: () => void
+}
+export type FormSchema<T extends keyof FormKeys> = {
+  [K in T]: FormFieldValue<T>
 }
 
 export type FormFields<T extends keyof FormKeys> = {
-  [K in T]: FormFieldValue
+  [K in T]: FormFieldValue<T>
 }
 
 export type ResponseError = {

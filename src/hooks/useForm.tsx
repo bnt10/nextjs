@@ -1,9 +1,13 @@
-import type { Dispatch, FormEvent, SetStateAction } from 'react'
+import type {
+  Dispatch,
+  FormEvent,
+  MutableRefObject,
+  SetStateAction,
+} from 'react'
 import { createRef, useEffect, useRef, useState } from 'react'
 
 import type {
   FormFields,
-  FormFieldValue,
   FormKeys,
   FormRefs,
   FormSchema,
@@ -13,6 +17,7 @@ import type {
 
 type UseInputSchemaReturn<T extends keyof FormKeys> = {
   form: FormState<T>
+  formStateRefs: MutableRefObject<Partial<{ [K in T]: FormValidateFields }>>
   isFormValid: boolean
   handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   handleOnSubmit: (
@@ -29,11 +34,7 @@ const generateFormFields = <T extends keyof FormKeys>(
   const keys = Object.keys(formSchema) as T[]
 
   keys.forEach((key) => {
-    const { name, value, ref, placeholder, type, onChange } = formSchema[
-      key
-    ] as FormFieldValue
-
-    formFields[key] = { name, value, ref, placeholder, type, onChange }
+    formFields[key] = { ...formSchema[key] }
   })
 
   return formFields
@@ -80,6 +81,7 @@ const useForm = <T extends keyof FormKeys>(
   options?: FormSchema<T>
 ): UseInputSchemaReturn<T> => {
   const formRefs = useRef<FormRefs<T>>({})
+
   const initFormState = { ...formSchema, ...options }
   initializeFormRefs(initFormState, formRefs)
   const preprocessedFormState = generateInitFormState(initFormState, formRefs)
@@ -96,6 +98,7 @@ const useForm = <T extends keyof FormKeys>(
   }, {})
 
   const [form, setForm] = useState<FormState<T>>(initForm)
+  const formStateRefs = useRef<FormState<T>>(initForm)
   const [isFormValid, setIsFormValid] = useState(true)
 
   useEffect(() => {
@@ -111,6 +114,7 @@ const useForm = <T extends keyof FormKeys>(
       [name]: { value, error: errorMessage },
     } as FormState<T>
     setForm(changedForm)
+    formStateRefs.current = changedForm
     checkFormValid(changedForm, setIsFormValid)
   }
   const getFormFields = () => {
@@ -129,6 +133,7 @@ const useForm = <T extends keyof FormKeys>(
 
   return {
     form,
+    formStateRefs,
     handleOnChange,
     isFormValid,
     handleOnSubmit,
