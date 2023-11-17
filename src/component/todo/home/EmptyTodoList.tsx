@@ -5,7 +5,7 @@ import { ICON_EMPTY } from '@/config/icon'
 export default function EmptyTodoList() {
   return (
     <>
-      <div className="mt-75pxr items-start">
+      <div className="mt-75pxr flex items-start justify-center">
         <Image
           src={ICON_EMPTY}
           alt="Image description"
@@ -14,7 +14,7 @@ export default function EmptyTodoList() {
         />
       </div>
       <div className="relative mt-[10pxr]">
-        <div className=" text-xl leading-normal  text-white text-opacity-90">
+        <div className="text-xl leading-normal text-white text-opacity-90">
           What do you want to do today?
         </div>
         <div className="mt-10pxr text-center text-base font-normal leading-normal text-white text-opacity-90">

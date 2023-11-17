@@ -81,7 +81,6 @@ const useForm = <T extends keyof FormKeys>(
   options?: FormSchema<T>
 ): UseInputSchemaReturn<T> => {
   const formRefs = useRef<FormRefs<T>>({})
-
   const initFormState = { ...formSchema, ...options }
   initializeFormRefs(initFormState, formRefs)
   const preprocessedFormState = generateInitFormState(initFormState, formRefs)
