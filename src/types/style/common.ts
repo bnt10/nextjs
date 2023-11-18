@@ -3,3 +3,10 @@ export type ButtonStyle = {
   icon?: string
   title?: string
 }
+
+export type InputStyle = {
+  wrapper?: string
+  input?: string
+  label?: string
+  innvvalidMessage?: string
+}

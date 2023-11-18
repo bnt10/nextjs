@@ -1,26 +1,30 @@
+import { useState } from 'react'
+
+import type { FormError } from '@/hooks/type'
+import type { InputStyle } from '@/types/style/common'
 import tw from '@/utils/twMergeObjects'
 
 interface InputProps {
   value?: string
-  style?: Style
+  style?: InputStyle
   name: string
   disabled?: boolean
   placeholder?: string
-  handleInputChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
-  inputRef?: React.RefObject<HTMLInputElement>
   type: string
   label?: string
-}
-type Style = {
-  wrapper?: string
-  input?: string
-  label?: string
+  validatePlaceholder?: string[]
+  inputRef?: React.RefObject<HTMLInputElement>
+  innvvalidMessage?: FormError
+  handleInputChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  handleInputFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
+  handleInputBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
 }
 
 const twInputStyles = {
   wrapper: 'w-full flex flex-col',
   input: '',
-  label: 'font-normal text-base text-white/[87] mb-8pxr',
+  label: 'font-normal text-base text-white/[0.87] mb-8pxr',
+  innvvalidMessage: 'text-red-500 text-sm h-15pxr',
 }
 
 const Input = ({
@@ -31,11 +35,24 @@ const Input = ({
   inputRef,
   placeholder,
   label,
+  innvvalidMessage,
+  validatePlaceholder,
   type = 'text',
+  handleInputFocus,
   handleInputChange,
+  handleInputBlur,
 }: InputProps) => {
-  const st = tw<Style>(twInputStyles, style)
+  const st = tw<InputStyle>(twInputStyles, style)
+  const [isFocused, setIsFocused] = useState(false)
 
+  const onFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(true)
+    handleInputFocus?.(event)
+  }
+  const onBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(false)
+    handleInputBlur?.(event)
+  }
   return (
     <div className={st.wrapper}>
       {label && (
@@ -47,12 +64,26 @@ const Input = ({
         ref={inputRef}
         className={st.input}
         onChange={handleInputChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
         name={name}
         disabled={disabled}
         type={type}
         placeholder={placeholder}
         defaultValue={value}
       />
+
+      {isFocused && validatePlaceholder && (
+        <div className="mt-3pxr">
+          {validatePlaceholder?.map((item, index) => (
+            <div className="text-sm text-gray-900" key={index}>
+              {item}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <span className={st.innvvalidMessage}>{innvvalidMessage}</span>
     </div>
   )
 }

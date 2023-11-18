@@ -7,6 +7,15 @@ import GitHubLoginButton from './GitHubLoginButton'
 import GoogleLoginButton from './GoogleLoginButton'
 
 export type RegisterFormElements = 'username' | 'password' | 'confirmPassword'
+
+export const passwordRegex =
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,32}$/
+
+export const isValidPassword = (password: string, regex: RegExp) => {
+  if (!regex.test(password)) return false
+  if (/(\w)\1\1/i.test(password)) return false
+  return true
+}
 export const RegisterShcema: FormSchema<RegisterFormElements> = {
   username: {
     key: '1',
@@ -16,6 +25,7 @@ export const RegisterShcema: FormSchema<RegisterFormElements> = {
     isControlled: true,
     name: 'username',
     placeholder: 'Enter your UserName',
+
     validate: (value: string) => {
       if (!value) {
         return '입력이 필요합니다.'
@@ -31,9 +41,17 @@ export const RegisterShcema: FormSchema<RegisterFormElements> = {
     isControlled: true,
     name: 'password',
     placeholder: '************',
+    validatePlaceholder: [
+      '영문/숫자/특수문자 2가지 이상 포함',
+      '8지 이상 32자 이하 입력(공백제외)',
+      '연속 3자 이상 동일한 문자/숫자 제외',
+    ],
     validate: (value: string) => {
       if (!value) {
         return '입력이 필요합니다.'
+      }
+      if (!isValidPassword(value, passwordRegex)) {
+        return '비밀번호 형식이 맞지 않습니다.'
       }
       return null
     },
@@ -46,9 +64,13 @@ export const RegisterShcema: FormSchema<RegisterFormElements> = {
     isControlled: true,
     name: 'confirmPassword',
     placeholder: '************',
-    validate: (value: string) => {
+    validate: (value: string, formState) => {
       if (!value) {
         return '입력이 필요합니다.'
+      }
+
+      if (value !== formState?.password?.value) {
+        return '비밀번호가 일치하지 않습니다.'
       }
       return null
     },
@@ -74,8 +96,8 @@ export const LoginShcema: FormSchema<LoginFormElements> = {
     value: '',
     type: 'text',
     isControlled: true,
-    name: 'description',
-    placeholder: 'description',
+    name: 'password',
+    placeholder: '**********',
     validate: (value: string) => {
       if (!value) {
         return '입력이 필요합니다.'
