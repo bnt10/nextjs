@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { ChangeEvent, FormEvent } from 'react'
 import { useState } from 'react'
 
+import useEffectAfterMount from '@/hooks/useEffectAfterMount'
 import { useForm } from '@/hooks/useForm'
 import Layout from '@/layouts'
 import ScrollLayout from '@/layouts/ScroolLayout'
@@ -12,23 +13,26 @@ import Input from '../common/Input'
 import { LoginOAuth, RegisterShcema } from './constants'
 
 const AuthLogin = () => {
-  const { handleOnChange, handleOnSubmit, getFormFields, formStateRefs } =
-    useForm(RegisterShcema)
+  const {
+    handleOnChange,
+    handleOnSubmit,
+    getFormFields,
+    formStateRefs,
+    isFormValid,
+  } = useForm(RegisterShcema)
 
   const formFields = getFormFields()
   const formValues = formStateRefs.current
-  const [submitDisabled, setSubmitDisabled] = useState<boolean>(true)
+  const [submitDisabled, setSubmitDisabled] = useState<boolean>(false)
   const handlerRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
   }
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleOnChange(e)
-    const { username, password, confirmPassword } = formValues
-    const isNotEmptyForm =
-      (username?.value && password?.value && confirmPassword?.value) === ''
-
-    setSubmitDisabled(isNotEmptyForm)
   }
+  useEffectAfterMount(() => {
+    setSubmitDisabled(!isFormValid)
+  }, [isFormValid])
   return (
     <Layout>
       <ScrollLayout>

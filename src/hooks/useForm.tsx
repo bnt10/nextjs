@@ -1,10 +1,5 @@
-import type {
-  Dispatch,
-  FormEvent,
-  MutableRefObject,
-  SetStateAction,
-} from 'react'
-import { createRef, useEffect, useRef, useState } from 'react'
+import type { FormEvent, MutableRefObject } from 'react'
+import { createRef, useRef, useState } from 'react'
 
 import type {
   FormFields,
@@ -68,12 +63,11 @@ const generateInitFormState = <T extends keyof FormKeys>(
   }, {} as FormSchema<T>)
 }
 const checkFormValid = <T extends keyof FormKeys>(
-  nextForm: FormState<T>,
-  updateFormVaild: Dispatch<SetStateAction<boolean>>
-): void => {
+  nextForm: FormState<T>
+): boolean => {
   const formValues = Object.values(nextForm) as FormValidateFields[]
   const hasErrors = formValues.some((data) => data && data.error !== null)
-  updateFormVaild(!hasErrors)
+  return !hasErrors
 }
 
 const useForm = <T extends keyof FormKeys>(
@@ -98,11 +92,7 @@ const useForm = <T extends keyof FormKeys>(
 
   const [form, setForm] = useState<FormState<T>>(initForm)
   const formStateRefs = useRef<FormState<T>>(initForm)
-  const [isFormValid, setIsFormValid] = useState(true)
-
-  useEffect(() => {
-    checkFormValid(form, setIsFormValid)
-  }, [])
+  const isFormValid = useRef<boolean>(false)
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -114,7 +104,8 @@ const useForm = <T extends keyof FormKeys>(
     } as FormState<T>
     setForm(changedForm)
     formStateRefs.current = changedForm
-    checkFormValid(changedForm, setIsFormValid)
+    isFormValid.current = checkFormValid(changedForm)
+    console.log('hook', isFormValid.current)
   }
   const getFormFields = () => {
     return generateFormFields(preprocessedFormState)
@@ -124,7 +115,7 @@ const useForm = <T extends keyof FormKeys>(
     async (formSubmit: FormEvent<HTMLFormElement>) => {
       formSubmit.preventDefault()
 
-      if (isFormValid) {
+      if (isFormValid.current) {
         onSubmit(formSubmit)
       }
       // Todo inValidate form error handle
@@ -134,7 +125,7 @@ const useForm = <T extends keyof FormKeys>(
     form,
     formStateRefs,
     handleOnChange,
-    isFormValid,
+    isFormValid: isFormValid.current,
     handleOnSubmit,
     getFormFields,
   }
