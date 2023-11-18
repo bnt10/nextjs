@@ -21,11 +21,12 @@ export type FormFieldValue<T extends keyof FormKeys> = {
   error?: FormError
   isControlled?: boolean
   ref?: RefObject<HTMLInputElement>
-  name: string
+  name: T
   type: string
   placeholder?: string
   label?: string
   key?: string
+  validatePlaceholder?: string[]
   validate: (value: string, formState?: FormState<T> | undefined) => FormError
   onChange?: () => void
 }
