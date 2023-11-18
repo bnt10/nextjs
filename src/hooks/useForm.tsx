@@ -86,12 +86,12 @@ const useForm = <T extends keyof FormKeys>(
   const preprocessedFormState = generateInitFormState(initFormState, formRefs)
   const keys = Object.keys(preprocessedFormState) as T[]
   const initForm = keys.reduce<FormState<T>>((acc, input: T) => {
-    const { value, validate } = formSchema[input]
+    const { value, error } = formSchema[input]
     return {
       ...acc,
       [input]: {
         value,
-        error: validate(value), // todo optional state check
+        error,
       },
     }
   }, {})
