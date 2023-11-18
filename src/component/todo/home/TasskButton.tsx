@@ -43,7 +43,7 @@ export default function TaskButton() {
       component: Button,
       props: {
         style: {
-          icon: 'absolute right-26pxr bottom-17pxr w-24pxr h-24pxr flex-shrink-0',
+          icon: 'absolute right-26pxr bottom-20pxr w-24pxr h-24pxr flex-shrink-0',
         },
         icon: ICON_SEND,
         buttonType: 'submit',

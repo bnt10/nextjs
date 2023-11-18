@@ -62,7 +62,7 @@ export default function Footer() {
       },
     },
     {
-      title: 'Focuse',
+      title: 'Focus',
       icon: ICON_CLOCK,
       handler: () => {},
       style: textWithIconBtnStyle,
@@ -118,7 +118,7 @@ export default function Footer() {
       })}
       {openModal && (
         <Modal>
-          <div className="absolute bottom-[0] h-228pxr w-393pxr flex-col items-center justify-center rounded-t-2xl bg-footer-gray px-25pxr pb-17pxr pt-25pxr">
+          <div className="absolute bottom-[0] w-375pxr flex-col items-center justify-center rounded-t-2xl bg-footer-gray px-25pxr pb-17pxr pt-25pxr">
             <form onSubmit={handleOnSubmit(addTaskSubmit)}>
               <p className="mb-14pxr text-left text-xl font-bold text-white/[0.87]">
                 Add Task
