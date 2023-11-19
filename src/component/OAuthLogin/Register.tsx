@@ -1,18 +1,26 @@
 import Link from 'next/link'
 import type { ChangeEvent, FormEvent } from 'react'
 import { useState } from 'react'
+import { useSetRecoilState } from 'recoil'
 
+import { modalContentState } from '@/atoms/modalAtom'
+import type { SubmitFormData } from '@/hooks/type'
 import useEffectAfterMount from '@/hooks/useEffectAfterMount'
 import { useForm } from '@/hooks/useForm'
 import Layout from '@/layouts'
 import ScrollLayout from '@/layouts/ScroolLayout'
+import { createUser } from '@/services/users/api'
 import { LoginButtonStyle, LoginInputBtStyle } from '@/styles/login'
 
 import Button from '../common/Button'
 import Input from '../common/Input'
+import MessageModal from '../common/MessageModal'
+import type { RegisterFormElements } from './constants'
 import { LoginOAuth, RegisterShcema } from './constants'
 
 const AuthLogin = () => {
+  const setModalContent = useSetRecoilState(modalContentState)
+
   const {
     handleOnChange,
     handleOnSubmit,
@@ -24,7 +32,17 @@ const AuthLogin = () => {
   const formFields = getFormFields()
   const formValues = formStateRefs.current
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(false)
-  const handlerRegister = async (e: FormEvent<HTMLFormElement>) => {
+  const handlerRegister = async (
+    e: FormEvent<HTMLFormElement>,
+    formData: SubmitFormData<RegisterFormElements>
+  ) => {
+    const { username, password, confirmPassword } = formData
+    const res = await createUser({
+      userName: username,
+      password,
+      confirmPassword,
+    })
+    setModalContent(<MessageModal message={res} />)
     e.preventDefault()
   }
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
