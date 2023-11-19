@@ -37,12 +37,20 @@ const AuthLogin = () => {
     formData: SubmitFormData<RegisterFormElements>
   ) => {
     const { username, password, confirmPassword } = formData
-    const res = await createUser({
+    const { data, status } = await createUser({
       userName: username,
       password,
       confirmPassword,
     })
-    setModalContent(<MessageModal message={res} />)
+
+    setModalContent(
+      <MessageModal
+        nextPath={status === 200 ? '/todo/home' : null}
+        confirmTitle={'확인'}
+        message={data.message}
+      />
+    )
+
     e.preventDefault()
   }
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {

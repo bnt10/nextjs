@@ -8,7 +8,10 @@ export const createUser = async (userData: CreateUserType) => {
       userData,
     })
     if (response.status === 200) {
-      return response
+      return {
+        status: 200,
+        data: response.data,
+      }
     }
     return {
       status: 500,
