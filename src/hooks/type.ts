@@ -1,4 +1,4 @@
-import type { RefObject } from 'react'
+import type { FormEvent, RefObject } from 'react'
 
 export const INPUT_TYPE = {
   TEXT: 'text',
@@ -45,3 +45,12 @@ export type ResponseError = {
 export type FormRefs<T extends keyof FormKeys> = Partial<{
   [K in T]: React.RefObject<any>
 }>
+
+export type FormSubmit<T extends keyof FormKeys> = {
+  e: FormEvent<HTMLFormElement>
+  formData: FormState<T>
+}
+
+export type SubmitFormData<T extends keyof FormKeys> = {
+  [K in T]: any
+}

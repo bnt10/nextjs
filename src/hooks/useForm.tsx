@@ -8,6 +8,7 @@ import type {
   FormSchema,
   FormState,
   FormValidateFields,
+  SubmitFormData,
 } from './type'
 
 type UseInputSchemaReturn<T extends keyof FormKeys> = {
@@ -16,7 +17,10 @@ type UseInputSchemaReturn<T extends keyof FormKeys> = {
   isFormValid: boolean
   handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   handleOnSubmit: (
-    submit: (e: FormEvent<HTMLFormElement>) => Promise<void>
+    submit: (
+      e: FormEvent<HTMLFormElement>,
+      formData: SubmitFormData<T>
+    ) => Promise<void>
   ) => (event: FormEvent<HTMLFormElement>) => Promise<void>
 
   getFormFields: () => FormFields<T>
@@ -70,6 +74,20 @@ const checkFormValid = <T extends keyof FormKeys>(
   return !hasErrors
 }
 
+const getFormData = <T extends keyof FormKeys>(
+  form: FormState<T>
+): SubmitFormData<T> => {
+  const keys = Object.keys(form) as T[]
+  const formData = keys.reduce((acc, input: T) => {
+    const data = form[input]
+    return {
+      ...acc,
+      [input]: data!.value,
+    }
+  }, {} as SubmitFormData<T>)
+  return formData
+}
+
 const useForm = <T extends keyof FormKeys>(
   formSchema: FormSchema<T>,
   options?: FormSchema<T>
@@ -105,18 +123,22 @@ const useForm = <T extends keyof FormKeys>(
     setForm(changedForm)
     formStateRefs.current = changedForm
     isFormValid.current = checkFormValid(changedForm)
-    console.log('hook', isFormValid.current)
   }
   const getFormFields = () => {
     return generateFormFields(preprocessedFormState)
   }
   const handleOnSubmit =
-    (onSubmit: { (e: FormEvent<HTMLFormElement>): Promise<void> }) =>
+    (onSubmit: {
+      (
+        e: FormEvent<HTMLFormElement>,
+        formData: SubmitFormData<T>
+      ): Promise<void>
+    }) =>
     async (formSubmit: FormEvent<HTMLFormElement>) => {
       formSubmit.preventDefault()
 
       if (isFormValid.current) {
-        onSubmit(formSubmit)
+        onSubmit(formSubmit, getFormData(form))
       }
       // Todo inValidate form error handle
     }
