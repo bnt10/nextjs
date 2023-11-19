@@ -5,14 +5,16 @@ import { JSONFile } from 'lowdb/node'
 import path from 'path'
 
 import type { TodoItemServer } from '@/types/todoList'
+import type { UserType } from '@/types/users'
 
 type Data = {
   tasks: TodoItemServer[]
+  users: UserType[]
 }
 
 const rootDir = process.cwd()
 
-const defaultDBtData: Data = { tasks: [] }
+const defaultDBtData: Data = { tasks: [], users: [] }
 
 class LowWithLodash<T> extends Low<T> {
   chain: lodash.ExpChain<this['data']> = lodash.chain(this).get('data')
