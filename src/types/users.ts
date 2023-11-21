@@ -7,3 +7,5 @@ export type UserType = {
 export type CreateUserType = Omit<UserType, 'id'> & {
   confirmPassword: string
 }
+
+export type LoginUserType = Omit<UserType, 'id'>

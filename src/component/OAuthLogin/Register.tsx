@@ -10,7 +10,7 @@ import { useForm } from '@/hooks/useForm'
 import Layout from '@/layouts'
 import ScrollLayout from '@/layouts/ScroolLayout'
 import { createUser } from '@/services/users/api'
-import { LoginButtonStyle, LoginInputBtStyle } from '@/styles/login'
+import { LoginInputBtStyle, RegisterButtonStyle } from '@/styles/login'
 
 import Button from '../common/Button'
 import Input from '../common/Input'
@@ -95,7 +95,7 @@ const AuthLogin = () => {
 
           <Button
             disabled={submitDisabled}
-            style={LoginButtonStyle}
+            style={RegisterButtonStyle}
             buttonType="submit"
             title="Register"
           />

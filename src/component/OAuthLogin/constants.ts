@@ -25,7 +25,6 @@ export const RegisterShcema: FormSchema<RegisterFormElements> = {
     isControlled: true,
     name: 'username',
     placeholder: 'Enter your UserName',
-
     validate: (value: string) => {
       if (!value) {
         return '입력이 필요합니다.'
@@ -80,11 +79,13 @@ export const RegisterShcema: FormSchema<RegisterFormElements> = {
 export type LoginFormElements = 'username' | 'password'
 export const LoginShcema: FormSchema<LoginFormElements> = {
   username: {
+    key: '1',
     value: '',
     type: 'text',
     isControlled: true,
     name: 'username',
-    placeholder: 'title',
+    label: 'Username',
+    placeholder: 'Enter your Username',
     validate: (value: string) => {
       if (!value) {
         return '입력이 필요합니다.'
@@ -93,11 +94,13 @@ export const LoginShcema: FormSchema<LoginFormElements> = {
     },
   },
   password: {
+    key: '2',
     value: '',
-    type: 'text',
+    type: 'password',
     isControlled: true,
     name: 'password',
-    placeholder: '**********',
+    label: 'Password',
+    placeholder: '************',
     validate: (value: string) => {
       if (!value) {
         return '입력이 필요합니다.'

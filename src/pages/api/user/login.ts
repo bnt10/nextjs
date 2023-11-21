@@ -1,31 +1,25 @@
 import db from 'db'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { v4 as uuidv4 } from 'uuid'
 
-import type { CreateUserType } from '@/types/users'
+import type { LoginUserType } from '@/types/users'
 
 export const UserService = '/api/user'
 
 async function handlePostRequest(req: NextApiRequest, res: NextApiResponse) {
   await db.read()
-  const uniqueId = uuidv4()
 
   try {
     const { userData } = req.body
-    const { confirmPassword, password, userName } = userData as CreateUserType
-    if (confirmPassword !== password) {
-      return res.status(400).json({ message: 'Passwords do not match' })
-    }
-    const exsistingName = db.data?.users.find((t) => t.userName === userName)
-    if (exsistingName) {
-      return res.status(400).json({ message: 'User Name exists' })
+    const { password, userName } = userData as LoginUserType
+
+    const authenticatedUser = db.data.users.find(
+      (user) => user.userName === userName && user.password === password
+    )
+    if (!authenticatedUser) {
+      return res.status(400).json({ message: 'Incorrect user information.' })
     }
 
-    db.data.users.push({ ...userData, id: uniqueId })
-    await db.write()
-    return res
-      .status(200)
-      .json({ message: 'You have successfully registered ' })
+    return res.status(200).json({ message: 'You have successfully Login' })
   } catch (error) {
     return res.status(500).json({ message: 'Interanl Server Error' })
   }
