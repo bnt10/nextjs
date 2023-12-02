@@ -1,17 +1,20 @@
-import { withAuth } from 'next-auth/middleware'
+// middleware.ts
+import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 
-// More on how NextAuth.js middleware works: https://next-auth.js.org/configuration/nextjs#middleware
-export default withAuth({
-  callbacks: {
-    authorized({ req, token }) {
-      // `/admin` requires admin role
-      if (req.nextUrl.pathname === '/admin') {
-        return token?.userRole === 'admin'
-      }
-      // `/me` only requires the user to be logged in
-      return !!token
-    },
-  },
-})
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl
 
-export const config = { matcher: ['/admin', '/me'] }
+  // 인증이 필요한 경로를 정의합니다.
+  if (pathname.startsWith('/protected')) {
+    // 인증 로직을 구현합니다.
+    const isAuthenticated = true
+
+    if (!isAuthenticated) {
+      // 인증되지 않은 경우, 로그인 페이지로 리디렉션합니다.
+      return NextResponse.redirect('/login')
+    }
+  }
+
+  return NextResponse.next()
+}
