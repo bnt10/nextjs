@@ -12,11 +12,11 @@ import ModalHeader from './common/ModalHeader'
 import ModalLayout from './common/ModalLayout'
 import type { TaskFormElements } from './constants'
 import {
-  addTaskShcema,
+  addTaskSchema,
   MODAL_FOOTER_SAVE_BUTTON,
   MODAL_HEADER_TITLE,
 } from './constants'
-import TaksTitle from './TaskTitle'
+import TaskTitle from './TaskTitle'
 
 type TaskPriorityProps = {
   stateKey?: RecoilState<any>
@@ -46,13 +46,13 @@ export default function TaskTitleEditor({
 
   const setModalContent = useSetRecoilState(modalContentState)
 
-  const combimeObject = Object.keys(addTaskShcema).reduce(
+  const combimeObject = Object.keys(addTaskSchema).reduce(
     (acc, inputElement) => {
       const { value } = formattedObject[inputElement]
       return {
         ...acc,
         [inputElement]: {
-          ...addTaskShcema[inputElement as TaskFormElements],
+          ...addTaskSchema[inputElement as TaskFormElements],
           value,
         },
       }
@@ -74,7 +74,7 @@ export default function TaskTitleEditor({
       <ModalHeader title={MODAL_HEADER_TITLE.Task} />
       <div className="flex flex-wrap items-center px-4pxr pt-22pxr">
         <form className="w-full" onSubmit={handleOnSubmit(addTaskSubmit)}>
-          <TaksTitle
+          <TaskTitle
             handleOnChange={handleOnChange}
             getFormFields={getFormFields}
           />
