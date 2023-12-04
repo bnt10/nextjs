@@ -24,12 +24,12 @@ export default function CalendarModal({
   getState,
   setState,
 }: CalendarModalProps) {
-  const [schemduleDate] = useDynamicRecoilState({
+  const [scheduleDate] = useDynamicRecoilState({
     stateKey,
     getState,
   })
 
-  const [date, setDate] = useState(schemduleDate.date)
+  const [date, setDate] = useState(scheduleDate.date)
 
   const setModalContent = useSetRecoilState(modalContentState)
 

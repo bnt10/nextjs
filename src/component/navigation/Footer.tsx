@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { useMutation, useQueryClient } from 'react-query'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
-import { SchemduleState } from '@/atoms/scheduleAtom'
+import { ScheduleState } from '@/atoms/scheduleAtom'
 import { tempScheduleState } from '@/atoms/tempscheduleAtom'
 import {
   ICON_ADD,
@@ -21,15 +21,15 @@ import { toServerDate } from '@/utils/mapper'
 import Button from '../common/Button'
 import Loading from '../common/Loading'
 import Modal from '../common/Modal'
-import TaskButton from '../todo/home/TasskButton'
-import { addTaskShcema } from '../todo/modal/constants'
-import TaksTitle from '../todo/modal/TaskTitle'
+import TaskButton from '../todo/home/TaskButton'
+import { addTaskSchema } from '../todo/modal/constants'
+import TaskTitle from '../todo/modal/TaskTitle'
 import { textWithIconBtnStyle } from './style/navigationFooter'
 
 export default function Footer() {
   const { openModal, setOpenModal } = useModal()
-  const schemduleState = useRecoilValue(tempScheduleState)
-  const setSchemduleState = useSetRecoilState(SchemduleState)
+  const scheduleState = useRecoilValue(tempScheduleState)
+  const setScheduleState = useSetRecoilState(ScheduleState)
   const router = useRouter()
 
   const footerItem = [
@@ -37,7 +37,7 @@ export default function Footer() {
       title: 'index',
       icon: ICON_HOME,
       handler: () => {
-        router.push('/todo/home/')
+        router.push('/protected/todo/home/')
       },
       style: textWithIconBtnStyle,
     },
@@ -45,7 +45,7 @@ export default function Footer() {
       title: 'Calendar',
       icon: ICON_CALENDAR,
       handler: async () => {
-        router.push('/todo/calendar/')
+        router.push('/protected/todo/calendar/')
       },
       style: textWithIconBtnStyle,
     },
@@ -77,20 +77,20 @@ export default function Footer() {
   const queryClient = useQueryClient()
   const setApiState = useSetRecoilState(apiStateSelector)
   const { handleOnChange, handleOnSubmit, getFormFields, form } =
-    useForm(addTaskShcema)
+    useForm(addTaskSchema)
   const mutation = useMutation(createTodoTask, {
     onSuccess: () => {
       setOpenModal(!openModal)
       setApiState((prev) => ({ ...prev, needDate: true }))
       queryClient.invalidateQueries('todoList')
-      setSchemduleState(schemduleState)
+      setScheduleState(scheduleState)
     },
   })
 
   const addTaskSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const { title, description } = form
-    const { category, date, time, priority } = schemduleState
+    const { category, date, time, priority } = scheduleState
     const todoTask: CreateTodoItemType = {
       title: title?.value ?? '',
       description: description?.value ?? '',
@@ -123,7 +123,7 @@ export default function Footer() {
               <p className="mb-14pxr text-left text-xl font-bold text-white/[0.87]">
                 Add Task
               </p>
-              <TaksTitle
+              <TaskTitle
                 handleOnChange={handleOnChange}
                 getFormFields={getFormFields}
               />

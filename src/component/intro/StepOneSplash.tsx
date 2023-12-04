@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 import type { OnNextPath } from './type'
-import IntroWraper from './Wrapper'
+import IntroWrapper from './Wrapper'
 
 interface Props {
   onNext: OnNextPath['onNext']
@@ -18,7 +18,7 @@ export default function IntroStepOne({ onNext }: Props) {
   }, [router])
 
   return (
-    <IntroWraper onNext={onNext} DisableNextButton>
+    <IntroWrapper onNext={onNext} DisableNextButton>
       <div className="flex h-screen items-center justify-center">
         <Image
           src={'/assets/images/intro/intro-main-splash.svg'}
@@ -27,6 +27,6 @@ export default function IntroStepOne({ onNext }: Props) {
           height={200}
         />
       </div>
-    </IntroWraper>
+    </IntroWrapper>
   )
 }

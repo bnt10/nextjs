@@ -1,13 +1,13 @@
 import moment from 'moment-timezone'
 import { selector } from 'recoil'
 
-import { SchemduleState } from '@/atoms/scheduleAtom'
+import { ScheduleState } from '@/atoms/scheduleAtom'
 import { toServerDate } from '@/utils/mapper'
 
-export const schemduleDateState = selector({
+export const scheduleDateState = selector({
   key: 'ScheduleDateStateSelector',
   get: ({ get }) => {
-    const { date, time } = get(SchemduleState)
+    const { date, time } = get(ScheduleState)
     const serverDate = toServerDate({ date, time })
 
     return moment(serverDate)
@@ -19,7 +19,7 @@ export const schemduleDateState = selector({
       const month = momentDate.month() + 1
       const day = momentDate.date()
 
-      set(SchemduleState, (preState) => {
+      set(ScheduleState, (preState) => {
         return {
           ...preState,
           date: {

@@ -8,5 +8,5 @@ export type InputStyle = {
   wrapper?: string
   input?: string
   label?: string
-  innvvalidMessage?: string
+  invalidMessage?: string
 }

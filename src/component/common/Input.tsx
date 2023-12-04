@@ -14,7 +14,7 @@ interface InputProps {
   label?: string
   validatePlaceholder?: string[]
   inputRef?: React.RefObject<HTMLInputElement>
-  innvvalidMessage?: FormError
+  invalidMessage?: FormError
   handleInputChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   handleInputFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
   handleInputBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
@@ -24,7 +24,7 @@ const twInputStyles = {
   wrapper: 'w-full flex flex-col',
   input: '',
   label: 'font-normal text-base text-white/[0.87] mb-8pxr',
-  innvvalidMessage: 'text-red-500 text-sm h-15pxr',
+  invalidMessage: 'text-red-500 text-sm h-15pxr',
 }
 
 const Input = ({
@@ -35,7 +35,7 @@ const Input = ({
   inputRef,
   placeholder,
   label,
-  innvvalidMessage,
+  invalidMessage,
   validatePlaceholder,
   type = 'text',
   handleInputFocus,
@@ -83,7 +83,7 @@ const Input = ({
         </div>
       )}
 
-      <span className={st.innvvalidMessage}>{innvvalidMessage}</span>
+      <span className={st.invalidMessage}>{invalidMessage}</span>
     </div>
   )
 }

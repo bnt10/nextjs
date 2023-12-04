@@ -1,18 +1,18 @@
 import db from 'db'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidV4 } from 'uuid'
 
 async function handlePostRequest(req: NextApiRequest, res: NextApiResponse) {
   await db.read()
-  const uniqueId = uuidv4()
+  const uniqueId = uuidV4()
 
   try {
     const { userData } = req.body
 
-    const exsistingName = db.data?.users.find(
+    const existingName = db.data?.users.find(
       (t) => t.userName === userData.userName
     )
-    if (exsistingName) {
+    if (existingName) {
       return res.status(400).json({ message: 'User Name exists' })
     }
 
@@ -26,11 +26,11 @@ async function handlePostRequest(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-const requestHandelrs = {
+const requestHandlers = {
   POST: handlePostRequest,
 } as const
 
-type RequestHandlerKeys = keyof typeof requestHandelrs
+type RequestHandlerKeys = keyof typeof requestHandlers
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -40,7 +40,7 @@ export default async function handler(
     return res.status(405).end()
   }
 
-  const requestHandler = requestHandelrs[method as RequestHandlerKeys]
+  const requestHandler = requestHandlers[method as RequestHandlerKeys]
 
   return requestHandler(req, res) ?? res.status(405).end()
 }

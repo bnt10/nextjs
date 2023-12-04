@@ -8,7 +8,7 @@ import type { SubmitFormData } from '@/hooks/type'
 import useEffectAfterMount from '@/hooks/useEffectAfterMount'
 import { useForm } from '@/hooks/useForm'
 import Layout from '@/layouts'
-import ScrollLayout from '@/layouts/ScroolLayout'
+import ScrollLayout from '@/layouts/ScrollLayout'
 import { createUser } from '@/services/users/api'
 import { LoginInputBtStyle, RegisterButtonStyle } from '@/styles/login'
 
@@ -16,7 +16,7 @@ import Button from '../common/Button'
 import Input from '../common/Input'
 import MessageModal from '../common/MessageModal'
 import type { RegisterFormElements } from './constants'
-import { LoginOAuth, RegisterShcema } from './constants'
+import { LoginOAuth, RegisterSchema } from './constants'
 
 const AuthLogin = () => {
   const setModalContent = useSetRecoilState(modalContentState)
@@ -27,7 +27,7 @@ const AuthLogin = () => {
     getFormFields,
     formStateRefs,
     isFormValid,
-  } = useForm(RegisterShcema)
+  } = useForm(RegisterSchema)
 
   const formFields = getFormFields()
   const formValues = formStateRefs.current
@@ -72,7 +72,7 @@ const AuthLogin = () => {
               value,
               label,
               placeholder,
-              name: fieldname,
+              name: fieldName,
               type,
               validatePlaceholder,
               ref,
@@ -84,11 +84,11 @@ const AuthLogin = () => {
                 value={value}
                 label={label}
                 placeholder={placeholder}
-                name={fieldname}
+                name={fieldName}
                 type={type}
                 handleInputChange={handleInputChange}
                 validatePlaceholder={validatePlaceholder}
-                innvvalidMessage={formValues[fieldname]?.error}
+                invalidMessage={formValues[fieldName]?.error}
               />
             )
           )}
@@ -123,7 +123,7 @@ const AuthLogin = () => {
               Already have an account?
             </span>
             <Link
-              href={'/'}
+              href={'/guest/auth/login'}
               className="font-['Lato'] text-xs font-normal leading-[18.06px] text-white text-opacity-90"
             >
               {' '}

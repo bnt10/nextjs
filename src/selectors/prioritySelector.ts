@@ -3,7 +3,7 @@ import { DefaultValue, selector } from 'recoil'
 import { tempScheduleState } from '@/atoms/tempscheduleAtom'
 
 export const schedulePriorityState = selector({
-  key: 'ScheduletPriorityState',
+  key: 'SchedulePriorityState',
   get: ({ get }) => {
     const { priority } = get(tempScheduleState)
 

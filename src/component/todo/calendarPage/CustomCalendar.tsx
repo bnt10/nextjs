@@ -16,7 +16,7 @@ import Button from '@/component/common/Button'
 import { LEFT_ARROW, RIGHT_ARROW } from '@/config/icon'
 import useEffectAfterMount from '@/hooks/useEffectAfterMount'
 import { apiStateSelector } from '@/selectors/apiSelector'
-import { schemduleDateState } from '@/selectors/dateSelector'
+import { scheduleDateState } from '@/selectors/dateSelector'
 import type { ButtonStyle } from '@/types/style/common'
 import type { InitialDataType, TodoItemClient } from '@/types/todoList'
 import { toShortDate } from '@/utils/date'
@@ -172,7 +172,7 @@ const CalendarButtonStyle: ButtonStyle = {
 }
 
 function CustomCalendar({ initialData }: InitialDataType) {
-  const [schemduleDate, setSchemduleDate] = useRecoilState(schemduleDateState)
+  const [scheduleDate, setscheduleDate] = useRecoilState(scheduleDateState)
 
   const setApiState = useSetRecoilState(apiStateSelector)
   const todoList = useRecoilValue(TodoListState)
@@ -180,11 +180,9 @@ function CustomCalendar({ initialData }: InitialDataType) {
     hasTodoItemsOnDate(initialData)
   )
 
-  const [visibleDays, setVisibleDays] = useState(() =>
-    createDate(schemduleDate)
-  )
+  const [visibleDays, setVisibleDays] = useState(() => createDate(scheduleDate))
 
-  const dateRef = useRef(schemduleDate)
+  const dateRef = useRef(scheduleDate)
   const target = useRef(null)
   const isNeedsMoreData = useRef(false)
   const containerX = useRef(
@@ -240,7 +238,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
 
     if (direction >= PRIOUS_DAY) {
       const effectiveDate = visibleDays.findIndex(
-        (day) => day.key === toShortDate(schemduleDate.toDate())
+        (day) => day.key === toShortDate(scheduleDate.toDate())
       )
 
       containerX.current += DAY_WIDTH * (effectiveDate - 3) * -direction
@@ -283,14 +281,14 @@ function CustomCalendar({ initialData }: InitialDataType) {
   useChain([containerSpringRef, daysSpringRef])
 
   const checkUpdateMonthAndYear = () => {
-    const checkYear = schemduleDate.year()
-    const checkMonth = schemduleDate.month() + 1
+    const checkYear = scheduleDate.year()
+    const checkMonth = scheduleDate.month() + 1
 
     const currentYear = dateRef.current.year()
     const currentMonth = dateRef.current.month() + 1
 
     if (checkYear !== currentYear || checkMonth !== currentMonth) {
-      setSchemduleDate(dateRef.current)
+      setscheduleDate(dateRef.current)
     }
   }
 
@@ -321,17 +319,17 @@ function CustomCalendar({ initialData }: InitialDataType) {
     return currentDay.diff(targetDay, 'days')
   }
   useEffectAfterMount(() => {
-    const move = getDiffdays(dateRef.current, schemduleDate)
+    const move = getDiffdays(dateRef.current, scheduleDate)
 
     if (move !== 0) {
       const isDateInvisiableDays = visiableDaysSet(visibleDays).has(
-        toShortDate(schemduleDate.toDate())
+        toShortDate(scheduleDate.toDate())
       )
 
       if (!isDateInvisiableDays) {
-        dateRef.current = schemduleDate
+        dateRef.current = scheduleDate
         setTodoDateSet(hasTodoItemsOnDate(todoList))
-        setVisibleDays(createDate(schemduleDate))
+        setVisibleDays(createDate(scheduleDate))
         return
       }
 
@@ -339,7 +337,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
 
       updateDays()
     }
-  }, [schemduleDate.valueOf()])
+  }, [scheduleDate.valueOf()])
 
   useGesture(
     {
@@ -371,7 +369,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
     dayPosition.current = parseInt(dataType, 10)
 
     updateDays()
-    setSchemduleDate(dateRef.current)
+    setscheduleDate(dateRef.current)
   }
 
   return (
@@ -385,10 +383,10 @@ function CustomCalendar({ initialData }: InitialDataType) {
         />
         <button className="flex flex-col items-center">
           <span className="text-white/[0.87]">
-            {schemduleDate.format('MMM')}
+            {scheduleDate.format('MMM')}
           </span>
           <span className="text-xsm text-gray-800">
-            {schemduleDate.format('YYYY')}
+            {scheduleDate.format('YYYY')}
           </span>
         </button>
         <Button

@@ -15,7 +15,7 @@ import { TaskDetailList } from '@/component/todo/taskEditor/constants'
 import TaskItem from '@/component/todo/taskEditor/TaskItem'
 import TodoTask from '@/component/todo/taskEditor/TodoTask'
 import TaskEditorPageLayout from '@/layouts/todo/TaskEditorPageLayout'
-import { selcetedTodoTaskSelector } from '@/selectors/selcetedTodoTaskSelector'
+import { selectedTodoTaskSelector } from '@/selectors/selectedTodoTaskSelector'
 import {
   deleteTodoTask,
   getTasks,
@@ -38,7 +38,7 @@ export default function TaskEditor() {
   const { taskId } = router.query
 
   const [selectedTask, setSelectedTask] = useRecoilState(
-    selcetedTodoTaskSelector
+    selectedTodoTaskSelector
   )
   const updateTodoList = useSetRecoilState(TodoListState)
   const setModalContent = useSetRecoilState(modalContentState)
@@ -155,7 +155,7 @@ export default function TaskEditor() {
       handleTitleEditorOpen: () => {
         setModalContent(
           <TaskTitleEditor
-            stateKey={selcetedTodoTaskSelector}
+            stateKey={selectedTodoTaskSelector}
             getState={() => {
               return {
                 title: todoTitle,
@@ -187,7 +187,7 @@ export default function TaskEditor() {
     Category: () => {
       setModalContent(
         <TaskCategory
-          stateKey={selcetedTodoTaskSelector}
+          stateKey={selectedTodoTaskSelector}
           getState={getTaskDetailData(TodoItemKey.categoryId)}
           setState={setTaskDetailData(TodoItemKey.categoryId)}
         />
@@ -196,7 +196,7 @@ export default function TaskEditor() {
     Priority: () =>
       setModalContent(
         <TaskPriority
-          stateKey={selcetedTodoTaskSelector}
+          stateKey={selectedTodoTaskSelector}
           getState={getTaskDetailData(TodoItemKey.priority)}
           setState={setTaskDetailData(TodoItemKey.priority)}
         />
@@ -204,7 +204,7 @@ export default function TaskEditor() {
     Timer: () => {
       setModalContent(
         <Calendar
-          stateKey={selcetedTodoTaskSelector}
+          stateKey={selectedTodoTaskSelector}
           getState={getTaskDetailData(TodoItemKey.targetDay)}
           setState={setTaskDetailData(TodoItemKey.targetDay)}
         />

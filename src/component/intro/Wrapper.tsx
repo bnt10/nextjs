@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Button from '../common/Button'
 import type { IntroProps } from './type'
 
-export default function IntroWraper({
+export default function IntroWrapper({
   onNext,
   onPrev,
 

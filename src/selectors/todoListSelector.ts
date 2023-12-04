@@ -4,7 +4,7 @@ import { DefaultValue, selector } from 'recoil'
 import { TodoListState } from '@/atoms/todoListAtom'
 import type { TodoItemClient } from '@/types/todoList'
 
-import { schemduleDateState } from './dateSelector'
+import { scheduleDateState } from './dateSelector'
 
 export const todoListStateSelector = selector({
   key: 'TodoListStateSelector',
@@ -13,9 +13,9 @@ export const todoListStateSelector = selector({
 
     return todoList?.filter((targetDay) => {
       const { year, month, day } = targetDay.targetDay.date
-      const schemduleDate = get(schemduleDateState)
+      const scheduleDate = get(scheduleDateState)
 
-      const targetDate = moment(schemduleDate).format('YYYY-MM-DD')
+      const targetDate = moment(scheduleDate).format('YYYY-MM-DD')
       return (
         targetDate ===
         moment({ year, month: month - 1, day }).format('YYYY-MM-DD')

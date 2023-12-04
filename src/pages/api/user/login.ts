@@ -1,6 +1,8 @@
 import db from 'db'
+// eslint-disable-next-line import/no-extraneous-dependencies
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+import { generateAccessToken, generateRefreshToken } from '@/server/auth'
 import type { LoginUserType } from '@/types/users'
 
 export const UserService = '/api/user'
@@ -18,17 +20,25 @@ async function handlePostRequest(req: NextApiRequest, res: NextApiResponse) {
     if (!authenticatedUser) {
       return res.status(400).json({ message: 'Incorrect user information.' })
     }
+    const accessToken = generateAccessToken(userName)
+    const refreshToken = generateRefreshToken(userName)
+    res.setHeader('Set-Cookie', [
+      `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=604800`,
+      `accessToken=${accessToken}; HttpOnly; Path=/; Max-Age=900`,
+    ])
 
-    return res.status(200).json({ message: 'You have successfully Login' })
+    return res
+      .status(200)
+      .json({ accessToken, message: 'You have successfully Login' })
   } catch (error) {
-    return res.status(500).json({ message: 'Interanl Server Error' })
+    return res.status(500).json({ message: 'Internal Server Error' })
   }
 }
-const requestHandelrs = {
+const requestHandlers = {
   POST: handlePostRequest,
 } as const
 
-type RequestHandlerKeys = keyof typeof requestHandelrs
+type RequestHandlerKeys = keyof typeof requestHandlers
 
 export default async function handler(
   req: NextApiRequest,
@@ -39,7 +49,7 @@ export default async function handler(
     return res.status(405).end()
   }
 
-  const requestHandler = requestHandelrs[method as RequestHandlerKeys]
+  const requestHandler = requestHandlers[method as RequestHandlerKeys]
 
   return requestHandler(req, res) ?? res.status(405).end()
 }
