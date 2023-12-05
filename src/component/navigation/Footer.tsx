@@ -70,7 +70,9 @@ export default function Footer() {
     {
       title: 'Profile',
       icon: ICON_PROFILE,
-      handler: () => {},
+      handler: () => {
+        router.push('/protected/todo/profile')
+      },
       style: textWithIconBtnStyle,
     },
   ]

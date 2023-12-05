@@ -68,6 +68,12 @@ const profileConfigList: ConfigListType[] = [
         title: 'Support US',
         icon: 'AiOutlineLike',
       },
+      {
+        key: 'marker:5',
+        handler: () => {},
+        title: 'Log out',
+        icon: 'AiOutlineLogout',
+      },
     ],
   },
 ]
