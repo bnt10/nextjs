@@ -38,7 +38,7 @@ export async function middleware(req: NextRequest) {
       if (!token && res.status !== 200) {
         const url = req.nextUrl.clone()
         url.pathname = '/guest/auth/login'
-        return response
+        return NextResponse.redirect(url)
       }
 
       response.cookies.set({
