@@ -1,11 +1,11 @@
 import Image from 'next/image'
 
 import type { OnNextPath } from './type'
-import IntroWraper from './Wrapper'
+import IntroWrapper from './Wrapper'
 
 export default function IntroStepFour({ onNext, onPrev }: OnNextPath) {
   return (
-    <IntroWraper onPrev={onPrev} onNext={onNext}>
+    <IntroWrapper onPrev={onPrev} onNext={onNext}>
       <div className="flex flex-col items-center justify-center">
         <div className="items-start">
           <Image
@@ -17,7 +17,7 @@ export default function IntroStepFour({ onNext, onPrev }: OnNextPath) {
         </div>
         <div className="relative mt-[50px]">
           <div className=" left-[15px] top-[0] text-[32px] font-bold text-white text-opacity-90">
-            Orgonaize your tasks
+            Organize your tasks
           </div>
           <div className=" left-[0] top-[80px] w-[299px] text-center text-[16px] font-normal leading-normal text-white text-opacity-90">
             You can organize your daily tasks by adding your tasks into separate
@@ -25,6 +25,6 @@ export default function IntroStepFour({ onNext, onPrev }: OnNextPath) {
           </div>
         </div>
       </div>
-    </IntroWraper>
+    </IntroWrapper>
   )
 }

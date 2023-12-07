@@ -1,36 +1,29 @@
 import db from 'db'
+// eslint-disable-next-line import/no-extraneous-dependencies
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { v4 as uuidV4 } from 'uuid'
 
-async function handlePostRequest(req: NextApiRequest, res: NextApiResponse) {
+export const UserService = '/api/user'
+
+async function handlePostRequest(_: NextApiRequest, res: NextApiResponse) {
   await db.read()
-  const uniqueId = uuidV4()
 
   try {
-    const { userData } = req.body
+    res.setHeader('Set-Cookie', [
+      'refreshToken=; HttpOnly; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+      'accessToken=; HttpOnly; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+    ])
 
-    const existingName = db.data?.users.find(
-      (t) => t.userName === userData.userName
-    )
-    if (existingName) {
-      return res.status(400).json({ message: 'User Name exists' })
-    }
-
-    db.data.users.push({ ...userData, id: uniqueId })
-
-    return res
-      .status(200)
-      .json({ message: 'You have successfully registered ' })
+    return res.status(200).json({ message: 'You have successfully Logout' })
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error' })
   }
 }
-
 const requestHandlers = {
   POST: handlePostRequest,
 } as const
 
 type RequestHandlerKeys = keyof typeof requestHandlers
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse

@@ -1,11 +1,11 @@
 import Image from 'next/image'
 
 import type { OnNextPath } from './type'
-import IntroWraper from './Wrapper'
+import IntroWrapper from './Wrapper'
 
 export default function IntroStepTwo({ onNext, onPrev }: OnNextPath) {
   return (
-    <IntroWraper onPrev={onPrev} onNext={onNext}>
+    <IntroWrapper onPrev={onPrev} onNext={onNext}>
       <div className="flex flex-col items-center justify-center">
         <div className="items-start">
           <Image
@@ -24,6 +24,6 @@ export default function IntroStepTwo({ onNext, onPrev }: OnNextPath) {
           </div>
         </div>
       </div>
-    </IntroWraper>
+    </IntroWrapper>
   )
 }

@@ -16,7 +16,7 @@ export const isValidPassword = (password: string, regex: RegExp) => {
   if (/(\w)\1\1/i.test(password)) return false
   return true
 }
-export const RegisterShcema: FormSchema<RegisterFormElements> = {
+export const RegisterSchema: FormSchema<RegisterFormElements> = {
   username: {
     key: '1',
     value: '',
@@ -77,7 +77,7 @@ export const RegisterShcema: FormSchema<RegisterFormElements> = {
 }
 
 export type LoginFormElements = 'username' | 'password'
-export const LoginShcema: FormSchema<LoginFormElements> = {
+export const LoginSchema: FormSchema<LoginFormElements> = {
   username: {
     key: '1',
     value: '',

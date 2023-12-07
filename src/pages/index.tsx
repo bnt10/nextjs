@@ -1,11 +1,7 @@
-import { Login } from '@/component/OAuthLogin/Login'
+import TodoHome from './protected/todo/home'
 
 const Index = () => {
-  return (
-    <div>
-      <Login />
-    </div>
-  )
+  return <TodoHome />
 }
 
 export default Index

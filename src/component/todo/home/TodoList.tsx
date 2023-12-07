@@ -3,7 +3,7 @@ import { useQuery } from 'react-query'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 import { apiStateSelector } from '@/selectors/apiSelector'
-import { schemduleDateState } from '@/selectors/dateSelector'
+import { scheduleDateState } from '@/selectors/dateSelector'
 import { todoListStateSelector } from '@/selectors/todoListSelector'
 import { fetchTodoList } from '@/services/todoList/api'
 import type { InitialDataType } from '@/types/todoList'
@@ -18,14 +18,14 @@ interface Props extends InitialDataType {
 }
 export default function TodoList({ initialData, renderType }: Props) {
   const router = useRouter()
-  const schemduleDate = useRecoilValue(schemduleDateState)
+  const scheduleDate = useRecoilValue(scheduleDateState)
 
   const [apiState, setApiState] = useRecoilState(apiStateSelector)
   const [todoList, setTodoList] = useRecoilState(todoListStateSelector)
 
   const { error, isLoading } = useQuery(
     'todoList',
-    () => fetchTodoList(schemduleDate.toString()),
+    () => fetchTodoList(scheduleDate.toString()),
     {
       initialData,
       enabled: apiState.needDate,

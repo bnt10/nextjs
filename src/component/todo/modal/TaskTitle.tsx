@@ -8,7 +8,7 @@ interface Props {
   handleOnChange: any
   getFormFields: any
 }
-export default function TaksTitle({ handleOnChange, getFormFields }: Props) {
+export default function TaskTitle({ handleOnChange, getFormFields }: Props) {
   const { title, description } = getFormFields()
   const { openModal } = useModal()
   useEffect(() => {

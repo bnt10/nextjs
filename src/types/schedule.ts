@@ -7,7 +7,7 @@ export type DateData = {
   [x in DateType]: number
 }
 export type TimeZone = string
-export type SchemduleStateType = {
+export type ScheduleStateType = {
   time: TimeData
   date: DateData
   timeZone: TimeZone

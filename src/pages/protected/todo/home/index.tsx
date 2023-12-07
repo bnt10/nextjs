@@ -7,14 +7,14 @@ import SortButton from '@/component/todo/home/SortButton'
 import TodoList from '@/component/todo/home/TodoList'
 import TodoSearchBar from '@/component/todo/home/TodoSearchBar'
 import HomeLayout from '@/layouts/todo/HomeLayout'
-import { schemduleDateState } from '@/selectors/dateSelector'
+import { scheduleDateState } from '@/selectors/dateSelector'
 import { todoListStateSelector } from '@/selectors/todoListSelector'
 import { fetchTodoList } from '@/services/todoList/api'
 import type { TodoItemClient } from '@/types/todoList'
 import type { ToggleButtonType } from '@/types/toggleButton'
 
 export default function TodoHome() {
-  const schemduleDate = useRecoilValue(schemduleDateState)
+  const scheduleDate = useRecoilValue(scheduleDateState)
   const [todoList, setTodoList] = useRecoilState(todoListStateSelector)
   const [todoListStatus, setTodoListStatus] = useState<ToggleButtonType[]>([
     { title: 'Today', isShow: true },
@@ -23,7 +23,7 @@ export default function TodoHome() {
   const [todayToggle, completedToggle] = todoListStatus
   const { error, isLoading } = useQuery(
     'todoList',
-    () => fetchTodoList(schemduleDate.toString()),
+    () => fetchTodoList(scheduleDate.toString()),
     {
       onSuccess: (data: TodoItemClient[]) => {
         setTodoList(data)

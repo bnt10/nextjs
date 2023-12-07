@@ -3,6 +3,7 @@ import { signIn } from 'next-auth/react'
 import type { FormEvent } from 'react'
 import { useSetRecoilState } from 'recoil'
 
+import { AuthState } from '@/atoms/authAtom'
 import { modalContentState } from '@/atoms/modalAtom'
 import type { SubmitFormData } from '@/hooks/type'
 import { useForm } from '@/hooks/useForm'
@@ -15,12 +16,13 @@ import Button from '../common/Button'
 import Input from '../common/Input'
 import MessageModal from '../common/MessageModal'
 import type { LoginFormElements } from './constants'
-import { LoginShcema } from './constants'
+import { LoginSchema } from './constants'
 import GitHubLoginButton from './GitHubLoginButton'
 import GoogleLoginButton from './GoogleLoginButton'
 
-export function Login() {
+function Login() {
   const setModalContent = useSetRecoilState(modalContentState)
+  const setAuth = useSetRecoilState(AuthState)
 
   const LoginOAuth: Record<string, ProviderConfig> = {
     google: {
@@ -44,10 +46,21 @@ export function Login() {
         },
       },
     },
+    kakao: {
+      id: 'kakao',
+      component: GitHubLoginButton,
+      props: {
+        title: 'Login with Kakao',
+        handler: async () => {
+          window.location.href =
+            'http://ec2-15-164-0-19.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/kakao'
+        },
+      },
+    },
   }
 
   const { handleOnChange, handleOnSubmit, getFormFields, formStateRefs } =
-    useForm(LoginShcema)
+    useForm(LoginSchema)
   const formFields = getFormFields()
   const formValues = formStateRefs.current
 
@@ -61,9 +74,13 @@ export function Login() {
       userName: username,
       password,
     })
+    if (status === 200) {
+      setAuth({ accessToken: data.accessToken })
+    }
+
     setModalContent(
       <MessageModal
-        nextPath={status === 200 ? '/todo/home' : null}
+        nextPath={status === 200 ? '/protected/todo/home' : null}
         confirmTitle={'확인'}
         message={data.message}
       />
@@ -81,7 +98,7 @@ export function Login() {
             value,
             label,
             placeholder,
-            name: fieldname,
+            name: fieldName,
             type,
             validatePlaceholder,
             ref,
@@ -93,11 +110,11 @@ export function Login() {
               value={value}
               label={label}
               placeholder={placeholder}
-              name={fieldname}
+              name={fieldName}
               type={type}
               handleInputChange={handleOnChange}
               validatePlaceholder={validatePlaceholder}
-              innvvalidMessage={formValues[fieldname]?.error}
+              invalidMessage={formValues[fieldName]?.error}
             />
           )
         )}

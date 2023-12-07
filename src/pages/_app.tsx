@@ -2,7 +2,6 @@ import '../styles/global.css'
 
 import type { AppProps } from 'next/app'
 import type { Session } from 'next-auth'
-import { SessionProvider } from 'next-auth/react'
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
 import { RecoilRoot } from 'recoil'
 
@@ -23,22 +22,17 @@ type RootProps = AppProps & {
     session: Session
   }
 }
-const MyApp = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}: RootProps) => {
+const MyApp = ({ Component, pageProps: { ...pageProps } }: RootProps) => {
   return (
     <RecoilRoot>
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
-          <SessionProvider session={session}>
-            <ModalProvider>
-              <Layout>
-                <Component {...pageProps} />
-                <NestedModal />
-              </Layout>
-            </ModalProvider>
-          </SessionProvider>
+          <ModalProvider>
+            <Layout>
+              <Component {...pageProps} />
+              <NestedModal />
+            </Layout>
+          </ModalProvider>
         </Hydrate>
       </QueryClientProvider>
     </RecoilRoot>

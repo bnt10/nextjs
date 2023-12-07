@@ -1,12 +1,12 @@
 import moment from 'moment-timezone'
 import { atom } from 'recoil'
 
-import type { SchemduleStateType } from '@/types/schedule'
+import type { ScheduleStateType } from '@/types/schedule'
 import { convertDateToObject } from '@/utils/date'
 
 export const timezone = process.env.TIMEZONE || 'Asia/Seoul'
-export const SchemduleState = atom<SchemduleStateType>({
-  key: 'SchemduleStateKey',
+export const ScheduleState = atom<ScheduleStateType>({
+  key: 'ScheduleStateKey',
   default: {
     time: { hour: '12', minute: '00', amPm: 'AM' },
     date: convertDateToObject(moment().tz(timezone).toDate()),

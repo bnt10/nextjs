@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { signIn, useSession } from 'next-auth/react'
 import { useEffect } from 'react'
 
-const GoglCallback = () => {
+const GoggleCallback = () => {
   const { status } = useSession()
   const router = useRouter()
 
@@ -19,4 +19,4 @@ const GoglCallback = () => {
   return <div>Loading...!</div>
 }
 
-export default GoglCallback
+export default GoggleCallback

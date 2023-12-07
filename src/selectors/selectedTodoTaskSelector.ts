@@ -3,8 +3,8 @@ import { selector } from 'recoil'
 import { selectedTodoTaskState } from '@/atoms/selectedTodoTaskAtom'
 import type { TodoItemClient } from '@/types/todoList'
 
-export const selcetedTodoTaskSelector = selector({
-  key: 'selcetedTodoTaskSelector',
+export const selectedTodoTaskSelector = selector({
+  key: 'selectedTodoTaskSelector',
   get: ({ get }) => {
     return get(selectedTodoTaskState)
   },
