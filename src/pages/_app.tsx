@@ -5,6 +5,7 @@ import type { Session } from 'next-auth'
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
 import { RecoilRoot } from 'recoil'
 
+import { ErrorBoundary } from '@/component/common/ErrorBoundary'
 import NestedModal from '@/component/common/NestedModal'
 import { ModalProvider } from '@/contexts/ModalContext'
 import Layout from '@/layouts'
@@ -27,12 +28,14 @@ const MyApp = ({ Component, pageProps: { ...pageProps } }: RootProps) => {
     <RecoilRoot>
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
-          <ModalProvider>
-            <Layout>
-              <Component {...pageProps} />
-              <NestedModal />
-            </Layout>
-          </ModalProvider>
+          <ErrorBoundary>
+            <ModalProvider>
+              <Layout>
+                <Component {...pageProps} />
+                <NestedModal />
+              </Layout>
+            </ModalProvider>
+          </ErrorBoundary>
         </Hydrate>
       </QueryClientProvider>
     </RecoilRoot>
