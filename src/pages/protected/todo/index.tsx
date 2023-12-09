@@ -1,9 +1,10 @@
-import axios from 'axios'
 import { useQuery } from 'react-query'
+
+import axiosInstance from '@/utils/axios'
 
 export default function Todo() {
   const fetchUser = async () => {
-    const { data } = await axios.get('/api/account/user')
+    const { data } = await axiosInstance.get('/api/account/user')
 
     return data
   }

@@ -5,8 +5,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { generateAccessToken, generateRefreshToken } from '@/server/auth'
 import type { LoginUserType } from '@/types/users'
 
-export const UserService = '/api/user'
-
 async function handlePostRequest(req: NextApiRequest, res: NextApiResponse) {
   await db.read()
 

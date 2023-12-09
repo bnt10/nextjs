@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 import type {
   CreateTodoItemType,
   TodoItemClient,
@@ -102,7 +100,7 @@ export const deleteTodoTask = async (taskId: TodoItemClient['id']) => {
 }
 export const getTasks = async () => {
   try {
-    const response = await axios.get('/api/todo')
+    const response = await axiosInstance.get('/api/todo')
 
     if (response.status === 200) {
       return response.data
@@ -115,7 +113,7 @@ export const getTasks = async () => {
 
 export const createTodoTask = async (task: CreateTodoItemType) => {
   try {
-    const response = await axios.post('/api/todo', {
+    const response = await axiosInstance.post('/api/todo', {
       task,
     })
     if (response.status === 200) {
