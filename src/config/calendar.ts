@@ -8,5 +8,5 @@ export const calendarConfig = {
   START_DAYS_OFFSET_X: 1,
   NEXT_DAY: -1,
   ADD_DATE: 30,
-  PRIOUS_DAY: 1,
+  PREVIOUS_DAY: 1,
 }

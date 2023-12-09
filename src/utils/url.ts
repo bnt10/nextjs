@@ -18,7 +18,7 @@ export function buildUrlWithPathParams(
   params: Record<string, string | undefined>
 ) {
   if (!params) {
-    return { url: base, error: new Error('No Parms') }
+    return { url: base, error: new Error('No Params') }
   }
   let url = base
   for (const [key, value] of Object.entries(params)) {
