@@ -21,6 +21,11 @@ export default function TodoHome() {
     { title: 'Completed', isShow: true },
   ])
   const [todayToggle, completedToggle] = todoListStatus
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value)
+  }
+
   const { error, isLoading } = useQuery(
     'todoList',
     () => fetchTodoList(scheduleDate.toString()),
@@ -40,11 +45,12 @@ export default function TodoHome() {
       )
     )
   }
+
   return (
     <>
       <HomeLayout>
         <div className="mt-16pxr flex w-full flex-col items-center justify-center overflow-y-scroll px-24pxr scrollbar-hide">
-          <TodoSearchBar />
+          <TodoSearchBar handleInputChange={handleSearch} />
           <div className="flex grow flex-col overflow-y-scroll scrollbar-hide">
             {todoList.length < 1 ? (
               <EmptyTodoList />
@@ -56,7 +62,9 @@ export default function TodoHome() {
                     isShow={todayToggle!.isShow}
                     title={todayToggle!.title}
                   />
-                  {todayToggle!.isShow && <TodoList renderType={false} />}
+                  {todayToggle!.isShow && (
+                    <TodoList renderType={false} searchTerm={searchTerm} />
+                  )}
                 </section>
                 {todoList.findIndex((task) => task.isCompleted === true) !==
                   -1 && (
@@ -66,7 +74,9 @@ export default function TodoHome() {
                       isShow={completedToggle!.isShow}
                       title={completedToggle!.title}
                     />
-                    {completedToggle!.isShow && <TodoList renderType={true} />}
+                    {completedToggle!.isShow && (
+                      <TodoList renderType={true} searchTerm={searchTerm} />
+                    )}
                   </section>
                 )}
               </section>

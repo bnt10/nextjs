@@ -15,13 +15,23 @@ import TodoListItem from './TodoListItem'
 
 interface Props extends InitialDataType {
   renderType: boolean
+  searchTerm?: string | null
 }
-export default function TodoList({ initialData, renderType }: Props) {
+export default function TodoList({
+  initialData,
+  renderType,
+  searchTerm,
+}: Props) {
   const router = useRouter()
   const scheduleDate = useRecoilValue(scheduleDateState)
 
   const [apiState, setApiState] = useRecoilState(apiStateSelector)
   const [todoList, setTodoList] = useRecoilState(todoListStateSelector)
+  const filteredItems = searchTerm
+    ? todoList.filter((todo) =>
+        todo.title.trim().toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : todoList
 
   const { error, isLoading } = useQuery(
     'todoList',
@@ -47,13 +57,14 @@ export default function TodoList({ initialData, renderType }: Props) {
     router.push(`/protected/todo/taskEditor?taskId=${taskId}`)
   }
 
+  console.log(searchTerm)
   return (
     <>
-      {todoList.length === 0 ? (
+      {filteredItems.length === 0 ? (
         <EmptyTodoList />
       ) : (
         <div className="mt-16pxr flex w-full flex-col ">
-          {todoList
+          {filteredItems
             .filter((item) => item.isCompleted === renderType)
             .map(
               ({ id, title, categoryId, isCompleted, priority, targetDay }) => {
