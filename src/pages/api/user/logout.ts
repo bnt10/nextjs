@@ -2,8 +2,6 @@ import db from 'db'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-export const UserService = '/api/user'
-
 async function handlePostRequest(_: NextApiRequest, res: NextApiResponse) {
   await db.read()
 

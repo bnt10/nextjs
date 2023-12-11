@@ -2,8 +2,6 @@
 import jwt from 'jsonwebtoken'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-export const UserService = '/api/user'
-
 async function handlePostRequest(req: NextApiRequest, res: NextApiResponse) {
   try {
     const token = req.headers.authorization?.split(' ')[1]

@@ -34,7 +34,7 @@ const {
   DAY_HEIGHT,
   START_DAYS_OFFSET_X,
   NEXT_DAY,
-  PRIOUS_DAY,
+  PREVIOUS_DAY,
   ADD_DATE,
 } = calendarConfig
 
@@ -51,7 +51,7 @@ const needsMoreData = (
 ) => {
   return (
     visibleDays[
-      direction === PRIOUS_DAY
+      direction === PREVIOUS_DAY
         ? DAYS_FETCH_START
         : visibleDays.length - DAYS_FETCH_START
     ]?.key === toShortDate(currentDay.toDate())
@@ -63,7 +63,7 @@ const hasTodoItemsOnDate = (todoList: TodoItemClient[]) => {
   )
   return idSet
 }
-const visiableDaysSet = (DaysList: DayItem[]) => {
+const visibleDaysSet = (DaysList: DayItem[]) => {
   const idSet = new Set(DaysList?.map((item) => item.key))
   return idSet
 }
@@ -172,7 +172,7 @@ const CalendarButtonStyle: ButtonStyle = {
 }
 
 function CustomCalendar({ initialData }: InitialDataType) {
-  const [scheduleDate, setscheduleDate] = useRecoilState(scheduleDateState)
+  const [scheduleDate, setScheduleDate] = useRecoilState(scheduleDateState)
 
   const setApiState = useSetRecoilState(apiStateSelector)
   const todoList = useRecoilValue(TodoListState)
@@ -215,7 +215,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
     setVisibleDays((prev) => updateDateList(prev, currentStartDay, isAppending))
   }
 
-  const startDaysAnimataion = useCallback(() => {
+  const startDaysAnimation = useCallback(() => {
     api.start((i) => {
       return {
         backgroundColor: getSelectedDay(
@@ -236,7 +236,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
   const addDateAfterAnimation = () => {
     const direction = dayPosition.current
 
-    if (direction >= PRIOUS_DAY) {
+    if (direction >= PREVIOUS_DAY) {
       const effectiveDate = visibleDays.findIndex(
         (day) => day.key === toShortDate(scheduleDate.toDate())
       )
@@ -247,7 +247,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
           x: containerX.current,
           immediate: true,
           onRest: () => {
-            startDaysAnimataion()
+            startDaysAnimation()
             startScrollAnimation(direction)
           },
         }
@@ -258,7 +258,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
           x: containerX.current,
         }
       })
-      startDaysAnimataion()
+      startDaysAnimation()
     }
 
     setApiState((prevState) => ({ ...prevState, needDate: true }))
@@ -288,7 +288,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
     const currentMonth = dateRef.current.month() + 1
 
     if (checkYear !== currentYear || checkMonth !== currentMonth) {
-      setscheduleDate(dateRef.current)
+      setScheduleDate(dateRef.current)
     }
   }
 
@@ -296,7 +296,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
     (move: number) => {
       containerX.current += DAY_WIDTH * move
       setContainerSpring({ x: containerX.current })
-      startDaysAnimataion()
+      startDaysAnimation()
     },
     [visibleDays]
   )
@@ -315,18 +315,18 @@ function CustomCalendar({ initialData }: InitialDataType) {
     runSprings(move)
     checkUpdateMonthAndYear()
   }
-  const getDiffdays = (currentDay: moment.Moment, targetDay: moment.Moment) => {
+  const getDiffDays = (currentDay: moment.Moment, targetDay: moment.Moment) => {
     return currentDay.diff(targetDay, 'days')
   }
   useEffectAfterMount(() => {
-    const move = getDiffdays(dateRef.current, scheduleDate)
+    const move = getDiffDays(dateRef.current, scheduleDate)
 
     if (move !== 0) {
-      const isDateInvisiableDays = visiableDaysSet(visibleDays).has(
+      const isDateInvisibleDays = visibleDaysSet(visibleDays).has(
         toShortDate(scheduleDate.toDate())
       )
 
-      if (!isDateInvisiableDays) {
+      if (!isDateInvisibleDays) {
         dateRef.current = scheduleDate
         setTodoDateSet(hasTodoItemsOnDate(todoList))
         setVisibleDays(createDate(scheduleDate))
@@ -369,7 +369,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
     dayPosition.current = parseInt(dataType, 10)
 
     updateDays()
-    setscheduleDate(dateRef.current)
+    setScheduleDate(dateRef.current)
   }
 
   return (
@@ -377,7 +377,7 @@ function CustomCalendar({ initialData }: InitialDataType) {
       <div className="flex w-full shrink-0 justify-between bg-footer-gray">
         <Button
           style={CalendarButtonStyle}
-          dataType={PRIOUS_DAY}
+          dataType={PREVIOUS_DAY}
           handler={moveDays}
           icon={LEFT_ARROW}
         />

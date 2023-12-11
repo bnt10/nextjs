@@ -1,10 +1,11 @@
 import axios from 'axios'
 
 import type { CreateUserType, LoginUserType } from '@/types/users'
+import axiosInstance from '@/utils/axios'
 
 export const createUser = async (userData: CreateUserType) => {
   try {
-    const response = await axios.post('/api/user', {
+    const response = await axiosInstance.post('/api/user', {
       userData,
     })
     if (response.status === 200) {
@@ -30,7 +31,7 @@ export const createUser = async (userData: CreateUserType) => {
 
 export const loginUser = async (userData: LoginUserType) => {
   try {
-    const response = await axios.post('/api/user/login', {
+    const response = await axiosInstance.post('/api/user/login', {
       userData,
     })
     if (response.status === 200) {
@@ -56,7 +57,7 @@ export const loginUser = async (userData: LoginUserType) => {
 
 export const logoutUser = async () => {
   try {
-    const response = await axios.post('/api/user/logout')
+    const response = await axiosInstance.post('/api/user/logout')
     if (response.status === 200) {
       return {
         status: 200,
@@ -83,7 +84,6 @@ export const validateAccessToken = async (accessToken: string | null) => {
     if (!accessToken) return false
 
     const response = await axios.post('/api//auth/validate-access-token', {
-      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
@@ -96,5 +96,27 @@ export const validateAccessToken = async (accessToken: string | null) => {
     return isValid
   } catch (error) {
     return false
+  }
+}
+
+export const getUserInfo = async () => {
+  try {
+    const response = await axiosInstance.get('/api/user')
+
+    if (response.status === 200) {
+      return response.data
+    }
+    return {
+      status: 500,
+      data: 'Internal Server Error',
+    }
+  } catch (error: any) {
+    if (error.response) {
+      return error.response
+    }
+    return {
+      status: 500,
+      data: 'Internal Server Error',
+    }
   }
 }

@@ -1,3 +1,4 @@
+import type { JwtPayload } from 'jsonwebtoken'
 import jwt from 'jsonwebtoken'
 
 export const generateAccessToken = (userName: string) => {
@@ -18,6 +19,16 @@ export const verifyRefreshToken = (token: string) => {
     return null
   }
 }
+export const verifyAccessToken = (token: string) => {
+  try {
+    return jwt.verify(
+      token,
+      process.env.ACCESS_TOKEN_SECRET as string
+    ) as JwtPayload
+  } catch (error) {
+    return null
+  }
+}
 
 export const refreshAccessToken = (refreshToken: string) => {
   const userData = verifyRefreshToken(refreshToken)
@@ -31,4 +42,13 @@ export const refreshAccessToken = (refreshToken: string) => {
   }
   // 리프레시 토큰이 유효하지 않은 경우
   return null
+}
+
+export const decodeToken = (token: string) => {
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string)
+    return decoded
+  } catch (error) {
+    return null
+  }
 }
