@@ -143,7 +143,7 @@ function Login() {
             Don’t have an account?
           </span>
           <Link
-            href={'/users/register/'}
+            href={'/guest/auth/register'}
             className="font-['Lato'] text-xs font-normal leading-[18.06px] text-white text-opacity-90"
           >
             {' '}

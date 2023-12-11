@@ -44,7 +44,7 @@ export default function TodoList({ initialData, renderType }: Props) {
   }
 
   const openDetailWithTask = (taskId: string) => {
-    router.push(`/todo/taskEditor?taskId=${taskId}`)
+    router.push(`/protected/todo/taskEditor?taskId=${taskId}`)
   }
 
   return (
