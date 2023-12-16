@@ -23,7 +23,6 @@ export const userStateSelector = selector({
         name: user.name,
       }
     } catch (error) {
-      console.log(error)
       return {
         userId: '',
         name: '',

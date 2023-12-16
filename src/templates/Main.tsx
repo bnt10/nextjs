@@ -6,15 +6,15 @@ type IMainProps = {
 }
 
 const Main = (props: IMainProps) => (
-  <div className="w-full px-1 text-gray-700 antialiased">
+  <div className="w-full px-1pxr text-gray-700 antialiased">
     {props.meta}
 
-    <div className="mx-auto max-w-screen-md">
+    <div className="mx-auto">
       <header className="border-b border-gray-300"></header>
 
-      <main className="content py-5 text-xl">{props.children}</main>
+      <main className=" py-5pxr text-xl">{props.children}</main>
 
-      <footer className="border-t border-gray-300 py-8 text-center text-sm"></footer>
+      <footer className="border-t border-gray-300 py-8pxr text-center text-sm"></footer>
     </div>
   </div>
 )

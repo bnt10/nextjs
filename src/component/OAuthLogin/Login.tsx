@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { signIn } from 'next-auth/react'
 import type { FormEvent } from 'react'
 import { useSetRecoilState } from 'recoil'
 
@@ -18,34 +17,12 @@ import MessageModal from '../common/MessageModal'
 import type { LoginFormElements } from './constants'
 import { LoginSchema } from './constants'
 import GitHubLoginButton from './GitHubLoginButton'
-import GoogleLoginButton from './GoogleLoginButton'
 
 function Login() {
   const setModalContent = useSetRecoilState(modalContentState)
   const setAuth = useSetRecoilState(AuthState)
 
   const LoginOAuth: Record<string, ProviderConfig> = {
-    google: {
-      id: 'googleLogin',
-      component: GoogleLoginButton,
-      props: {
-        title: 'Login with Google',
-        handler: async () => {
-          window.location.href =
-            'http://ec2-15-164-0-19.ap-northeast-2.compute.amazonaws.com/oauth2/authorization/google'
-        },
-      },
-    },
-    github: {
-      id: 'githubLogin',
-      component: GitHubLoginButton,
-      props: {
-        title: 'Login with Github',
-        handler: async () => {
-          signIn('github')
-        },
-      },
-    },
     kakao: {
       id: 'kakao',
       component: GitHubLoginButton,
@@ -53,7 +30,7 @@ function Login() {
         title: 'Login with Kakao',
         handler: async () => {
           window.location.href =
-            'http://ec2-15-164-0-19.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/kakao'
+            'https://baftogether.com/oauth2/authorization/kakao'
         },
       },
     },
