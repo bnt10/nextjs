@@ -1,5 +1,8 @@
 import { useRouter } from 'next/router'
+import { useSetRecoilState } from 'recoil'
 
+import { modalContentState } from '@/atoms/modalAtom'
+import { ProfileChangeImage } from '@/component/profile/ProfileChangeImage'
 import ConfigList from '@/component/todo/config/ConfigList'
 import UserInfo from '@/component/todo/profile/User'
 import ProfileLayout from '@/layouts/todo/ProfilePageLayout'
@@ -8,6 +11,8 @@ import type { ConfigListType } from '@/types/config'
 
 export default function Profile() {
   const router = useRouter()
+  const setModalContent = useSetRecoilState(modalContentState)
+
   const profileConfigList: ConfigListType[] = [
     {
       key: 'Settings',
@@ -39,7 +44,9 @@ export default function Profile() {
         },
         {
           key: 'Account_3',
-          handler: () => {},
+          handler: () => {
+            setModalContent(<ProfileChangeImage />)
+          },
           title: 'Change account Image',
           icon: 'AiOutlineCamera',
         },
